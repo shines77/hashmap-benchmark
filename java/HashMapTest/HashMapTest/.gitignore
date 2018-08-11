@@ -1,0 +1,52 @@
+### These files should get ignored no matter where they appear.
+
+# Ignore operating system files
+.#*
+*#
+\#*\#
+*~
+*.sw?
+*.DS_Store
+
+# Ignore thumbnails and icon cache files created by Windows
+Thumbs.db
+ehthumbs.db
+
+# Ignore some files on Windows
+.DS_Store*
+Icon?
+
+# Ignore Java class files
+*.class
+*.jar
+*.zip
+
+# Ignore built application files
+*.apk
+*.ap_
+ 
+# Ignore files for the dex VM
+*.dex
+ 
+# Ignore generated files (bin, obj, tmp folders)
+!/[Bb]in/ReadMe.txt
+/[Bb]in/
+/[Oo]bj/
+/[Gg]en/
+/[Tt]mp/
+/[Tt]emp/
+/[Tt]arget/
+ 
+# Ignore Eclipse project files
+# /.settings/
+.classpath
+# .project
+.DS_Store
+
+# Ignore Eclipse workspace folder files
+/.metadata
+/.recommenders
+
+# Ignore Sublime Text 2 dump files
+*.dump
+*.sublime-*

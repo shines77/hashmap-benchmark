@@ -1,2 +1,3 @@
 # FastHashMap
-A fastest hash map written by C++11.
+
+A faster hash map written by C++11.

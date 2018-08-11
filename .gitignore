@@ -19,26 +19,25 @@
 *.mod
 
 # Ignore Compiled Static libraries
-# *.lai
-# *.la
-# *.a
-# *.lib
-
-!*.bat
-
-# Ignore project build libraries
-/lib/
+*.lai
+*.la
+*.a
+*.lib
 
 # Ignore Executables
 *.exe
 *.out
 *.app
 
-# Editors leave these lying around
-\#*\#
+!*.bat
+
+# Ignore operating system files
 .#*
+*#
+\#*\#
 *~
-*.swp
+*.sw?
+*.DS_Store
 
 # Ignore thumbnails and icon cache files created by Windows
 Thumbs.db
@@ -99,6 +98,7 @@ Icon?
 
 # Ignore Sublime Text 2 dump files
 *.dump
+*.sublime-*
 
 # Ignore CLion or Intellij Idea settings files
 .idea
@@ -139,7 +139,7 @@ UpgradeLog.htm
 *.zip
 *.rar
 
-# Ignore CMake cache or temp files(folders)
+# Ignore CMake cache or temp files/folders
 /CMakeFiles
 *CMakeCache.txt
 /Makefile
@@ -148,18 +148,14 @@ UpgradeLog.htm
 /deps/boost/
 /deps/tbb/
 
-# Ignore tmp and obj folders
-[Bb]in
-[Oo]bj/
-/[Oo]bj/
-/[Gg]en/
-/tmp/
-/temp/
-!/[Bb]uild/ReadMe.txt
-/[Bb]uild/*/
-*.save
+# Ignore benchmark dir
+/benchmark
+
+# Ignore project build libraries
+/lib/
 
 # Ignore bin and build folders
+!/[Bb]in/ReadMe.txt
 /[Bb]in/
 /[Dd]ebug/
 /[Rr]elease/
@@ -167,15 +163,27 @@ UpgradeLog.htm
 /x86-[Rr]elease/
 /x64-[Dd]ebug/
 /x64-[Rr]elease/
+*/Win32/
+*/x64/
 !/deps/
 
-[Bb]in
-[Dd]ebug*/
-[Rr]elease*/
+# Ignore tmp or ibj generated folders
+/[Oo]bj/
+/[Gg]en/
+/[Tt]mp/
+/[Tt]emp/
+/[Tt]arget/
+!/[Bb]uild/ReadMe.txt
+/[Bb]uild/
+/[Dd]ebug/
+/[Rr]elease/
+*.save
+
+# Ignore some files about ReSharpe
 _ReSharper*/
 [Tt]est[Rr]esult*
 
-# Other files or folders
+# Ignore other files or folders
 /.metadata
 /169.254.0.1
 /ipch/
