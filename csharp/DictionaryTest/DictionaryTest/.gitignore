@@ -1,0 +1,63 @@
+### These files should get ignored no matter where they appear.
+
+# Ignore operating system files
+.#*
+*#
+\#*\#
+*~
+*.sw?
+*.DS_Store
+
+# Ignore thumbnails and icon cache files created by Windows
+Thumbs.db
+ehthumbs.db
+
+# Ignore some files on Windows
+.DS_Store*
+Icon?
+
+# Ignore built application files
+*.zip
+
+# Ignore Compiled Object files
+*.obj
+
+# Ignore Precompiled Headers
+*.gch
+*.pch
+
+# Ignore Compiled Dynamic libraries
+*.dll
+
+# Ignore Fortran module files
+*.mod
+
+# Ignore Compiled Static libraries
+*.lib
+
+# Ignore log files
+*.log
+
+# Ignore Executables
+*.exe
+*.out
+*.app
+
+!*.bat
+
+# Ignore folders create by Visual Studio 2015
+/.vs/
+
+# Ignore generated files (bin, obj, tmp folders)
+!/[Bb]in/ReadMe.txt
+/[Bb]in/
+/[Oo]bj/
+/[Gg]en/
+/[Bb]uild/
+/[Tt]mp/
+/[Tt]emp/
+/[Tt]arget/
+ 
+# Ignore Sublime Text 2 dump files
+*.dump
+*.sublime-*
