@@ -43,9 +43,9 @@ Icon?
 /.recommenders
  
 # Ignore Eclipse project files
-# /.settings/
-.classpath
-# .project
+/.settings/
+#.classpath
+#.project
 .DS_Store
 
 # Ignore IntelliJ IDEA files
