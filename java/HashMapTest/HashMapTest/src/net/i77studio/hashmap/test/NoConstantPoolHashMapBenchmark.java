@@ -1,19 +1,23 @@
-/**
- * @author XiongHui Guo
- * @date 2018/08/07 12:49:00
- */
 package net.i77studio.hashmap.test;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
-/**
- * @author XiongHui Guo
- * @date 2018/08/07 12:49:00
- */
-public class HashMapBenchmark {
+public class NoConstantPoolHashMapBenchmark {
     private final int kIterations = 3000000;
 
-    private final String[] header_fields = {
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    private List<String> header_fields = new ArrayList();
+
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    private List<String> value_fields = new ArrayList();
+
+    private final String[] const_header_fields = {
             // Request
             "Accept",
             "Accept-Charset",
@@ -92,27 +96,54 @@ public class HashMapBenchmark {
             "Last"
     };
 
+    public static int readFileByLines(String filename, List<String> list) {
+        File file = new File(filename);
+        BufferedReader reader = null;
+        list.clear();
+        int line = 0;
+        try {
+            reader = new BufferedReader(new FileReader(file));
+            String lineString = null;
+            while ((lineString = reader.readLine()) != null) {
+                // System.out.println("line # " + (line + 1) + ": [" + lineString + "]");
+                list.add(lineString);
+                line++;
+            }
+            reader.close();
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        } finally {
+            if (reader != null) {
+                try {
+                    reader.close();
+                } catch (IOException e1) {
+                }
+            }
+        }
+        return line;
+    }
+
     void runFindTest() {
         System.out.printf("-------------------------------------------------------------------------\n");
         System.out.printf("  HashMap_find_benchmark()\n");
         System.out.printf("-------------------------------------------------------------------------\n");
         System.out.printf("\n");
 
-        int kHeaderFieldSize = this.header_fields.length;
+        int kHeaderFieldSize = this.header_fields.size();
         int kRepeatTimes = (this.kIterations / kHeaderFieldSize);
 
         String[] field_str = new String[kHeaderFieldSize];
         String[] index_str = new String[kHeaderFieldSize];
         for (int i = 0; i < kHeaderFieldSize; ++i) {
-            field_str[i] = this.header_fields[i];
-            index_str[i] = String.format("%d", i).intern();
+            field_str[i] = header_fields.get(i);
+            index_str[i] = value_fields.get(i);
         }
 
         {
             HashMap<String, String> map = new HashMap<String, String>();
             for (int i = 0; i < kHeaderFieldSize; ++i) {
-                if (!map.containsKey(field_str[i])) {
-                    map.put(field_str[i], index_str[i]);
+                if (!map.containsKey(field_str[i].toString())) {
+                    map.put(field_str[i].toString(), index_str[i].toString());
                 }
             }
 
@@ -147,14 +178,14 @@ public class HashMapBenchmark {
         System.out.printf("-------------------------------------------------------------------------\n");
         System.out.printf("\n");
 
-        int kHeaderFieldSize = this.header_fields.length;
+        int kHeaderFieldSize = this.header_fields.size();
         int kRepeatTimes = (this.kIterations / kHeaderFieldSize);
 
         String[] field_str = new String[kHeaderFieldSize];
         String[] index_str = new String[kHeaderFieldSize];
         for (int i = 0; i < kHeaderFieldSize; ++i) {
-            field_str[i] = this.header_fields[i];
-            index_str[i] = String.format("%d", i).intern();
+            field_str[i] = header_fields.get(i);
+            index_str[i] = value_fields.get(i);
         }
 
         {
@@ -188,14 +219,14 @@ public class HashMapBenchmark {
         System.out.printf("-------------------------------------------------------------------------\n");
         System.out.printf("\n");
 
-        int kHeaderFieldSize = this.header_fields.length;
+        int kHeaderFieldSize = this.header_fields.size();
         int kRepeatTimes = (this.kIterations / kHeaderFieldSize);
 
         String[] field_str = new String[kHeaderFieldSize];
         String[] index_str = new String[kHeaderFieldSize];
         for (int i = 0; i < kHeaderFieldSize; ++i) {
-            field_str[i] = this.header_fields[i];
-            index_str[i] = String.format("%d", i).intern();
+            field_str[i] = header_fields.get(i);
+            index_str[i] = value_fields.get(i);
         }
 
         {
@@ -230,14 +261,14 @@ public class HashMapBenchmark {
         System.out.printf("-------------------------------------------------------------------------\n");
         System.out.printf("\n");
 
-        int kHeaderFieldSize = this.header_fields.length;
+        int kHeaderFieldSize = this.header_fields.size();
         int kRepeatTimes = (this.kIterations / kHeaderFieldSize);
 
         String[] field_str = new String[kHeaderFieldSize];
         String[] index_str = new String[kHeaderFieldSize];
         for (int i = 0; i < kHeaderFieldSize; ++i) {
-            field_str[i] = this.header_fields[i];
-            index_str[i] = String.format("%d", i).intern();
+            field_str[i] = header_fields.get(i);
+            index_str[i] = value_fields.get(i);
         }
 
         {
@@ -276,14 +307,14 @@ public class HashMapBenchmark {
         System.out.printf("-------------------------------------------------------------------------\n");
         System.out.printf("\n");
 
-        int kHeaderFieldSize = this.header_fields.length;
+        int kHeaderFieldSize = this.header_fields.size();
         int kRepeatTimes = (this.kIterations / kHeaderFieldSize);
 
         String[] field_str = new String[kHeaderFieldSize];
         String[] index_str = new String[kHeaderFieldSize];
         for (int i = 0; i < kHeaderFieldSize; ++i) {
-            field_str[i] = this.header_fields[i];
-            index_str[i] = String.format("%d", i).intern();
+            field_str[i] = header_fields.get(i);
+            index_str[i] = value_fields.get(i);
         }
 
         {
@@ -321,14 +352,14 @@ public class HashMapBenchmark {
         System.out.printf("-------------------------------------------------------------------------\n");
         System.out.printf("\n");
 
-        int kHeaderFieldSize = this.header_fields.length;
+        int kHeaderFieldSize = this.header_fields.size();
         int kRepeatTimes = (this.kIterations / kHeaderFieldSize);
 
         String[] field_str = new String[kHeaderFieldSize];
         String[] index_str = new String[kHeaderFieldSize];
         for (int i = 0; i < kHeaderFieldSize; ++i) {
-            field_str[i] = this.header_fields[i];
-            index_str[i] = String.format("%d", i).intern();
+            field_str[i] = header_fields.get(i);
+            index_str[i] = value_fields.get(i);
         }
 
         {
@@ -367,14 +398,14 @@ public class HashMapBenchmark {
         System.out.printf("-------------------------------------------------------------------------\n");
         System.out.printf("\n");
 
-        int kHeaderFieldSize = this.header_fields.length;
+        int kHeaderFieldSize = this.header_fields.size();
         int kRepeatTimes = (this.kIterations / kHeaderFieldSize);
 
         String[] field_str = new String[kHeaderFieldSize];
         String[] index_str = new String[kHeaderFieldSize];
         for (int i = 0; i < kHeaderFieldSize; ++i) {
-            field_str[i] = this.header_fields[i];
-            index_str[i] = String.format("%d", i).intern();
+            field_str[i] = header_fields.get(i);
+            index_str[i] = value_fields.get(i);
         }
 
         {
@@ -413,14 +444,14 @@ public class HashMapBenchmark {
         System.out.printf("-------------------------------------------------------------------------\n");
         System.out.printf("\n");
 
-        int kHeaderFieldSize = this.header_fields.length;
+        int kHeaderFieldSize = this.header_fields.size();
         int kRepeatTimes = (this.kIterations / kHeaderFieldSize);
 
         String[] field_str = new String[kHeaderFieldSize];
         String[] index_str = new String[kHeaderFieldSize];
         for (int i = 0; i < kHeaderFieldSize; ++i) {
-            field_str[i] = this.header_fields[i];
-            index_str[i] = String.format("%d", i).intern();
+            field_str[i] = header_fields.get(i);
+            index_str[i] = value_fields.get(i);
         }
 
         {
@@ -459,14 +490,14 @@ public class HashMapBenchmark {
         System.out.printf("-------------------------------------------------------------------------\n");
         System.out.printf("\n");
 
-        int kHeaderFieldSize = this.header_fields.length;
+        int kHeaderFieldSize = this.header_fields.size();
         int kRepeatTimes = (this.kIterations / kHeaderFieldSize);
 
         String[] field_str = new String[kHeaderFieldSize];
         String[] index_str = new String[kHeaderFieldSize];
         for (int i = 0; i < kHeaderFieldSize; ++i) {
-            field_str[i] = this.header_fields[i];
-            index_str[i] = String.format("%d", i).intern();
+            field_str[i] = header_fields.get(i);
+            index_str[i] = value_fields.get(i);
         }
 
         {
@@ -501,6 +532,25 @@ public class HashMapBenchmark {
     }
 
     void run() {
+        int header_lines = readFileByLines("header_fields.txt", this.header_fields);
+        if (header_lines <= 0) {
+            System.out.printf("-------------------------------------------------------------------------\n\n");
+            System.out.println("Error: header_fields.txt have no data.");
+            return;
+        } else {
+            System.out.printf("Have read %d lines data in [header_fields.txt].\n", header_lines);
+        }
+        int value_lines = readFileByLines("value_fields.txt", this.value_fields);
+        if (value_lines <= 0) {
+            System.out.printf("-------------------------------------------------------------------------\n\n");
+            System.out.println("Error: value_fields.txt have no data.");
+            return;
+        } else {
+            System.out.printf("Have read %d lines data in [value_fields.txt].\n", value_lines);
+        }
+
+        System.out.printf("\n");
+
         // Find
         this.runFindTest();
 
