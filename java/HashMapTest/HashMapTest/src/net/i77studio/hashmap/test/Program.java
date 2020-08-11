@@ -16,9 +16,7 @@ class Program {
         HashMapBenchmark hashMapBenchmark = new HashMapBenchmark();
         hashMapBenchmark.run();
 
-        System.out.printf("\n");
         System.out.printf("-------------------------------------------------------------------------\n");
-        System.out.printf("\n");
 
         NoConstantPoolHashMapBenchmark noConstantPoolHashMapBenchmark = new NoConstantPoolHashMapBenchmark();
         noConstantPoolHashMapBenchmark.run();

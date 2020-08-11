@@ -124,9 +124,9 @@ public class NoConstantPoolHashMapBenchmark {
     }
 
     void runFindTest() {
-        System.out.printf("-------------------------------------------------------------------------\n");
+        // System.out.printf("-------------------------------------------------------------------------\n");
         System.out.printf("  HashMap_find_benchmark()\n");
-        System.out.printf("-------------------------------------------------------------------------\n");
+        // System.out.printf("-------------------------------------------------------------------------\n");
         System.out.printf("\n");
 
         int kHeaderFieldSize = this.header_fields.size();
@@ -164,18 +164,18 @@ public class NoConstantPoolHashMapBenchmark {
 
             totalTime += sw.getElapsedMillsecs();
 
-            // System.out.printf("-------------------------------------------------------------------------\n");
+            System.out.printf("-------------------------------------------------------------------------\n");
             System.out.printf("  %-28s  ", "HashMap<String, String>");
             System.out.printf("sum = %-10d  time: %8.3f ms\n", checksum, totalTime);
-            // System.out.printf("-------------------------------------------------------------------------\n");
+            System.out.printf("-------------------------------------------------------------------------\n");
             System.out.printf("\n");
         }
     }
 
     void runInsertTest() {
-        System.out.printf("-------------------------------------------------------------------------\n");
+        // System.out.printf("-------------------------------------------------------------------------\n");
         System.out.printf("  HashMap_insert_benchmark()\n");
-        System.out.printf("-------------------------------------------------------------------------\n");
+        // System.out.printf("-------------------------------------------------------------------------\n");
         System.out.printf("\n");
 
         int kHeaderFieldSize = this.header_fields.size();
@@ -193,30 +193,31 @@ public class NoConstantPoolHashMapBenchmark {
             double totalTime = 0.0;
             StopWatch sw = new StopWatch();
 
-            sw.start();
             for (int i = 0; i < kRepeatTimes; ++i) {
                 HashMap<String, String> map = new HashMap<String, String>();
+
+                sw.start();
                 for (int j = 0; j < kHeaderFieldSize; ++j) {
                     map.put(field_str[j], index_str[j]);
                 }
+                sw.stop();
+
                 checksum += map.size();
+                totalTime += sw.getElapsedMillsecs();
             }
-            sw.stop();
 
-            totalTime += sw.getElapsedMillsecs();
-
-            // System.out.printf("-------------------------------------------------------------------------\n");
+            System.out.printf("-------------------------------------------------------------------------\n");
             System.out.printf("  %-28s  ", "HashMap<String, String>");
             System.out.printf("sum = %-10d  time: %8.3f ms\n", checksum, totalTime);
-            // System.out.printf("-------------------------------------------------------------------------\n");
+            System.out.printf("-------------------------------------------------------------------------\n");
             System.out.printf("\n");
         }
     }
 
     void runInsert1Test() {
-        System.out.printf("-------------------------------------------------------------------------\n");
+        // System.out.printf("-------------------------------------------------------------------------\n");
         System.out.printf("  HashMap_insert1_benchmark()\n");
-        System.out.printf("-------------------------------------------------------------------------\n");
+        // System.out.printf("-------------------------------------------------------------------------\n");
         System.out.printf("\n");
 
         int kHeaderFieldSize = this.header_fields.size();
@@ -234,9 +235,9 @@ public class NoConstantPoolHashMapBenchmark {
             double totalTime = 0.0;
             StopWatch sw = new StopWatch();
 
-            for (int i = 0; i < kRepeatTimes; ++i) {
-                HashMap<String, String> map = new HashMap<String, String>();
+            HashMap<String, String> map = new HashMap<String, String>();
 
+            for (int i = 0; i < kRepeatTimes; ++i) {
                 sw.start();
                 for (int j = 0; j < kHeaderFieldSize; ++j) {
                     map.put(field_str[j], index_str[j]);
@@ -245,20 +246,24 @@ public class NoConstantPoolHashMapBenchmark {
 
                 checksum += map.size();
                 totalTime += sw.getElapsedMillsecs();
+
+                for (int j = 0; j < kHeaderFieldSize; ++j) {
+                    map.remove(field_str[j]);
+                }
             }
 
-            // System.out.printf("-------------------------------------------------------------------------\n");
+            System.out.printf("-------------------------------------------------------------------------\n");
             System.out.printf("  %-28s  ", "HashMap<String, String>");
             System.out.printf("sum = %-10d  time: %8.3f ms\n", checksum, totalTime);
-            // System.out.printf("-------------------------------------------------------------------------\n");
+            System.out.printf("-------------------------------------------------------------------------\n");
             System.out.printf("\n");
         }
     }
 
     void runInsert2Test() {
-        System.out.printf("-------------------------------------------------------------------------\n");
+        // System.out.printf("-------------------------------------------------------------------------\n");
         System.out.printf("  HashMap_insert2_benchmark()\n");
-        System.out.printf("-------------------------------------------------------------------------\n");
+        // System.out.printf("-------------------------------------------------------------------------\n");
         System.out.printf("\n");
 
         int kHeaderFieldSize = this.header_fields.size();
@@ -276,35 +281,30 @@ public class NoConstantPoolHashMapBenchmark {
             double totalTime = 0.0;
             StopWatch sw = new StopWatch();
 
-            HashMap<String, String> map = new HashMap<String, String>();
-
+            sw.start();
             for (int i = 0; i < kRepeatTimes; ++i) {
-                sw.start();
+                HashMap<String, String> map = new HashMap<String, String>();
                 for (int j = 0; j < kHeaderFieldSize; ++j) {
                     map.put(field_str[j], index_str[j]);
                 }
-                sw.stop();
-
                 checksum += map.size();
-                totalTime += sw.getElapsedMillsecs();
-
-                for (int j = 0; j < kHeaderFieldSize; ++j) {
-                    map.remove(field_str[j]);
-                }
             }
+            sw.stop();
 
-            // System.out.printf("-------------------------------------------------------------------------\n");
+            totalTime += sw.getElapsedMillsecs();
+
+            System.out.printf("-------------------------------------------------------------------------\n");
             System.out.printf("  %-28s  ", "HashMap<String, String>");
             System.out.printf("sum = %-10d  time: %8.3f ms\n", checksum, totalTime);
-            // System.out.printf("-------------------------------------------------------------------------\n");
+            System.out.printf("-------------------------------------------------------------------------\n");
             System.out.printf("\n");
         }
     }
 
     void runEraseTest() {
-        System.out.printf("-------------------------------------------------------------------------\n");
+        // System.out.printf("-------------------------------------------------------------------------\n");
         System.out.printf("  HashMap_erase_benchmark()\n");
-        System.out.printf("-------------------------------------------------------------------------\n");
+        // System.out.printf("-------------------------------------------------------------------------\n");
         System.out.printf("\n");
 
         int kHeaderFieldSize = this.header_fields.size();
@@ -322,34 +322,35 @@ public class NoConstantPoolHashMapBenchmark {
             double totalTime = 0.0;
             StopWatch sw = new StopWatch();
 
-            sw.start();
             for (int i = 0; i < kRepeatTimes; ++i) {
                 HashMap<String, String> map = new HashMap<String, String>();
+
                 for (int j = 0; j < kHeaderFieldSize; ++j) {
                     map.put(field_str[j], index_str[j]);
                 }
 
+                sw.start();
                 for (int j = 0; j < kHeaderFieldSize; ++j) {
                     map.remove(field_str[j]);
                 }
+                sw.stop();
+
                 checksum += map.size();
+                totalTime += sw.getElapsedMillsecs();
             }
-            sw.stop();
 
-            totalTime += sw.getElapsedMillsecs();
-
-            // System.out.printf("-------------------------------------------------------------------------\n");
+            System.out.printf("-------------------------------------------------------------------------\n");
             System.out.printf("  %-28s  ", "HashMap<String, String>");
             System.out.printf("sum = %-10d  time: %8.3f ms\n", checksum, totalTime);
-            // System.out.printf("-------------------------------------------------------------------------\n");
+            System.out.printf("-------------------------------------------------------------------------\n");
             System.out.printf("\n");
         }
     }
 
     void runErase1Test() {
-        System.out.printf("-------------------------------------------------------------------------\n");
+        // System.out.printf("-------------------------------------------------------------------------\n");
         System.out.printf("  HashMap_erase1_benchmark()\n");
-        System.out.printf("-------------------------------------------------------------------------\n");
+        // System.out.printf("-------------------------------------------------------------------------\n");
         System.out.printf("\n");
 
         int kHeaderFieldSize = this.header_fields.size();
@@ -367,9 +368,9 @@ public class NoConstantPoolHashMapBenchmark {
             double totalTime = 0.0;
             StopWatch sw = new StopWatch();
 
-            for (int i = 0; i < kRepeatTimes; ++i) {
-                HashMap<String, String> map = new HashMap<String, String>();
+            HashMap<String, String> map = new HashMap<String, String>();
 
+            for (int i = 0; i < kRepeatTimes; ++i) {
                 for (int j = 0; j < kHeaderFieldSize; ++j) {
                     map.put(field_str[j], index_str[j]);
                 }
@@ -384,18 +385,63 @@ public class NoConstantPoolHashMapBenchmark {
                 totalTime += sw.getElapsedMillsecs();
             }
 
-            // System.out.printf("-------------------------------------------------------------------------\n");
+            System.out.printf("-------------------------------------------------------------------------\n");
             System.out.printf("  %-28s  ", "HashMap<String, String>");
             System.out.printf("sum = %-10d  time: %8.3f ms\n", checksum, totalTime);
-            // System.out.printf("-------------------------------------------------------------------------\n");
+            System.out.printf("-------------------------------------------------------------------------\n");
             System.out.printf("\n");
         }
     }
 
     void runErase2Test() {
-        System.out.printf("-------------------------------------------------------------------------\n");
+        // System.out.printf("-------------------------------------------------------------------------\n");
         System.out.printf("  HashMap_erase2_benchmark()\n");
-        System.out.printf("-------------------------------------------------------------------------\n");
+        // System.out.printf("-------------------------------------------------------------------------\n");
+        System.out.printf("\n");
+
+        int kHeaderFieldSize = this.header_fields.size();
+        int kRepeatTimes = (this.kIterations / kHeaderFieldSize);
+
+        String[] field_str = new String[kHeaderFieldSize];
+        String[] index_str = new String[kHeaderFieldSize];
+        for (int i = 0; i < kHeaderFieldSize; ++i) {
+            field_str[i] = header_fields.get(i);
+            index_str[i] = value_fields.get(i);
+        }
+
+        {
+            long checksum = 0;
+            double totalTime = 0.0;
+            StopWatch sw = new StopWatch();
+
+            sw.start();
+            for (int i = 0; i < kRepeatTimes; ++i) {
+                HashMap<String, String> map = new HashMap<String, String>();
+                for (int j = 0; j < kHeaderFieldSize; ++j) {
+                    map.put(field_str[j], index_str[j]);
+                }
+
+                for (int j = 0; j < kHeaderFieldSize; ++j) {
+                    map.remove(field_str[j]);
+                }
+                checksum += map.size();
+            }
+            sw.stop();
+
+            totalTime += sw.getElapsedMillsecs();
+
+            System.out.printf("-------------------------------------------------------------------------\n");
+            System.out.printf("  %-28s  ", "HashMap<String, String>");
+            System.out.printf("sum = %-10d  time: %8.3f ms\n", checksum, totalTime);
+            System.out.printf("-------------------------------------------------------------------------\n");
+            System.out.printf("\n");
+        }
+    }
+
+    void runInsertEraseTest() {
+        // System.out.printf("-------------------------------------------------------------------------\n");
+        System.out.printf("  HashMap_insert_erase_benchmark()\n");
+        // System.out.printf("-------------------------------------------------------------------------\n");
         System.out.printf("\n");
 
         int kHeaderFieldSize = this.header_fields.size();
@@ -415,33 +461,34 @@ public class NoConstantPoolHashMapBenchmark {
 
             HashMap<String, String> map = new HashMap<String, String>();
 
+            sw.start();
             for (int i = 0; i < kRepeatTimes; ++i) {
                 for (int j = 0; j < kHeaderFieldSize; ++j) {
                     map.put(field_str[j], index_str[j]);
                 }
+                checksum += map.size();
 
-                sw.start();
                 for (int j = 0; j < kHeaderFieldSize; ++j) {
                     map.remove(field_str[j]);
                 }
-                sw.stop();
-
                 checksum += map.size();
-                totalTime += sw.getElapsedMillsecs();
             }
+            sw.stop();
 
-            // System.out.printf("-------------------------------------------------------------------------\n");
+            totalTime += sw.getElapsedMillsecs();
+
+            System.out.printf("-------------------------------------------------------------------------\n");
             System.out.printf("  %-28s  ", "HashMap<String, String>");
             System.out.printf("sum = %-10d  time: %8.3f ms\n", checksum, totalTime);
-            // System.out.printf("-------------------------------------------------------------------------\n");
+            System.out.printf("-------------------------------------------------------------------------\n");
             System.out.printf("\n");
         }
     }
 
-    void runInsertEraseTest() {
-        System.out.printf("-------------------------------------------------------------------------\n");
-        System.out.printf("  HashMap_insert_erase_benchmark()\n");
-        System.out.printf("-------------------------------------------------------------------------\n");
+    void runInsertErase2Test() {
+        // System.out.printf("-------------------------------------------------------------------------\n");
+        System.out.printf("  HashMap_insert_erase2_benchmark()\n");
+        // System.out.printf("-------------------------------------------------------------------------\n");
         System.out.printf("\n");
 
         int kHeaderFieldSize = this.header_fields.size();
@@ -476,63 +523,16 @@ public class NoConstantPoolHashMapBenchmark {
 
             totalTime += sw.getElapsedMillsecs();
 
-            // System.out.printf("-------------------------------------------------------------------------\n");
+            System.out.printf("-------------------------------------------------------------------------\n");
             System.out.printf("  %-28s  ", "HashMap<String, String>");
             System.out.printf("sum = %-10d  time: %8.3f ms\n", checksum, totalTime);
-            // System.out.printf("-------------------------------------------------------------------------\n");
-            System.out.printf("\n");
-        }
-    }
-
-    void runInsertErase2Test() {
-        System.out.printf("-------------------------------------------------------------------------\n");
-        System.out.printf("  HashMap_insert_erase_2_benchmark()\n");
-        System.out.printf("-------------------------------------------------------------------------\n");
-        System.out.printf("\n");
-
-        int kHeaderFieldSize = this.header_fields.size();
-        int kRepeatTimes = (this.kIterations / kHeaderFieldSize);
-
-        String[] field_str = new String[kHeaderFieldSize];
-        String[] index_str = new String[kHeaderFieldSize];
-        for (int i = 0; i < kHeaderFieldSize; ++i) {
-            field_str[i] = header_fields.get(i);
-            index_str[i] = value_fields.get(i);
-        }
-
-        {
-            long checksum = 0;
-            double totalTime = 0.0;
-            StopWatch sw = new StopWatch();
-
-            HashMap<String, String> map = new HashMap<String, String>();
-
-            sw.start();
-            for (int i = 0; i < kRepeatTimes; ++i) {
-                for (int j = 0; j < kHeaderFieldSize; ++j) {
-                    map.put(field_str[j], index_str[j]);
-                }
-                checksum += map.size();
-
-                for (int j = 0; j < kHeaderFieldSize; ++j) {
-                    map.remove(field_str[j]);
-                }
-                checksum += map.size();
-            }
-            sw.stop();
-
-            totalTime += sw.getElapsedMillsecs();
-
-            // System.out.printf("-------------------------------------------------------------------------\n");
-            System.out.printf("  %-28s  ", "HashMap<String, String>");
-            System.out.printf("sum = %-10d  time: %8.3f ms\n", checksum, totalTime);
-            // System.out.printf("-------------------------------------------------------------------------\n");
+            System.out.printf("-------------------------------------------------------------------------\n");
             System.out.printf("\n");
         }
     }
 
     void run() {
-        int header_lines = readFileByLines("header_fields.txt", this.header_fields);
+        int header_lines = readFileByLines(".\\data\\header_fields.txt", this.header_fields);
         if (header_lines <= 0) {
             System.out.printf("-------------------------------------------------------------------------\n\n");
             System.out.println("Error: header_fields.txt have no data.");
@@ -540,7 +540,7 @@ public class NoConstantPoolHashMapBenchmark {
         } else {
             System.out.printf("Have read %d lines data in [header_fields.txt].\n", header_lines);
         }
-        int value_lines = readFileByLines("value_fields.txt", this.value_fields);
+        int value_lines = readFileByLines(".\\data\\value_fields.txt", this.value_fields);
         if (value_lines <= 0) {
             System.out.printf("-------------------------------------------------------------------------\n\n");
             System.out.println("Error: value_fields.txt have no data.");
@@ -549,25 +549,25 @@ public class NoConstantPoolHashMapBenchmark {
             System.out.printf("Have read %d lines data in [value_fields.txt].\n", value_lines);
         }
 
-        System.out.printf("\n");
+        System.out.printf("-------------------------------------------------------------------------\n\n");
 
         // Find
         this.runFindTest();
 
         // Insert
         this.runInsertTest();
-        this.runInsert1Test();
-        this.runInsert2Test();
+        // this.runInsert1Test();
+        // this.runInsert2Test();
 
         // Erase
         this.runEraseTest();
-        this.runErase1Test();
-        this.runErase2Test();
+        // this.runErase1Test();
+        // this.runErase2Test();
 
         // Insert and Erase
         this.runInsertEraseTest();
-        this.runInsertErase2Test();
+        // this.runInsertErase2Test();
 
-        System.out.printf("-------------------------------------------------------------------------\n");
+        // System.out.printf("-------------------------------------------------------------------------\n");
     }
 }
