@@ -99,7 +99,7 @@ public class HashMapBenchmark {
         System.out.printf("\n");
 
         int kHeaderFieldSize = this.header_fields.length;
-        int kRepeatTimes = (this.kIterations / kHeaderFieldSize);
+        int kRepeatTimes = (this.kIterations / kHeaderFieldSize) + 1;
 
         String[] field_str = new String[kHeaderFieldSize];
         String[] index_str = new String[kHeaderFieldSize];
@@ -148,7 +148,7 @@ public class HashMapBenchmark {
         System.out.printf("\n");
 
         int kHeaderFieldSize = this.header_fields.length;
-        int kRepeatTimes = (this.kIterations / kHeaderFieldSize);
+        int kRepeatTimes = (this.kIterations / kHeaderFieldSize) + 1;
 
         String[] field_str = new String[kHeaderFieldSize];
         String[] index_str = new String[kHeaderFieldSize];
@@ -190,7 +190,7 @@ public class HashMapBenchmark {
         System.out.printf("\n");
 
         int kHeaderFieldSize = this.header_fields.length;
-        int kRepeatTimes = (this.kIterations / kHeaderFieldSize);
+        int kRepeatTimes = (this.kIterations / kHeaderFieldSize) + 1;
 
         String[] field_str = new String[kHeaderFieldSize];
         String[] index_str = new String[kHeaderFieldSize];
@@ -236,7 +236,7 @@ public class HashMapBenchmark {
         System.out.printf("\n");
 
         int kHeaderFieldSize = this.header_fields.length;
-        int kRepeatTimes = (this.kIterations / kHeaderFieldSize);
+        int kRepeatTimes = (this.kIterations / kHeaderFieldSize) + 1;
 
         String[] field_str = new String[kHeaderFieldSize];
         String[] index_str = new String[kHeaderFieldSize];
@@ -277,7 +277,7 @@ public class HashMapBenchmark {
         System.out.printf("\n");
 
         int kHeaderFieldSize = this.header_fields.length;
-        int kRepeatTimes = (this.kIterations / kHeaderFieldSize);
+        int kRepeatTimes = (this.kIterations / kHeaderFieldSize) + 1;
 
         String[] field_str = new String[kHeaderFieldSize];
         String[] index_str = new String[kHeaderFieldSize];
@@ -323,7 +323,7 @@ public class HashMapBenchmark {
         System.out.printf("\n");
 
         int kHeaderFieldSize = this.header_fields.length;
-        int kRepeatTimes = (this.kIterations / kHeaderFieldSize);
+        int kRepeatTimes = (this.kIterations / kHeaderFieldSize) + 1;
 
         String[] field_str = new String[kHeaderFieldSize];
         String[] index_str = new String[kHeaderFieldSize];
@@ -369,7 +369,7 @@ public class HashMapBenchmark {
         System.out.printf("\n");
 
         int kHeaderFieldSize = this.header_fields.length;
-        int kRepeatTimes = (this.kIterations / kHeaderFieldSize);
+        int kRepeatTimes = (this.kIterations / kHeaderFieldSize) + 1;
 
         String[] field_str = new String[kHeaderFieldSize];
         String[] index_str = new String[kHeaderFieldSize];
@@ -414,7 +414,7 @@ public class HashMapBenchmark {
         System.out.printf("\n");
 
         int kHeaderFieldSize = this.header_fields.length;
-        int kRepeatTimes = (this.kIterations / kHeaderFieldSize);
+        int kRepeatTimes = (this.kIterations / kHeaderFieldSize) + 1;
 
         String[] field_str = new String[kHeaderFieldSize];
         String[] index_str = new String[kHeaderFieldSize];
@@ -461,7 +461,7 @@ public class HashMapBenchmark {
         System.out.printf("\n");
 
         int kHeaderFieldSize = this.header_fields.length;
-        int kRepeatTimes = (this.kIterations / kHeaderFieldSize);
+        int kRepeatTimes = (this.kIterations / kHeaderFieldSize) + 1;
 
         String[] field_str = new String[kHeaderFieldSize];
         String[] index_str = new String[kHeaderFieldSize];

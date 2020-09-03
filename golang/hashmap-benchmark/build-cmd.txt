@@ -1,0 +1,2 @@
+
+go build -i -o hashmap-benchmark.exe
