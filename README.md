@@ -1,3 +1,3 @@
-# FastHashMap
+# hashmap-benchmark
 
-A faster hash map written by C++11.
+A hash map benchmark, include Java, CSharp, golang and so on.
