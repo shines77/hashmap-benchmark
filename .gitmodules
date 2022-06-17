@@ -6,3 +6,7 @@
 	path = 3rd_party/flat_hash_map
 	url = https://gitee.com/shines77/flat_hash_map.git
 	branch = master
+[submodule "3rd_party/abseil-cpp"]
+    path = 3rd_party/abseil-cpp
+    url = https://gitee.com/arjing/abseil-cpp.git
+    branch = master

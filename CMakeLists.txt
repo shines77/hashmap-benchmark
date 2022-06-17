@@ -190,9 +190,6 @@ include_directories(test)
 include_directories(3rd_party)
 include_directories(3rd_party/jstd_hashmap/src)
 
-# Process Abseil's CMake build system
-add_subdirectory(3rd_party/abseil-cpp)
-
 set(JSTD_SOURCE_FILES
     3rd_party/jstd_hashmap/src/jstd/dll_main.cpp
 )
@@ -204,6 +201,9 @@ set(BENCHMARK_SOURCE_FILES
 set(TIME_HASH_MAP_SOURCE_FILES
     bench/time_hash_map/time_hash_map.cpp
 )
+
+# Process Abseil's CMake build system
+add_subdirectory(3rd_party/abseil-cpp)
 
 # add_subdirectory(main EXCLUDE_FROM_ALL src/main/asm)
 
