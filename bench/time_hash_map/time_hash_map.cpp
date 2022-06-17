@@ -487,7 +487,7 @@ public:
     }
 
     void operator = (const this_type & that) {
-#if USE_COPIES_COUNTER
+#if USE_STAT_COUNTER
         g_num_copies++;
 #endif
         this->key_ = that.key_;
@@ -498,7 +498,7 @@ public:
     }
 
     std::size_t Hash() const {
-#if USE_HASHER_COUNTER
+#if USE_STAT_COUNTER
         g_num_hashes++;
 #endif
         return static_cast<std::size_t>(
