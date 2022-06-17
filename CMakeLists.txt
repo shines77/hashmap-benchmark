@@ -133,7 +133,7 @@ set(ABSL_PROPAGATE_CXX_STD ON)
 if (NOT MSVC)
     ## For C_FLAGS
     ## -mmmx -msse -msse2 -msse3 -mssse3 -msse4 -msse4a -msse4.1 -msse4.2 -mavx -mavx2 -mavx512vl -mavx512f
-    set(CMAKE_C_FLAGS_DEFAULT "${CMAKE_C_FLAGS} -std=c99 -march=native -mtune=native -finput-charset=gbk -fPIC")
+    set(CMAKE_C_FLAGS_DEFAULT "${CMAKE_C_FLAGS} -std=c99 -march=native -mtune=native -finput-charset=utf-8 -fPIC")
     set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_DEFAULT} -O3 -DNDEBUG")
     set(CMAKE_C_FLAGS_DEBUG   "${CMAKE_C_FLAGS_DEFAULT} -g -pg -D_DEBUG")
 
@@ -141,7 +141,7 @@ if (NOT MSVC)
     ## -Wall -Werror -Wextra -Wno-format -Wno-unused-function
     ## -mmmx -msse -msse2 -msse3 -mssse3 -msse4 -msse4a -msse4.1 -msse4.2 -mavx -mavx2 -mavx512vl -mavx512f
     # -fexec-charset=gbk -finput-charset=gbk
-    set(CMAKE_CXX_FLAGS_DEFAULT "${CMAKE_CXX_FLAGS} -std=c++14 -march=native -mtune=native -finput-charset=gbk -fPIC")
+    set(CMAKE_CXX_FLAGS_DEFAULT "${CMAKE_CXX_FLAGS} -std=c++14 -march=native -mtune=native -finput-charset=utf-8 -fPIC")
     set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_DEFAULT} -O3 -DNDEBUG")
     set(CMAKE_CXX_FLAGS_DEBUG   "${CMAKE_CXX_FLAGS_DEFAULT} -g -pg -D_DEBUG")
 endif()
@@ -194,7 +194,7 @@ include_directories(test)
 include_directories(3rd_party)
 include_directories(3rd_party/jstd_hashmap/src)
 include_directories(install/include)
-include_directories(3rd_party/abseil-cpp)
+## include_directories(3rd_party/abseil-cpp)
 
 # Process Abseil's CMake build system
 add_subdirectory(3rd_party/abseil-cpp)
@@ -279,7 +279,7 @@ target_compile_features(benchmark PUBLIC cxx_std_14)
 
 target_link_libraries(benchmark
 PUBLIC
-    ${EXTRA_LIBS} absl::flat_hash_map
+    ${EXTRA_LIBS} absl::flat_hash_map absl::node_hash_map
 )
 
 target_include_directories(benchmark
@@ -307,7 +307,7 @@ target_compile_features(time_hash_map PUBLIC cxx_std_14)
 
 target_link_libraries(time_hash_map
 PUBLIC
-    ${EXTRA_LIBS} absl::flat_hash_map
+    ${EXTRA_LIBS} absl::flat_hash_map absl::node_hash_map
 )
 
 target_include_directories(time_hash_map
