@@ -1617,12 +1617,21 @@ int main(int argc, char * argv[])
 
     jtest::CPU::warm_up(1000);
 
-    if (0) { jstd_flat16_hash_map_benchmark(); }
-    if (1) { ska_flat_hash_map_benchmark(); }
-    if (1) { ska_bytell_hash_map_benchmark(); }
+    if (0) {
+        jstd_flat16_hash_map_benchmark();
+        jstd::Console::ReadKey();
+    }
 
+    if (1) {
+        ska_flat_hash_map_benchmark();
+        jstd::Console::ReadKey();
+    }
 
-    jstd::Console::ReadKey();
+    if (1) {
+        ska_bytell_hash_map_benchmark();
+        jstd::Console::ReadKey();
+    }
+
     return 0;
 }
 
