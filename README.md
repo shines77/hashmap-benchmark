@@ -17,7 +17,7 @@ Dependent on:
 
 * Fixed ska::detailv3::KeyOrValueHasher<K, V, Hasher> for /bench/time_hash_map.cpp to use ska::flat_hash_map<K,V> and ska::bytell_hash_map<K,V>;
 * Fixed some bugs about ska::bytell_hash_map<K,V> some dead cycle codes;
-* Added missing header file "#include <limits>" in bytell_hash_map.hpp;
+* Added missing header file "#include \<limits\>" in bytell_hash_map.hpp;
 * Added static name() member method for ska::flat_hash_map<K,V> and ska::bytell_hash_map<K,V>;
 
 ### 1. Update submodule(s)
