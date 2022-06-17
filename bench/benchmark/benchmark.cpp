@@ -111,9 +111,6 @@
 
 #define STRING_UTILS_MODE       STRING_UTILS_SSE42
 
-#define USE_JSTD_HASH_TABLE     0
-#define USE_JSTD_DICTIONARY     0
-
 #include <jstd/basic/stddef.h>
 #include <jstd/basic/stdint.h>
 #include <jstd/basic/inttypes.h>
