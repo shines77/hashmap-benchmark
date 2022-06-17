@@ -1,0 +1,8 @@
+[submodule "3rd_party/jstd_hashmap"]
+	path = 3rd_party/jstd_hashmap
+	url = https://gitee.com/shines77/jstd_hash_map.git
+	branch = master
+[submodule "3rd_party/flat_hash_map"]
+	path = 3rd_party/flat_hash_map
+	url = https://gitee.com/shines77/flat_hash_map.git
+	branch = master
