@@ -29,8 +29,19 @@ git submodule update --remote --recursive
 
 ### 2. Configure and Compile
 
+configure and compile `abseil-cpp`:
+
 ```shell
-cmake . -DABSL_BUILD_TESTING=OFF
+cd ./3rd_party/abseil-cpp
+mkdir build && cd build
+cmake -DABSL_BUILD_TESTING=OFF -DABSL_USE_GOOGLETEST_HEAD=OFF -DABSL_ENABLE_INSTALL=ON -DCMAKE_CXX_STANDARD=14 ..
+make
+```
+
+configure and compile `hashmap-benchmark`:
+
+```shell
+cmake . -DABSL_BUILD_TESTING=OFF -DABSL_USE_GOOGLETEST_HEAD=OFF
 make
 ````
 

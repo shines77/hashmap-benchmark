@@ -66,6 +66,8 @@ message(STATUS "CMAKE_RUNTIME_OUTPUT_DIRECTORY    : ${CMAKE_RUNTIME_OUTPUT_DIREC
 message(STATUS "-----------------------------------------------")
 message("")
 
+find_package(absl REQUIRED)
+
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
 
 include(CMakeASM_NASMInformation)
