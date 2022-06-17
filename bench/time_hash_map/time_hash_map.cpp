@@ -87,6 +87,12 @@
 #endif
 #include <algorithm>
 
+#define USE_JSTD_HASH_TABLE     0
+#define USE_JSTD_DICTIONARY     0
+
+#define USE_JSTD_FLAT_HASH_MAP  1
+#define USE_SKA_FLAT_HASH_MAP   1
+
 /* SIMD support features */
 #define JSTD_HAVE_MMX           1
 #define JSTD_HAVE_SSE           1
@@ -116,14 +122,16 @@
 
 #define STRING_UTILS_MODE       STRING_UTILS_SSE42
 
-#define USE_JSTD_HASH_TABLE     0
-#define USE_JSTD_DICTIONARY     0
-
 #include <jstd/basic/stddef.h>
 #include <jstd/basic/stdint.h>
 #include <jstd/basic/inttypes.h>
 
+#if USE_JSTD_FLAT_HASH_MAP
 #include <jstd/hashmap/flat16_hash_map.h>
+#endif
+#if USE_SKA_FLAT_HASH_MAP
+#include <flat_hash_map/flat_hash_map.hpp>
+#endif
 #include <jstd/hashmap/hashmap_analyzer.h>
 #include <jstd/hasher/hash_helper.h>
 #include <jstd/string/string_view.h>
@@ -173,30 +181,31 @@
 
 #pragma message(PRINT_MACRO_VAR(HASH_MAP_FUNCTION))
 
-static const bool FLAGS_test_sparse_hash_map = true;
-static const bool FLAGS_test_dense_hash_map = true;
+static constexpr bool FLAGS_test_sparse_hash_map = true;
+static constexpr bool FLAGS_test_dense_hash_map = true;
 
 #if defined(_MSC_VER)
-static const bool FLAGS_test_std_hash_map = false;
+static constexpr bool FLAGS_test_std_hash_map = false;
 #else
-static const bool FLAGS_test_std_hash_map = false;
+static constexpr bool FLAGS_test_std_hash_map = false;
 #endif
-static const bool FLAGS_test_std_unordered_map = true;
-static const bool FLAGS_test_jstd_flat16_hash_map = true;
-static const bool FLAGS_test_map = true;
+static constexpr bool FLAGS_test_std_unordered_map = true;
+static constexpr bool FLAGS_test_jstd_flat16_hash_map = true;
+static constexpr bool FLAGS_test_ska_flat_hash_map = true;
+static constexpr bool FLAGS_test_map = true;
 
-static const bool FLAGS_test_4_bytes = true;
-static const bool FLAGS_test_8_bytes = true;
-static const bool FLAGS_test_16_bytes = true;
-static const bool FLAGS_test_256_bytes = true;
+static constexpr bool FLAGS_test_4_bytes = true;
+static constexpr bool FLAGS_test_8_bytes = true;
+static constexpr bool FLAGS_test_16_bytes = true;
+static constexpr bool FLAGS_test_256_bytes = true;
 
 #ifndef _DEBUG
-static const std::size_t kDefaultIters = 10000000;
+static constexpr std::size_t kDefaultIters = 10000000;
 #else
-static const std::size_t kDefaultIters = 10000;
+static constexpr std::size_t kDefaultIters = 10000;
 #endif
 
-static const std::size_t kInitCapacity = 8;
+static constexpr std::size_t kInitCapacity = 8;
 
 // Returns the number of hashes that have been done since the last
 // call to NumHashesSinceLastCall().  This is shared across all
@@ -234,62 +243,6 @@ static size_t CurrentMemoryUsage()
     return 0;
 }
 #endif
-
-static inline
-uint32_t next_random_u32()
-{
-#if (RAND_MAX == 0x7FFF)
-    uint32_t rnd32 = (((uint32_t)rand() & 0x03) << 30) |
-                      ((uint32_t)rand() << 15) |
-                       (uint32_t)rand();
-#else
-    uint32_t rnd32 = ((uint32_t)rand() << 16) | (uint32_t)rand();
-#endif
-    return rnd32;
-}
-
-static inline
-uint64_t next_random_u64()
-{
-#if (RAND_MAX == 0x7FFF)
-    uint64_t rnd64 = (((uint64_t)rand() & 0x0F) << 60) |
-                      ((uint64_t)rand() << 45) |
-                      ((uint64_t)rand() << 30) |
-                      ((uint64_t)rand() << 15) |
-                       (uint64_t)rand();
-#else
-    uint64_t rnd64 = ((uint64_t)rand() << 32) | (uint64_t)rand();
-#endif
-    return rnd64;
-}
-
-// Returns a number in the range [min, max) - uint32
-template <uint32_t min_val, uint32_t max_val>
-static inline
-uint32_t get_range_u32(uint32_t num)
-{
-    if (min_val < max_val) {
-        return (min_val + (num % (uint32_t)(max_val - min_val)));
-    } else if (min_val > max_val) {
-        return (max_val + (num % (uint32_t)(min_val - max_val)));
-    } else {
-        return num;
-    }
-}
-
-// Returns a number in the range [min, max) - uint64
-template <uint64_t min_val, uint64_t max_val>
-static inline
-uint64_t get_range_u32(uint64_t num)
-{
-    if (min_val < max_val) {
-        return (min_val + (num % (uint64_t)(max_val - min_val)));
-    } else if (min_val > max_val) {
-        return (max_val + (num % (uint64_t)(min_val - max_val)));
-    } else {
-        return num;
-    }
-}
 
 namespace test {
 
@@ -913,10 +866,6 @@ static void report_result(char const * title, double ut, std::size_t iters,
     ::fflush(stdout);
 }
 
-#include "time_hash_map_v1.hpp"
-
-namespace v2 {
-
 template <class MapType, class Vector>
 static void time_map_find(char const * title, std::size_t iters,
                           const Vector & indices) {
@@ -1453,27 +1402,40 @@ static void test_all_hashmaps(std::size_t obj_size, std::size_t iters) {
     const bool has_stress_hash_function = (obj_size <= 8);
 
     if (FLAGS_test_std_hash_map) {
-        measure_hashmap<StdHashMap<HashObj,   Value, HashFn<typename HashObj::key_type, HashObj::cSize, HashObj::cHashSize>>,
-                        StdHashMap<HashObj *, Value, HashFn<typename HashObj::key_type, HashObj::cSize, HashObj::cHashSize>>
+        measure_hashmap<StdHashMap<HashObj,   Value, HashFn<Value, HashObj::cSize, HashObj::cHashSize>>,
+                        StdHashMap<HashObj *, Value, HashFn<Value, HashObj::cSize, HashObj::cHashSize>>
                         >(
             "stdext::hash_map<K, V>", obj_size, 0, iters, has_stress_hash_function);
     }
 
     if (FLAGS_test_std_unordered_map) {
-        measure_hashmap<std::unordered_map<HashObj,   Value, HashFn<typename HashObj::key_type, HashObj::cSize, HashObj::cHashSize>>,
-                        std::unordered_map<HashObj *, Value, HashFn<typename HashObj::key_type, HashObj::cSize, HashObj::cHashSize>>
+        measure_hashmap<std::unordered_map<HashObj,   Value, HashFn<Value, HashObj::cSize, HashObj::cHashSize>>,
+                        std::unordered_map<HashObj *, Value, HashFn<Value, HashObj::cSize, HashObj::cHashSize>>
                         >(
             "std::unordered_map<K, V>", obj_size, 0, iters, has_stress_hash_function);
     }
 
+#if USE_JSTD_FLAT_HASH_MAP
     if (FLAGS_test_jstd_flat16_hash_map) {
-        typedef jstd::flat16_hash_map<HashObj, Value, HashFn<typename HashObj::key_type, HashObj::cSize, HashObj::cHashSize>> flat16_hash_map;
-        measure_hashmap<jstd::flat16_hash_map<HashObj,   Value, HashFn<typename HashObj::key_type, HashObj::cSize, HashObj::cHashSize>>,
-                        jstd::flat16_hash_map<HashObj *, Value, HashFn<typename HashObj::key_type, HashObj::cSize, HashObj::cHashSize>>
+        typedef jstd::flat16_hash_map<HashObj, Value, HashFn<Value, HashObj::cSize, HashObj::cHashSize>> flat16_hash_map;
+        measure_hashmap<jstd::flat16_hash_map<HashObj,   Value, HashFn<Value, HashObj::cSize, HashObj::cHashSize>>,
+                        jstd::flat16_hash_map<HashObj *, Value, HashFn<Value, HashObj::cSize, HashObj::cHashSize>>
                         >(
             "jstd::flat16_hash_map<K, V>", obj_size,
             sizeof(typename flat16_hash_map::node_type), iters, has_stress_hash_function);
     }
+#endif
+
+#if USE_SKA_FLAT_HASH_MAP
+    if (FLAGS_test_ska_flat_hash_map) {
+        typedef ska::flat_hash_map<HashObj, Value, HashFn<Value, HashObj::cSize, HashObj::cHashSize>> flat_hash_map;
+        measure_hashmap<ska::flat_hash_map<HashObj,   Value, HashFn<Value, HashObj::cSize, HashObj::cHashSize>>,
+                        ska::flat_hash_map<HashObj *, Value, HashFn<Value, HashObj::cSize, HashObj::cHashSize>>
+                        >(
+            "ska::flat_hash_map<K, V>", obj_size,
+            sizeof(typename flat_hash_map::value_type), iters, has_stress_hash_function);
+    }
+#endif
 }
 
 void benchmark_all_hashmaps(std::size_t iters)
@@ -1499,8 +1461,6 @@ void benchmark_all_hashmaps(std::size_t iters)
         test_all_hashmaps<HashObject<std::size_t, 256, 32>, std::size_t>(256, iters / 32);
     }
 }
-
-} // namespace v2
 
 void std_hash_test()
 {
@@ -1536,14 +1496,9 @@ int main(int argc, char * argv[])
 
     if (1) std_hash_test();
 
-    if (0) {
-        printf("------------------------ v1::benchmark_all_hashmaps(iters) -------------------------\n\n");
-        v1::benchmark_all_hashmaps(iters);
-    }
-
     if (1) {
         printf("------------------------ v2::benchmark_all_hashmaps(iters) -------------------------\n\n");
-        v2::benchmark_all_hashmaps(iters);
+        benchmark_all_hashmaps(iters);
     }
 
     printf("------------------------------------------------------------------------------------\n\n");

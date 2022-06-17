@@ -6,8 +6,8 @@ A hash map benchmark, include Java, CSharp, golang and so on.
 
 Dependent on:
 
-* `flat_hash_map`: https://github.com/skarupke/flat_hash_map
 * `jstd_hashmap`: https://gitee.com/shines77/jstd_hashmap
+* `flat_hash_map`: https://github.com/skarupke/flat_hash_map
 
 Update submodule(s):
 

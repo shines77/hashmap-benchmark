@@ -75,6 +75,12 @@
 #include <vector>
 #include <unordered_map>
 
+#define USE_JSTD_HASH_TABLE     0
+#define USE_JSTD_DICTIONARY     0
+
+#define USE_JSTD_FLAT_HASH_MAP  1
+#define USE_SKA_FLAT_HASH_MAP   1
+
 /* SIMD support features */
 #define JSTD_HAVE_MMX           1
 #define JSTD_HAVE_SSE           1
@@ -111,7 +117,12 @@
 #include <jstd/basic/stdint.h>
 #include <jstd/basic/inttypes.h>
 
+#if USE_JSTD_FLAT_HASH_MAP
 #include <jstd/hashmap/flat16_hash_map.h>
+#endif
+#if USE_SKA_FLAT_HASH_MAP
+#include <flat_hash_map/flat_hash_map.hpp>
+#endif
 #include <jstd/hashmap/hashmap_analyzer.h>
 #include <jstd/hasher/hash_helper.h>
 #include <jstd/string/string_view.h>
