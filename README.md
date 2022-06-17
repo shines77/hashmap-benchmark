@@ -11,7 +11,14 @@ Dependent on:
 
 由于 `github` 访问比较困难，`flat_hash_map` 使用的是 `gitee` 的镜像，本人做了一些修改，并修正了一些 `bug`，以便能过在本测试代码中正常使用。
 
-`flat_hash_map` 国内的镜像修改版：[https://github.com/skarupke/flat_hash_map](https://github.com/skarupke/flat_hash_map)
+`flat_hash_map` 国内的镜像修改版：[https://gitee.com/skarupke/flat_hash_map](https://gitee.com/skarupke/flat_hash_map)
+
+做了如下修改：
+
+* Fixed ska::detailv3::KeyOrValueHasher<K, V, Hasher> for /bench/time_hash_map.cpp to use ska::flat_hash_map<K,V> and ska::bytell_hash_map<K,V>;
+* Fixed some bugs about ska::bytell_hash_map<K,V> some dead cycle codes;
+* Added missing header file "#include <limits>" in bytell_hash_map.hpp;
+* Added static name() member method for ska::flat_hash_map<K,V> and ska::bytell_hash_map<K,V>;
 
 ### 1. Update submodule(s)
 
