@@ -30,7 +30,7 @@ git submodule update --remote --recursive
 ### 2. Configure and Compile
 
 ```shell
-cmake .
+cmake . -DABSL_BUILD_TESTING=OFF
 make
 ````
 

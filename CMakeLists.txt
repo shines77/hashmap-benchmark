@@ -272,6 +272,8 @@ else()
     target_compile_options(benchmark PUBLIC /W3 /WX)
 endif()
 
+target_compile_features(benchmark PUBLIC cxx_std_14)
+
 target_link_libraries(benchmark
 PUBLIC
     ${EXTRA_LIBS} absl::container
@@ -296,6 +298,8 @@ else()
     # Warning level 3 and all warnings as errors
     target_compile_options(time_hash_map PUBLIC /W3 /WX)
 endif()
+
+target_compile_features(time_hash_map PUBLIC cxx_std_14)
 
 target_link_libraries(time_hash_map
 PUBLIC
