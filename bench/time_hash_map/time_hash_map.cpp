@@ -151,7 +151,7 @@
 #define USE_STAT_COUNTER            1
 
 #if USE_STAT_COUNTER
-#define USE_CTOR_COUNTER            1
+#define USE_CTOR_COUNTER            0
 #endif
 
 #define MODE_FAST_SIMPLE_HASH       0   // test::hash<T>
@@ -554,16 +554,6 @@ public:
     // These two public members are required by msvc.  4 and 8 are defaults.
     static const std::size_t bucket_size = 4;
     static const std::size_t min_buckets = 8;
-
-    template <typename U>
-    result_type operator () (const U & key) {
-        return static_cast<result_type>(HASH_MAP_FUNCTION<U>()(key));
-    }
-
-    template <typename U>
-    result_type operator () (const U & key) const {
-        return static_cast<result_type>(HASH_MAP_FUNCTION<U>()(key));
-    }
 
     result_type operator () (const key_type & key) {
         return static_cast<result_type>(HASH_MAP_FUNCTION<key_type>()(key));
@@ -1566,7 +1556,7 @@ int main(int argc, char * argv[])
     if (1) std_hash_test();
 
     if (1) {
-        printf("------------------------ v2::benchmark_all_hashmaps(iters) -------------------------\n\n");
+        printf("-------------------------- benchmark_all_hashmaps(iters) ---------------------------\n\n");
         benchmark_all_hashmaps(iters);
     }
 
