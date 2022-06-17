@@ -7,12 +7,12 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\bench\time_hash_map\BenchmarkResult.h">
+    <ClInclude Include="..\..\..\bench\time_hash_map\BenchmarkResult.h">
       <Filter>src</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\bench\time_hash_map\time_hash_map.cpp">
+    <ClCompile Include="..\..\..\bench\time_hash_map\time_hash_map.cpp">
       <Filter>src</Filter>
     </ClCompile>
   </ItemGroup>
