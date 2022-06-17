@@ -66,8 +66,6 @@ message(STATUS "CMAKE_RUNTIME_OUTPUT_DIRECTORY    : ${CMAKE_RUNTIME_OUTPUT_DIREC
 message(STATUS "-----------------------------------------------")
 message("")
 
-find_package(absl REQUIRED)
-
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
 
 include(CMakeASM_NASMInformation)
@@ -124,6 +122,8 @@ message(STATUS "CMAKE_PLATFORM_ARCH      : ${CMAKE_PLATFORM_ARCH}")
 message(STATUS "CMAKE_CPU_ARCHITECTURES  : ${CMAKE_CPU_ARCHITECTURES}")
 message(STATUS "-----------------------------------------------")
 message("")
+
+find_package(absl REQUIRED)
 
 # Abseil currently supports C++11, C++14, and C++17.
 set(CMAKE_CXX_STANDARD 14)
