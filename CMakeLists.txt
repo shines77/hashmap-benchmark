@@ -192,8 +192,9 @@ include_directories(bench/benchmark)
 include_directories(bench/time_hash_map)
 include_directories(test)
 include_directories(3rd_party)
-include_directories(3rd_party/abseil-cpp)
 include_directories(3rd_party/jstd_hashmap/src)
+include_directories(install/include)
+include_directories(3rd_party/abseil-cpp)
 
 # Process Abseil's CMake build system
 add_subdirectory(3rd_party/abseil-cpp)
@@ -278,12 +279,13 @@ target_compile_features(benchmark PUBLIC cxx_std_14)
 
 target_link_libraries(benchmark
 PUBLIC
-    ${EXTRA_LIBS} absl::container
+    ${EXTRA_LIBS} absl::flat_hash_map
 )
 
 target_include_directories(benchmark
 PUBLIC
     "${PROJECT_BINARY_DIR}"
+    "${PROJECT_SOURCE_DIR}/install/include"
     ${EXTRA_INCLUDES}
 )
 
@@ -305,12 +307,13 @@ target_compile_features(time_hash_map PUBLIC cxx_std_14)
 
 target_link_libraries(time_hash_map
 PUBLIC
-    ${EXTRA_LIBS} absl::container
+    ${EXTRA_LIBS} absl::flat_hash_map
 )
 
 target_include_directories(time_hash_map
 PUBLIC
     "${PROJECT_BINARY_DIR}"
+    "${PROJECT_SOURCE_DIR}/install/include"
     ${EXTRA_INCLUDES}
 )
 
