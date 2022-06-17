@@ -1,4 +1,4 @@
-CMAKE_MINIMUM_REQUIRED(VERSION 3.8)
+CMAKE_MINIMUM_REQUIRED(VERSION 3.8.2)
 
 ##
 ## CMake is v3.10.2 under Ubuntu 18.04.2, is v3.16.3 under Ubuntu 20.04.
@@ -123,8 +123,10 @@ message(STATUS "CMAKE_CPU_ARCHITECTURES  : ${CMAKE_CPU_ARCHITECTURES}")
 message(STATUS "-----------------------------------------------")
 message("")
 
-# Abseil requires C++11
+# Abseil currently supports C++11, C++14, and C++17.
 set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(ABSL_PROPAGATE_CXX_STD ON)
 
 if (NOT MSVC)
     ## For C_FLAGS
@@ -188,7 +190,11 @@ include_directories(bench/benchmark)
 include_directories(bench/time_hash_map)
 include_directories(test)
 include_directories(3rd_party)
+include_directories(3rd_party/abseil-cpp)
 include_directories(3rd_party/jstd_hashmap/src)
+
+# Process Abseil's CMake build system
+add_subdirectory(3rd_party/abseil-cpp)
 
 set(JSTD_SOURCE_FILES
     3rd_party/jstd_hashmap/src/jstd/dll_main.cpp
@@ -201,11 +207,6 @@ set(BENCHMARK_SOURCE_FILES
 set(TIME_HASH_MAP_SOURCE_FILES
     bench/time_hash_map/time_hash_map.cpp
 )
-
-set(ABSL_PROPAGATE_CXX_STD ON)
-
-# Process Abseil's CMake build system
-add_subdirectory(3rd_party/abseil-cpp)
 
 # add_subdirectory(main EXCLUDE_FROM_ALL src/main/asm)
 
