@@ -272,7 +272,7 @@ struct IntegalHash
 
     template <typename UInt64, typename std::enable_if<
                                 (std::is_integral<UInt64>::value &&
-                                (sizeof(UInt64) > 4 && sizeof(UInt64) <= 8))>::type * = nullptr>  
+                                (sizeof(UInt64) > 4 && sizeof(UInt64) <= 8))>::type * = nullptr>
     result_type operator () (UInt64 value) const noexcept {
         result_type hash = (result_type)((std::uint64_t)value * 14695981039346656037ull + 1099511628211ull);
         return hash;
@@ -280,7 +280,7 @@ struct IntegalHash
 
     template <typename Argument, typename std::enable_if<
                                   (!std::is_integral<Argument>::value ||
-                                  sizeof(Argument) > 8)>::type * = nullptr>  
+                                  sizeof(Argument) > 8)>::type * = nullptr>
     result_type operator () (const Argument & value) const noexcept {
         std::hash<Argument> hasher;
         return static_cast<result_type>(hasher(value));
@@ -1530,9 +1530,9 @@ void std_hash_test()
     }
     printf("\n");
 
-    printf("std::hash<std::size_t>\n\n");
+    printf("std::hash<std::uint64_t>\n\n");
     for(std::size_t i = 0; i < 8; i++) {
-        std::size_t hash_code = HASH_MAP_FUNCTION<std::size_t>()(i);
+        std::size_t hash_code = HASH_MAP_FUNCTION<std::uint64_t>()(i);
         printf("key = %3" PRIu64 ", hash_code = %" PRIu64 "\n", i, hash_code);
     }
     printf("\n");
