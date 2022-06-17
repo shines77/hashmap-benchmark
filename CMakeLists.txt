@@ -202,6 +202,8 @@ set(TIME_HASH_MAP_SOURCE_FILES
     bench/time_hash_map/time_hash_map.cpp
 )
 
+set(ABSL_PROPAGATE_CXX_STD ON)
+
 # Process Abseil's CMake build system
 add_subdirectory(3rd_party/abseil-cpp)
 
