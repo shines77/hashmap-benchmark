@@ -93,6 +93,7 @@
 #define USE_JSTD_FLAT_HASH_MAP      0
 #define USE_SKA_FLAT_HASH_MAP       1
 #define USE_SKA_BYTELL_HASH_MAP     1
+#define USE_ABSL_FLAT_HASH_MAP      1
 
 /* SIMD support features */
 #define JSTD_HAVE_MMX           1
@@ -135,6 +136,9 @@
 #endif
 #if USE_SKA_BYTELL_HASH_MAP
 #include <flat_hash_map/bytell_hash_map.hpp>
+#endif
+#if USE_ABSL_FLAT_HASH_MAP
+#include <absl/container/flat_hash_map.h>
 #endif
 #include <jstd/hashmap/hashmap_analyzer.h>
 #include <jstd/hasher/hash_helper.h>
@@ -197,6 +201,7 @@ static constexpr bool FLAGS_test_std_unordered_map = true;
 static constexpr bool FLAGS_test_jstd_flat16_hash_map = true;
 static constexpr bool FLAGS_test_ska_flat_hash_map = true;
 static constexpr bool FLAGS_test_ska_bytell_hash_map = true;
+static constexpr bool FLAGS_test_absl_flat_hash_map = true;
 static constexpr bool FLAGS_test_map = true;
 
 static constexpr bool FLAGS_test_4_bytes = true;
@@ -1509,6 +1514,17 @@ static void test_all_hashmaps(std::size_t obj_size, std::size_t iters) {
                         >(
             "ska::bytell_hash_map<K, V>", obj_size,
             sizeof(typename bytell_hash_map::value_type), iters, has_stress_hash_function);
+    }
+#endif
+
+#if USE_ABSL_FLAT_HASH_MAP
+    if (FLAGS_test_ska_flat_hash_map) {
+        typedef absl::flat_hash_map<HashObj, Value, HashFn<Value, HashObj::cSize, HashObj::cHashSize>> flat_hash_map;
+        measure_hashmap<absl::flat_hash_map<HashObj,   Value, HashFn<Value, HashObj::cSize, HashObj::cHashSize>>,
+                        absl::flat_hash_map<HashObj *, Value, HashFn<Value, HashObj::cSize, HashObj::cHashSize>>
+                        >(
+            "absl::flat_hash_map<K, V>", obj_size,
+            sizeof(typename flat_hash_map::value_type), iters, has_stress_hash_function);
     }
 #endif
 }

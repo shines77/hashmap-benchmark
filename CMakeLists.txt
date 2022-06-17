@@ -123,6 +123,9 @@ message(STATUS "CMAKE_CPU_ARCHITECTURES  : ${CMAKE_CPU_ARCHITECTURES}")
 message(STATUS "-----------------------------------------------")
 message("")
 
+# Abseil requires C++11
+set(CMAKE_CXX_STANDARD 14)
+
 if (NOT MSVC)
     ## For C_FLAGS
     ## -mmmx -msse -msse2 -msse3 -mssse3 -msse4 -msse4a -msse4.1 -msse4.2 -mavx -mavx2 -mavx512vl -mavx512f
@@ -186,6 +189,9 @@ include_directories(bench/time_hash_map)
 include_directories(test)
 include_directories(3rd_party)
 include_directories(3rd_party/jstd_hashmap/src)
+
+# Process Abseil's CMake build system
+add_subdirectory(3rd_party/abseil-cpp)
 
 set(JSTD_SOURCE_FILES
     3rd_party/jstd_hashmap/src/jstd/dll_main.cpp
@@ -265,7 +271,7 @@ endif()
 
 target_link_libraries(benchmark
 PUBLIC
-    ${EXTRA_LIBS}
+    ${EXTRA_LIBS} absl::container
 )
 
 target_include_directories(benchmark
@@ -290,7 +296,7 @@ endif()
 
 target_link_libraries(time_hash_map
 PUBLIC
-    ${EXTRA_LIBS}
+    ${EXTRA_LIBS} absl::container
 )
 
 target_include_directories(time_hash_map
