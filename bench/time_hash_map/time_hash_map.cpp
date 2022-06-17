@@ -548,17 +548,74 @@ public:
     typedef HashObject<Key, Size, HashSize> argument_type;
     typedef std::size_t                     result_type;
 
+    typedef std::pair<argument_type, Key>   pair_type;
+    typedef std::pair<argument_type *, Key> pair_type_2nd;
+
     // These two public members are required by msvc.  4 and 8 are defaults.
     static const std::size_t bucket_size = 4;
     static const std::size_t min_buckets = 8;
+
+    template <typename U>
+    result_type operator () (const U & key) {
+        return static_cast<result_type>(HASH_MAP_FUNCTION<U>()(key));
+    }
+
+    template <typename U>
+    result_type operator () (const U & key) const {
+        return static_cast<result_type>(HASH_MAP_FUNCTION<U>()(key));
+    }
+
+    result_type operator () (const key_type & key) {
+        return static_cast<result_type>(HASH_MAP_FUNCTION<key_type>()(key));
+    }
+
+    result_type operator () (const key_type & key) const {
+        return static_cast<result_type>(HASH_MAP_FUNCTION<key_type>()(key));
+    }
+
+    result_type operator () (const pair_type & pair) {
+        return static_cast<result_type>(pair.first.Hash());
+    }
+
+    result_type operator () (const pair_type & pair) const {
+        return static_cast<result_type>(pair.first.Hash());
+    }
+
+    result_type operator () (const pair_type_2nd & pair) {
+        return static_cast<result_type>(pair.first->Hash());
+    }
+
+    result_type operator () (const pair_type_2nd & pair) const {
+        return static_cast<result_type>(pair.first->Hash());
+    }
+
+    result_type operator () (const argument_type & obj) {
+        return static_cast<result_type>(obj.Hash());
+    }
 
     result_type operator () (const argument_type & obj) const {
         return static_cast<result_type>(obj.Hash());
     }
 
+#if 1
+    result_type operator () (const argument_type * obj) {
+        return reinterpret_cast<result_type>(obj);
+    }
+
     // Do the identity hash for pointers.
     result_type operator () (const argument_type * obj) const {
         return reinterpret_cast<result_type>(obj);
+    }
+#endif
+
+    template <typename UKey, std::size_t nSize, std::size_t nHashSize>
+    result_type operator () (const std::pair<HashObject<UKey, nSize, nHashSize>, key_type> & pair) {
+        return static_cast<result_type>(pair.first.Hash());
+    }
+
+    template <typename UKey, std::size_t nSize, std::size_t nHashSize>
+    result_type operator () (const std::pair<HashObject<UKey, nSize, nHashSize>, key_type> & pair) const {
+        return static_cast<result_type>(pair.first.Hash());
     }
 
     // Less operator for MSVC's hash containers.
@@ -570,27 +627,39 @@ public:
         return (a < b);
     }
 
-    template <std::size_t nSize, std::size_t nHashSize>
-    result_type operator () (const HashObject<key_type, nSize, nHashSize> & obj) const {
+    template <typename UKey, std::size_t nSize, std::size_t nHashSize>
+    result_type operator () (const HashObject<UKey, nSize, nHashSize> & obj) {
         return static_cast<result_type>(obj.Hash());
     }
 
-    // Do the identity hash for pointers.
-    template <std::size_t nSize, std::size_t nHashSize>
-    result_type operator () (const HashObject<key_type, nSize, nHashSize> * obj) const {
+    template <typename UKey, std::size_t nSize, std::size_t nHashSize>
+    result_type operator () (const HashObject<UKey, nSize, nHashSize> & obj) const {
+        return static_cast<result_type>(obj.Hash());
+    }
+
+#if 1
+    template <typename UKey, std::size_t nSize, std::size_t nHashSize>
+    result_type operator () (const HashObject<UKey, nSize, nHashSize> * obj) {
         return reinterpret_cast<result_type>(obj);
     }
 
+    // Do the identity hash for pointers.
+    template <typename UKey, std::size_t nSize, std::size_t nHashSize>
+    result_type operator () (const HashObject<UKey, nSize, nHashSize> * obj) const {
+        return reinterpret_cast<result_type>(obj);
+    }
+#endif
+
     // Less operator for MSVC's hash containers.
-    template <std::size_t nSize, std::size_t nHashSize>
-    bool operator () (const HashObject<key_type, nSize, nHashSize> & a,
-                      const HashObject<key_type, nSize, nHashSize> & b) const {
+    template <typename UKey, std::size_t nSize, std::size_t nHashSize>
+    bool operator () (const HashObject<UKey, nSize, nHashSize> & a,
+                      const HashObject<UKey, nSize, nHashSize> & b) const {
         return (a < b);
     }
 
-    template <std::size_t nSize, std::size_t nHashSize>
-    bool operator () (const HashObject<key_type, nSize, nHashSize> * a,
-                      const HashObject<key_type, nSize, nHashSize> * b) const {
+    template <typename UKey, std::size_t nSize, std::size_t nHashSize>
+    bool operator () (const HashObject<UKey, nSize, nHashSize> * a,
+                      const HashObject<UKey, nSize, nHashSize> * b) const {
         return (a < b);
     }
 };
