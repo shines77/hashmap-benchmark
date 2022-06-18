@@ -275,7 +275,12 @@ else()
     target_compile_options(benchmark PUBLIC /W3 /WX)
 endif()
 
-target_compile_features(benchmark PUBLIC cxx_std_14)
+# Enforce that your_lib requires C++17. Important to document for clients that they
+# must set CMAKE_CXX_STANDARD to 17 or higher for proper Abseil ABI compatibility
+# (since otherwise, Abseil library targets could be compiled with a lower C++
+# standard than your_lib).
+
+## target_compile_features(benchmark PUBLIC cxx_std_14)
 
 target_link_libraries(benchmark
 PUBLIC
@@ -303,7 +308,12 @@ else()
     target_compile_options(time_hash_map PUBLIC /W3 /WX)
 endif()
 
-target_compile_features(time_hash_map PUBLIC cxx_std_14)
+# Enforce that your_lib requires C++17. Important to document for clients that they
+# must set CMAKE_CXX_STANDARD to 17 or higher for proper Abseil ABI compatibility
+# (since otherwise, Abseil library targets could be compiled with a lower C++
+# standard than your_lib).
+
+## target_compile_features(time_hash_map PUBLIC cxx_std_14)
 
 target_link_libraries(time_hash_map
 PUBLIC
