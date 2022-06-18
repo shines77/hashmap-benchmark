@@ -572,7 +572,7 @@ void test_hashmap_insert(const Vector & test_data,
     std::size_t checksum = 0;
     double totalTime = 0.0;
     jtest::StopWatch sw;
-        
+
     for (std::size_t n = 0; n < repeat_times; n++) {
         Container container(kInitCapacity);
         sw.start();
@@ -605,7 +605,7 @@ void test_hashmap_insert_predicted(const Vector & test_data,
     std::size_t checksum = 0;
     double totalTime = 0.0;
     jtest::StopWatch sw;
-        
+
     for (std::size_t n = 0; n < repeat_times; n++) {
         Container container(kInitCapacity);
         container.reserve(data_length);
@@ -640,7 +640,7 @@ void test_hashmap_insert_replace(const Vector & test_data,
     std::size_t checksum = 0;
     double totalTime = 0.0;
     jtest::StopWatch sw;
-        
+
     for (std::size_t n = 0; n < repeat_times; n++) {
         Container container(kInitCapacity);
         for (std::size_t i = 0; i < data_length; i++) {
@@ -678,7 +678,7 @@ void test_hashmap_emplace(const Vector & test_data,
     std::size_t checksum = 0;
     double totalTime = 0.0;
     jtest::StopWatch sw;
-        
+
     for (std::size_t n = 0; n < repeat_times; n++) {
         Container container(kInitCapacity);
         sw.start();
@@ -711,7 +711,7 @@ void test_hashmap_emplace_predicted(const Vector & test_data,
     std::size_t checksum = 0;
     double totalTime = 0.0;
     jtest::StopWatch sw;
-        
+
     for (std::size_t n = 0; n < repeat_times; n++) {
         Container container(kInitCapacity);
         container.reserve(data_length);
@@ -746,7 +746,7 @@ void test_hashmap_emplace_replace(const Vector & test_data,
     std::size_t checksum = 0;
     double totalTime = 0.0;
     jtest::StopWatch sw;
-        
+
     for (std::size_t n = 0; n < repeat_times; n++) {
         Container container(kInitCapacity);
         for (std::size_t i = 0; i < data_length; i++) {
@@ -784,7 +784,7 @@ void test_hashmap_erase_sequential(const Vector & test_data,
     std::size_t checksum = 0;
     double totalTime = 0.0;
     jtest::StopWatch sw;
-        
+
     for (std::size_t n = 0; n < repeat_times; n++) {
         Container container(kInitCapacity);
         for (std::size_t i = 0; i < data_length; i++) {
@@ -832,7 +832,7 @@ void test_hashmap_erase_random(const Vector & test_data, const Vector & rand_dat
     std::size_t checksum = 0;
     double totalTime = 0.0;
     jtest::StopWatch sw;
-        
+
     for (std::size_t n = 0; n < repeat_times; n++) {
         Container container(kInitCapacity);
         for (std::size_t i = 0; i < data_length; i++) {
@@ -871,7 +871,7 @@ void test_hashmap_erase_failed(const Vector & test_data, const Vector & reverse_
     std::size_t checksum = 0;
     double totalTime = 0.0;
     jtest::StopWatch sw;
-        
+
     for (std::size_t n = 0; n < repeat_times; n++) {
         Container container(kInitCapacity);
         for (std::size_t i = 0; i < data_length; i++) {
@@ -1897,28 +1897,38 @@ int main(int argc, char * argv[])
     jtest::CPU::warm_up(1000);
 
     if (0) {
+        #if USE_JSTD_FLAT_HASH_MAP
         jstd_flat16_hash_map_benchmark();
         jstd::Console::ReadKey();
+        #endif
     }
 
     if (1) {
+        #if USE_SKA_FLAT_HASH_MAP
         ska_flat_hash_map_benchmark();
         jstd::Console::ReadKey();
+        #endif
     }
 
     if (1) {
+        #if USE_SKA_BYTELL_HASH_MAP
         ska_bytell_hash_map_benchmark();
         jstd::Console::ReadKey();
+        #endif
     }
 
     if (1) {
+        #if USE_ABSL_FLAT_HASH_MAP
         absl_flat_hash_map_benchmark();
         jstd::Console::ReadKey();
+        #endif
     }
 
     if (1) {
+        #if USE_ABSL_NODE_HASH_MAP
         absl_node_hash_map_benchmark();
         jstd::Console::ReadKey();
+        #endif
     }
 
     return 0;

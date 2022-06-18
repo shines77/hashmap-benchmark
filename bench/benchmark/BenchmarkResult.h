@@ -35,6 +35,12 @@ struct Result {
     double      elaspedTime2;
     size_type   checksum2;
 
+    Result() noexcept
+        : catId(size_type(-1)),
+          elaspedTime1(0.0), checksum1(0),
+          elaspedTime2(0.0), checksum2(0) {
+    }
+
     Result(size_type catId, const std::string & name,
            double elaspedTime1, size_type checksum1,
            double elaspedTime2, size_type checksum2)
@@ -42,19 +48,28 @@ struct Result {
           elaspedTime1(elaspedTime1), checksum1(checksum1),
           elaspedTime2(elaspedTime2), checksum2(checksum2) {
     }
+
     Result(const Result & src)
         : catId(src.catId), name(src.name),
           elaspedTime1(src.elaspedTime1), checksum1(src.checksum1),
           elaspedTime2(src.elaspedTime2), checksum2(src.checksum2) {
     }
-    Result(Result && rhs)
+
+    Result(Result && src)
         : catId(size_type(-1)),
           elaspedTime1(0.0), checksum1(0),
           elaspedTime2(0.0), checksum2(0) {
-        swap(rhs);
+        if (&src != this) {
+            this->catId         = src.catId;
+            this->name          = std::move(src.name);
+            this->elaspedTime1  = src.elaspedTime1;
+            this->checksum1     = src.checksum1;
+            this->elaspedTime2  = src.elaspedTime2;
+            this->checksum2     = src.checksum2;
+        }
     }
 
-    void swap(Result & rhs) {
+    void swap(Result & rhs) noexcept {
         if (&rhs != this) {
             std::swap(this->catId,          rhs.catId);
             std::swap(this->name,           rhs.name);
