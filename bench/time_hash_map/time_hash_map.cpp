@@ -96,6 +96,11 @@
 #define USE_ABSL_FLAT_HASH_MAP      1
 #define USE_ABSL_NODE_HASH_MAP      1
 
+#ifdef _MSC_VER
+#undef USE_ABSL_FLAT_HASH_MAP
+#undef USE_ABSL_NODE_HASH_MAP
+#endif
+
 /* SIMD support features */
 #define JSTD_HAVE_MMX           1
 #define JSTD_HAVE_SSE           1

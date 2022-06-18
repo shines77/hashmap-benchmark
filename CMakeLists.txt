@@ -123,6 +123,9 @@ message(STATUS "CMAKE_CPU_ARCHITECTURES  : ${CMAKE_CPU_ARCHITECTURES}")
 message(STATUS "-----------------------------------------------")
 message("")
 
+##
+## https://github.com/abseil/abseil-cpp/blob/master/CMake/README.md
+##
 find_package(absl REQUIRED)
 
 # Abseil currently supports C++11, C++14, and C++17.
