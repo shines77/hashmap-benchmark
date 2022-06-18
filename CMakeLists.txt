@@ -1,4 +1,4 @@
-CMAKE_MINIMUM_REQUIRED(VERSION 3.8.2)
+CMAKE_MINIMUM_REQUIRED(VERSION 3.5)
 
 ##
 ## CMake is v3.10.2 under Ubuntu 18.04.2, is v3.16.3 under Ubuntu 20.04.
@@ -125,13 +125,16 @@ message("")
 
 ##
 ## https://github.com/abseil/abseil-cpp/blob/master/CMake/README.md
+## https://abseil.io/docs/cpp/tools/cmake-installs
 ##
-find_package(absl REQUIRED)
 
 # Abseil currently supports C++11, C++14, and C++17.
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(ABSL_PROPAGATE_CXX_STD ON)
+
+# Import Abseil's CMake targets
+find_package(absl REQUIRED)
 
 if (NOT MSVC)
     ## For C_FLAGS
