@@ -1867,7 +1867,7 @@ bool read_dict_words(const std::string & filename)
 void RandomGenerator_test()
 {
     jstd::LibcRandom    random(20200831);
-    jstd::MT19937       mt_random(20200831);
+    jstd::MT19937_32    mt32_random(20200831);
     jstd::MT19937_64    mt64_random(20200831);
     jstd::RandomGen     RandomGen(20200831);
     jstd::MtRandomGen   mtRandomGen(20200831);
