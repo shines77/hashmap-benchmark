@@ -73,11 +73,11 @@
 #include <memory>
 #include <utility>
 #include <vector>
-#include <unordered_map>
 
 #define USE_JSTD_HASH_TABLE         0
 #define USE_JSTD_DICTIONARY         0
 
+#define USE_STD_UNORDERED_MAP       1
 #define USE_JSTD_FLAT_HASH_MAP      0
 #define USE_SKA_FLAT_HASH_MAP       1
 #define USE_SKA_BYTELL_HASH_MAP     1
@@ -121,6 +121,8 @@
 #include <jstd/basic/stddef.h>
 #include <jstd/basic/stdint.h>
 #include <jstd/basic/inttypes.h>
+
+#include <unordered_map>
 
 #if USE_JSTD_FLAT_HASH_MAP
 #include <jstd/hashmap/flat16_hash_map.h>

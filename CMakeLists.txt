@@ -194,8 +194,6 @@ endif()
 
 include_directories(include)
 include_directories(src)
-include_directories(bench/benchmark)
-include_directories(bench/time_hash_map)
 include_directories(test)
 include_directories(3rd_party)
 include_directories(3rd_party/jstd_hashmap/src)
@@ -207,14 +205,6 @@ add_subdirectory(3rd_party/abseil-cpp)
 
 set(JSTD_SOURCE_FILES
     3rd_party/jstd_hashmap/src/jstd/dll_main.cpp
-)
-
-set(BENCHMARK_SOURCE_FILES
-    bench/benchmark/benchmark.cpp
-)
-
-set(TIME_HASH_MAP_SOURCE_FILES
-    bench/time_hash_map/time_hash_map.cpp
 )
 
 # add_subdirectory(main EXCLUDE_FROM_ALL src/main/asm)
@@ -267,70 +257,4 @@ add_custom_target(release
     COMMENT "Switch CMAKE_BUILD_TYPE to Release"
 )
 
-## benchmark
-add_executable(benchmark ${BENCHMARK_SOURCE_FILES})
-
-if (NOT MSVC)
-    # For gcc or clang warning setting
-    target_compile_options(benchmark
-        PUBLIC
-            -Wall -Wno-unused-function -Wno-deprecated-declarations -Wno-unused-variable -Wno-deprecated -faligned-new
-    )
-else()
-    # Warning level 3 and all warnings as errors
-    target_compile_options(benchmark PUBLIC /W3 /WX)
-endif()
-
-# Enforce that your_lib requires C++17. Important to document for clients that they
-# must set CMAKE_CXX_STANDARD to 17 or higher for proper Abseil ABI compatibility
-# (since otherwise, Abseil library targets could be compiled with a lower C++
-# standard than your_lib).
-
-## target_compile_features(benchmark PUBLIC cxx_std_14)
-
-target_link_libraries(benchmark
-PUBLIC
-    ${EXTRA_LIBS} absl::flat_hash_map absl::node_hash_map
-)
-
-target_include_directories(benchmark
-PUBLIC
-    "${PROJECT_BINARY_DIR}"
-    "${PROJECT_SOURCE_DIR}/install/include"
-    ${EXTRA_INCLUDES}
-)
-
-## time_hash_map
-add_executable(time_hash_map ${TIME_HASH_MAP_SOURCE_FILES})
-
-if (NOT MSVC)
-    # For gcc or clang warning setting
-    target_compile_options(time_hash_map
-        PUBLIC
-            -Wall -Wno-unused-function -Wno-deprecated-declarations -Wno-unused-variable -Wno-deprecated -faligned-new
-    )
-else()
-    # Warning level 3 and all warnings as errors
-    target_compile_options(time_hash_map PUBLIC /W3 /WX)
-endif()
-
-# Enforce that your_lib requires C++17. Important to document for clients that they
-# must set CMAKE_CXX_STANDARD to 17 or higher for proper Abseil ABI compatibility
-# (since otherwise, Abseil library targets could be compiled with a lower C++
-# standard than your_lib).
-
-## target_compile_features(time_hash_map PUBLIC cxx_std_14)
-
-target_link_libraries(time_hash_map
-PUBLIC
-    ${EXTRA_LIBS} absl::flat_hash_map absl::node_hash_map
-)
-
-target_include_directories(time_hash_map
-PUBLIC
-    "${PROJECT_BINARY_DIR}"
-    "${PROJECT_SOURCE_DIR}/install/include"
-    ${EXTRA_INCLUDES}
-)
-
-# add_subdirectory(./test)
+add_subdirectory(./bench)
