@@ -258,7 +258,7 @@ static void reset_counter()
 
 static size_t CurrentMemoryUsage()
 {
-    return GetCurrentMemoryUsage();
+    return jtest::GetCurrentMemoryUsage();
 }
 
 namespace test {
