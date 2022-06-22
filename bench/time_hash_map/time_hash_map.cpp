@@ -256,7 +256,8 @@ static void reset_counter()
 #endif
 }
 
-static size_t CurrentMemoryUsage()
+static inline
+size_t CurrentMemoryUsage()
 {
     return jtest::GetCurrentMemoryUsage();
 }
