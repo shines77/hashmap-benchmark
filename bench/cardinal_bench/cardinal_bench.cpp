@@ -332,20 +332,20 @@ struct type_name<std::uint64_t> {
 std::string formatMsTime(double fMillisec) {
     char time_buf[256];
 
-    if (fMillisec >= 1000.0 * 1000.0 * 10.0) {
-        snprintf(time_buf, sizeof(time_buf), "%7.2f Min", fMillisec / (60 * 1000.0));
+    if (fMillisec >= 1000.0 * 60.0 * 30.0) {
+        snprintf(time_buf, sizeof(time_buf), "%7.2f Min", fMillisec / (60.0 * 1000.0));
     }
     else if (fMillisec >= 1000.0 * 10.0) {
         snprintf(time_buf, sizeof(time_buf), "%7.2f Sec", fMillisec / 1000.0);
     }
-    else if (fMillisec >= 1.0 * 10.0) {
-        snprintf(time_buf, sizeof(time_buf), "%7.2f ms", fMillisec);
+    else if (fMillisec >= 1.0 * 1.0) {
+        snprintf(time_buf, sizeof(time_buf), "%7.2f ms ", fMillisec);
     }
     else if (fMillisec >= 0.001 * 10.0) {
-        snprintf(time_buf, sizeof(time_buf), "%7.2f us", fMillisec * 1000.0);
+        snprintf(time_buf, sizeof(time_buf), "%7.2f us ", fMillisec * 1000.0);
     }
     else {
-        snprintf(time_buf, sizeof(time_buf), "%7.2f ns", fMillisec * 1000000.0);
+        snprintf(time_buf, sizeof(time_buf), "%7.2f ns ", fMillisec * 1000000.0);
     }
 
     return std::string(time_buf);
