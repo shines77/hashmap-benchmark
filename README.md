@@ -133,5 +133,5 @@ make
 ./bin/benchmark
 
 # Middle test case
-./bin/benchmark ./data/Maven.jar.updates.txt
+./bin/benchmark ./data/Maven.keys.txt
 ```
