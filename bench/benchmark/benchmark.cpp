@@ -51,8 +51,10 @@
 #include <jstd/basic/vld.h>
 #endif
 
+#ifdef _MSC_VER
 #ifndef __SSE4_2__
-#define __SSE4_2__              1
+#define __SSE4_2__
+#endif
 #endif
 
 #include <stdlib.h>
@@ -100,7 +102,7 @@
 #define JSTD_HAVE_SSE4_1        1
 #define JSTD_HAVE_SSE4_2        1
 
-#if __SSE4_2__
+#ifdef __SSE4_2__
 
 // Support SSE 4.2: _mm_crc32_u32(), _mm_crc32_u64().
 #define JSTD_HAVE_SSE42_CRC32C  1
