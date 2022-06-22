@@ -255,11 +255,11 @@ static const size_t kHeaderFieldSize = sizeof(header_fields) / sizeof(char *);
 namespace std {
 
 template <>
-struct hash<jstd::StringRef> {
-    typedef jstd::StringRef argument_type;
-    typedef std::uint32_t   result_type;
+struct hash<jstd::string_view> {
+    typedef jstd::string_view   argument_type;
+    typedef std::uint32_t       result_type;
 
-    jstd::string_hash_helper<jstd::StringRef, std::uint32_t, jstd::HashFunc_CRC32C> hash_helper_;
+    jstd::string_hash_helper<jstd::string_view, std::uint32_t, jstd::HashFunc_CRC32C> hash_helper_;
 
     result_type operator()(const argument_type & key) const {
         return hash_helper_.getHashCode(key);
@@ -271,11 +271,11 @@ struct hash<jstd::StringRef> {
 namespace jstd {
 
 template <>
-struct hash<jstd::StringRef> {
-    typedef jstd::StringRef argument_type;
-    typedef std::uint32_t   result_type;
+struct hash<jstd::string_view> {
+    typedef jstd::string_view   argument_type;
+    typedef std::uint32_t       result_type;
 
-    jstd::string_hash_helper<jstd::StringRef, std::uint32_t, jstd::HashFunc_CRC32C> hash_helper_;
+    jstd::string_hash_helper<jstd::string_view, std::uint32_t, jstd::HashFunc_CRC32C> hash_helper_;
 
     result_type operator()(const argument_type & key) const {
         return hash_helper_.getHashCode(key);

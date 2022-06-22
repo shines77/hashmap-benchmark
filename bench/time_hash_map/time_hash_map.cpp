@@ -264,13 +264,25 @@ size_t CurrentMemoryUsage()
 
 namespace test {
 
-template <typename Key>
-struct hash {
-    typedef Key         argument_type;
+template <typename T>
+struct SimpleHash {
+    typedef T           argument_type;
     typedef std::size_t result_type;
 
-    inline result_type operator () (const argument_type & key) const noexcept {
-        return static_cast<result_type>(key);
+    template <typename Integer, typename std::enable_if<
+                                (std::is_integral<Integer>::value &&
+                                (sizeof(Integer) <= 8))>::type * = nullptr>
+    result_type operator () (Integer value) const noexcept {
+        result_type hash = static_cast<result_type>(value);
+        return hash;
+    }
+
+    template <typename Argument, typename std::enable_if<
+                                  (!std::is_integral<Argument>::value ||
+                                  sizeof(Argument) > 8)>::type * = nullptr>
+    result_type operator () (const Argument & value) const {
+        std::hash<Argument> hasher;
+        return static_cast<result_type>(hasher(value));
     }
 };
 
