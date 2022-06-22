@@ -183,7 +183,7 @@
 #ifdef _MSC_VER
 #define HASH_FUNCTION_ID        ID_SIMPLE_HASH
 #else
-#define HASH_FUNCTION_ID        ID_STD_HASH
+#define HASH_FUNCTION_ID        ID_INTEGAL_HASH
 #endif
 
 #if (HASH_FUNCTION_ID == ID_STDEXT_HASH)
@@ -256,17 +256,10 @@ static void reset_counter()
 #endif
 }
 
-#if 0
 static size_t CurrentMemoryUsage()
 {
     return GetCurrentMemoryUsage();
 }
-#else
-static size_t CurrentMemoryUsage()
-{
-    return 0;
-}
-#endif
 
 namespace test {
 
