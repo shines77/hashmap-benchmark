@@ -121,7 +121,7 @@
 #define STRING_UTILS_U64        1
 #define STRING_UTILS_SSE42      2
 
-#define STRING_UTILS_MODE       STRING_UTILS_SSE42
+#define STRING_UTILS_MODE       STRING_UTILS_STL
 
 #include <jstd/basic/stddef.h>
 #include <jstd/basic/stdint.h>
@@ -206,7 +206,7 @@ struct SimpleHash {
 
     template <typename Integer, typename std::enable_if<
                                 (std::is_integral<Integer>::value &&
-                                (sizeof(Integer) <= 8))>::type * = nullptr>  
+                                (sizeof(Integer) <= 8))>::type * = nullptr>
     result_type operator () (Integer value) const noexcept {
         result_type hash = static_cast<result_type>(value);
         return hash;
@@ -214,7 +214,7 @@ struct SimpleHash {
 
     template <typename Argument, typename std::enable_if<
                                   (!std::is_integral<Argument>::value ||
-                                  sizeof(Argument) > 8)>::type * = nullptr>  
+                                  sizeof(Argument) > 8)>::type * = nullptr>
     result_type operator () (const Argument & value) const {
         std::hash<Argument> hasher;
         return static_cast<result_type>(hasher(value));
@@ -237,7 +237,7 @@ struct IntegalHash
 
     template <typename UInt64, typename std::enable_if<
                                 (std::is_integral<UInt64>::value &&
-                                (sizeof(UInt64) > 4 && sizeof(UInt64) <= 8))>::type * = nullptr>  
+                                (sizeof(UInt64) > 4 && sizeof(UInt64) <= 8))>::type * = nullptr>
     result_type operator () (UInt64 value) const noexcept {
         result_type hash = (result_type)((std::uint64_t)value * 14695981039346656037ull + 1099511628211ull);
         return hash;
@@ -245,7 +245,7 @@ struct IntegalHash
 
     template <typename Argument, typename std::enable_if<
                                   (!std::is_integral<Argument>::value ||
-                                  sizeof(Argument) > 8)>::type * = nullptr>  
+                                  sizeof(Argument) > 8)>::type * = nullptr>
     result_type operator () (const Argument & value) const {
         std::hash<Argument> hasher;
         return static_cast<result_type>(hasher(value));
@@ -458,6 +458,8 @@ void benchmark_insert_random(std::size_t iters)
     static constexpr std::size_t Cardinal4 = 600000 * Factor;
     static constexpr std::size_t Cardinal5 = 6000000 * Factor;
     static constexpr std::size_t Cardinal6 = 60000000 * Factor;
+
+    printf("DataSize = %u\n\n", (uint32_t)DataSize);
 
     benchmark_insert_random_impl<Key, Value, DataSize, Cardinal0>();
     printf("-----------------------------------------------------------------------\n\n");
