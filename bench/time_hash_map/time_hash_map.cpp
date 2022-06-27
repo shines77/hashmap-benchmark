@@ -245,7 +245,8 @@ static std::size_t g_num_constructor = 0;
 #endif
 #endif
 
-static void reset_counter()
+static inline
+void reset_counter()
 {
 #if USE_STAT_COUNTER
     g_num_hashes = 0;
@@ -257,7 +258,7 @@ static void reset_counter()
 }
 
 static inline
-size_t CurrentMemoryUsage()
+std::size_t CurrentMemoryUsage()
 {
     return jtest::GetCurrentMemoryUsage();
 }
@@ -344,23 +345,25 @@ private:
     char buffer_[kBufLen];
 
 public:
-    HashObject() : key_(0) {
+    HashObject() noexcept : key_(0) {
         std::memset(this->buffer_, 0, sizeof(char) * kBufLen);
 #if (USE_STAT_COUNTER != 0) && (USE_CTOR_COUNTER != 0)
         g_num_constructor++;
 #endif
     }
-    HashObject(key_type key) : key_(key) {
+    HashObject(key_type key) noexcept : key_(key) {
         std::memset(this->buffer_, (int)(key & 0xFFUL), sizeof(char) * kBufLen);   // a "random" char
 #if (USE_STAT_COUNTER != 0) && (USE_CTOR_COUNTER != 0)
         g_num_constructor++;
 #endif
     }
-    HashObject(const this_type & that) {
+    HashObject(const this_type & that) noexcept {
         operator = (that);
     }
 
-    void operator = (const this_type & that) {
+    ~HashObject() = default;
+
+    void operator = (const this_type & that) noexcept {
 #if USE_STAT_COUNTER
         g_num_copies++;
 #endif
@@ -368,7 +371,7 @@ public:
         std::memcpy(this->buffer_, that.buffer_, sizeof(char) * kBufLen);
     }
 
-    key_type key() const {
+    key_type key() const noexcept {
         return this->key_;
     }
 
@@ -389,27 +392,20 @@ public:
         );
     }
 
-    bool operator == (const this_type & that) const {
+    bool operator == (const this_type & that) const noexcept {
         return this->key_ == that.key_;
     }
-    bool operator < (const this_type & that) const {
+    bool operator < (const this_type & that) const noexcept {
         return this->key_ < that.key_;
     }
-    bool operator <= (const this_type & that) const {
+    bool operator <= (const this_type & that) const noexcept {
         return this->key_ <= that.key_;
     }
 
-#if 1
-    std::ostream & display(std::ostream & out) const {
+    friend std::ostream & operator << (std::ostream & out, const this_type & obj) {
         out << "HashObject(" << this->key_ << ", \"" << this->buffer_ << "\")";
         return out;
     }
-#else
-    std::ostream & operator << (std::ostream & out) const {
-        out << "HashObject(" << this->key_ << ", \"" << this->buffer_ << "\")";
-        return out;
-    }
-#endif
 };
 
 // A specialization for the case sizeof(buffer_) == 0
@@ -427,28 +423,30 @@ private:
     std::uint32_t key_;   // the key used for hashing
 
 public:
-    HashObject() : key_(0) {
+    HashObject() noexcept : key_(0) {
 #if (USE_STAT_COUNTER != 0) && (USE_CTOR_COUNTER != 0)
         g_num_constructor++;
 #endif
     }
-    HashObject(std::uint32_t key) : key_(key) {
+    HashObject(std::uint32_t key) noexcept : key_(key) {
 #if (USE_STAT_COUNTER != 0) && (USE_CTOR_COUNTER != 0)
         g_num_constructor++;
 #endif
     }
-    HashObject(const this_type & that) {
+    HashObject(const this_type & that) noexcept {
         operator = (that);
     }
 
-    void operator = (const this_type & that) {
+    ~HashObject() = default;
+
+    void operator = (const this_type & that) noexcept {
 #if USE_STAT_COUNTER
         g_num_copies++;
 #endif
         this->key_ = that.key_;
     }
 
-    key_type key() const {
+    key_type key() const noexcept {
         return this->key_;
     }
 
@@ -461,27 +459,20 @@ public:
         );
     }
 
-    bool operator == (const this_type & that) const {
+    bool operator == (const this_type & that) const noexcept {
         return this->key_ == that.key_;
     }
-    bool operator < (const this_type & that) const {
+    bool operator < (const this_type & that) const noexcept {
         return this->key_ < that.key_;
     }
-    bool operator <= (const this_type & that) const {
+    bool operator <= (const this_type & that) const noexcept {
         return this->key_ <= that.key_;
     }
 
-#if 1
-    std::ostream & display(std::ostream & out) const {
-        out << "HashObject(" << this->key_ << ")";
+    friend std::ostream & operator << (std::ostream & out, const this_type & obj) {
+        out << "HashObject(" << obj.key() << ")";
         return out;
     }
-#else
-    std::ostream & operator << (std::ostream & out) const {
-        out << "HashObject(" << this->key_ << ")";
-        return out;
-    }
-#endif
 };
 
 #if defined(WIN64) || defined(_WIN64) || defined(_M_X64) || defined(_M_AMD64) \
@@ -502,28 +493,30 @@ private:
     std::size_t key_;   // the key used for hashing
 
 public:
-    HashObject() : key_(0) {
+    HashObject() noexcept : key_(0) {
 #if (USE_STAT_COUNTER != 0) && (USE_CTOR_COUNTER != 0)
         g_num_constructor++;
 #endif
     }
-    HashObject(std::size_t key) : key_(key) {
+    HashObject(std::size_t key) noexcept : key_(key) {
 #if (USE_STAT_COUNTER != 0) && (USE_CTOR_COUNTER != 0)
         g_num_constructor++;
 #endif
     }
-    HashObject(const this_type & that) {
+    HashObject(const this_type & that) noexcept {
         operator = (that);
     }
 
-    void operator = (const this_type & that) {
+    ~HashObject() = default;
+
+    void operator = (const this_type & that)noexcept  {
 #if USE_STAT_COUNTER
         g_num_copies++;
 #endif
         this->key_ = that.key_;
     }
 
-    key_type key() const {
+    key_type key() const noexcept {
         return this->key_;
     }
 
@@ -536,39 +529,23 @@ public:
         );
     }
 
-    bool operator == (const this_type & that) const {
+    bool operator == (const this_type & that) const noexcept {
         return this->key_ == that.key_;
     }
-    bool operator < (const this_type & that) const {
+    bool operator < (const this_type & that) const noexcept {
         return this->key_ < that.key_;
     }
-    bool operator <= (const this_type & that) const {
+    bool operator <= (const this_type & that) const noexcept {
         return this->key_ <= that.key_;
     }
 
-#if 1
-    std::ostream & display(std::ostream & out) const {
-        out << "HashObject(" << this->key_ << ")";
+    friend std::ostream & operator << (std::ostream & out, const this_type & obj) {
+        out << "HashObject(" << obj.key() << ")";
         return out;
     }
-#else
-    std::ostream & operator << (std::ostream & out) const {
-        out << "HashObject(" << this->key_ << ")";
-        return out;
-    }
-#endif
 };
 
 #endif // _WIN64 || __amd64__
-
-namespace std {
-
-template <typename Key, std::size_t Size, std::size_t HashSize>
-std::ostream & operator << (std::ostream & out, const HashObject<Key, Size, HashSize> & object) {
-    return object.display(out);
-}
-
-} // namespace std
 
 template <typename Key, std::size_t Size = sizeof(Key),
                         std::size_t HashSize = sizeof(Key)>
@@ -756,13 +733,13 @@ template <std::size_t Size, std::size_t HashSize>
 struct is_trivially_copyable< HashObject<std::uint32_t, Size, HashSize> > : true_type { };
 
 template <std::size_t Size, std::size_t HashSize>
-struct is_trivially_copyable< HashObject<std::size_t, Size, HashSize> > : true_type { };
+struct is_trivially_copyable< HashObject<std::uint64_t, Size, HashSize> > : true_type { };
 
 template <>
 struct is_trivially_copyable< HashObject<std::uint32_t, 4, 4> > : true_type { };
 
 template <>
-struct is_trivially_copyable< HashObject<std::size_t, 8, 8> > : true_type { };
+struct is_trivially_copyable< HashObject<std::uint64_t, 8, 8> > : true_type { };
 
 template <>
 struct is_trivially_copyable< HashObject<std::size_t, 16, 16> > : true_type { };
@@ -776,13 +753,13 @@ template <std::size_t Size, std::size_t HashSize>
 struct is_trivially_destructible< HashObject<std::uint32_t, Size, HashSize> > : true_type { };
 
 template <std::size_t Size, std::size_t HashSize>
-struct is_trivially_destructible< HashObject<std::size_t, Size, HashSize> > : true_type { };
+struct is_trivially_destructible< HashObject<std::uint64_t, Size, HashSize> > : true_type { };
 
 template <>
 struct is_trivially_destructible< HashObject<std::uint32_t, 4, 4> > : true_type { };
 
 template <>
-struct is_trivially_destructible< HashObject<std::size_t, 8, 8> > : true_type { };
+struct is_trivially_destructible< HashObject<std::uint64_t, 8, 8> > : true_type { };
 
 template <>
 struct is_trivially_destructible< HashObject<std::size_t, 16, 16> > : true_type { };
@@ -805,7 +782,7 @@ template <std::size_t Size, std::size_t HashSize>
 struct has_trivial_copy< HashObject<std::uint32_t, Size, HashSize> > : true_type { };
 
 template <std::size_t Size, std::size_t HashSize>
-struct has_trivial_copy< HashObject<std::size_t, Size, HashSize> > : true_type { };
+struct has_trivial_copy< HashObject<std::uint64_t, Size, HashSize> > : true_type { };
 
 // has_trivial_destructor
 
@@ -813,7 +790,7 @@ template <std::size_t Size, std::size_t HashSize>
 struct has_trivial_destructor< HashObject<std::uint32_t, Size, HashSize> > : true_type { };
 
 template <std::size_t Size, std::size_t HashSize>
-struct has_trivial_destructor< HashObject<std::size_t, Size, HashSize> > : true_type { };
+struct has_trivial_destructor< HashObject<std::uint64_t, Size, HashSize> > : true_type { };
 
 } // namespace google
 
@@ -1589,14 +1566,14 @@ void std_hash_test()
     printf("std::hash<std::uint32_t>\n\n");
     for(std::uint32_t i = 0; i < 8; i++) {
         std::size_t hash_code = HASH_MAP_FUNCTION<std::uint32_t>()(i);
-        printf("key = %3u, hash_code = %" PRIu64 "\n", i, hash_code);
+        printf("key = %3u, hash_code = %" PRIuPTR "\n", i, hash_code);
     }
     printf("\n");
 
     printf("std::hash<std::uint64_t>\n\n");
     for(std::size_t i = 0; i < 8; i++) {
         std::size_t hash_code = HASH_MAP_FUNCTION<std::uint64_t>()(i);
-        printf("key = %3" PRIu64 ", hash_code = %" PRIu64 "\n", i, hash_code);
+        printf("key = %3" PRIuPTR ", hash_code = %" PRIuPTR "\n", i, hash_code);
     }
     printf("\n");
 }

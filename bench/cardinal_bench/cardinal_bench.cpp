@@ -407,7 +407,7 @@ void run_insert_random(const std::string & name, std::vector<Key> & keys, std::s
         double elapsed_time = sw.getElapsedMillisec();
         double average_time = elapsed_time / keys.size();
 
-        printf("hashmap.find(key), check_sum: %" PRIu64 ", average: %s, time: %0.2f ms\n\n",
+        printf("hashmap.find(key), check_sum: %" PRIuPTR ", average: %s, time: %0.2f ms\n\n",
                check_sum, formatMsTime(average_time).c_str(), elapsed_time);
     }
 }
