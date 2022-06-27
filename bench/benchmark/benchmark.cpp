@@ -1901,7 +1901,7 @@ int main(int argc, char * argv[])
 
     jtest::CPU::warm_up(1000);
 
-    if (0) {
+    if (1) {
         #if USE_JSTD_FLAT_HASH_MAP
         jstd_flat16_hash_map_benchmark();
         jstd::Console::ReadKey();
