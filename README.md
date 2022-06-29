@@ -50,7 +50,7 @@ make install
 
 配置和编译 `hashmap-benchmark`：
 
-```shell
+```bash
 # 切换回 hashmap-benchmark 根目录
 cd ../../../
 cmake -DABSL_BUILD_TESTING=OFF -DABSL_USE_GOOGLETEST_HEAD=OFF -DABSL_PROPAGATE_CXX_STD=ON -DCMAKE_PREFIX_PATH=./install .
@@ -59,7 +59,7 @@ make
 
 ### 3. 运行 benchmark
 
-```shell
+```bash
 # 跟 Google sprasehash 开源库类似的测试
 ./bin/time_hash_map
 
@@ -123,7 +123,7 @@ make install
 
 Configure and compile `hashmap-benchmark`:
 
-```shell
+```bash
 # switch to hashmap-benchmark root dir
 cd ../../../
 cmake -DABSL_BUILD_TESTING=OFF -DABSL_USE_GOOGLETEST_HEAD=OFF -DABSL_PROPAGATE_CXX_STD=ON -DCMAKE_PREFIX_PATH=./install .
@@ -132,7 +132,7 @@ make
 
 ### 3. Run benchmark
 
-```shell
+```bash
 # like Google sprasehash benchmark code
 ./bin/time_hash_map
 
