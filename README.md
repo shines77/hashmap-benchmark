@@ -67,7 +67,7 @@ make
 ./bin/benchmark
 
 # 中数据集测试
-./bin/benchmark ./data/Maven.jar.updates.txt
+./bin/benchmark ./data/Maven.keys.txt
 
 # 低、中、高、超高 - 基数测试
 ./bin/cardinal_bench
