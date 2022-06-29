@@ -51,6 +51,8 @@ make install
 配置和编译 `hashmap-benchmark`：
 
 ```shell
+# 切换回 hashmap-benchmark 根目录
+cd ../../../
 cmake -DABSL_BUILD_TESTING=OFF -DABSL_USE_GOOGLETEST_HEAD=OFF -DABSL_PROPAGATE_CXX_STD=ON -DCMAKE_PREFIX_PATH=./install .
 make
 ````
@@ -66,6 +68,9 @@ make
 
 # 中数据集测试
 ./bin/benchmark ./data/Maven.jar.updates.txt
+
+# 低、中、高、超高 - 基数测试
+./bin/cardinal_bench
 ```
 
 ## English / 英文版
@@ -119,6 +124,8 @@ make install
 Configure and compile `hashmap-benchmark`:
 
 ```shell
+# switch to hashmap-benchmark root dir
+cd ../../../
 cmake -DABSL_BUILD_TESTING=OFF -DABSL_USE_GOOGLETEST_HEAD=OFF -DABSL_PROPAGATE_CXX_STD=ON -DCMAKE_PREFIX_PATH=./install .
 make
 ````
@@ -134,4 +141,7 @@ make
 
 # Middle test case
 ./bin/benchmark ./data/Maven.keys.txt
+
+# Small, Middle, Big, Huge - Cardinal benchmark
+./bin/cardinal_bench
 ```
