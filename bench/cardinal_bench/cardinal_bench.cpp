@@ -166,16 +166,16 @@
 #define PRINT_MACRO_VAR(x)      #x " = " PRINT_MACRO_HELPER(x)
 
 #define ID_STD_HASH             0   // std::hash<T>
-#define ID_FAST_SIMPLE_HASH     1   // test::hash<T>
+#define ID_SIMPLE_HASH          1   // test::hash<T>
 #define ID_INTEGAL_HASH         2   // test::IntegalHash<T>
 
 #ifdef _MSC_VER
-#define HASH_FUNCTION_ID        ID_FAST_SIMPLE_HASH
+#define HASH_FUNCTION_ID        ID_SIMPLE_HASH
 #else
 #define HASH_FUNCTION_ID        ID_STD_HASH
 #endif
 
-#if (HASH_FUNCTION_ID == ID_FAST_SIMPLE_HASH)
+#if (HASH_FUNCTION_ID == ID_SIMPLE_HASH)
   #define HASH_MAP_FUNCTION     test::SimpleHash
 #elif (HASH_FUNCTION_ID == ID_INTEGAL_HASH)
   #define HASH_MAP_FUNCTION     test::IntegalHash
