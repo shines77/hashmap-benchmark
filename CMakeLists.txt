@@ -100,9 +100,11 @@ endif()
 
 set(JLANG_CMAKE_SHOW_DETAIL ON)
 
+include(CMakeUtils)
 include(GetOSEnv)
 include(CheckComplierEnv)
 include(GetCompilerToolset)
+include(DetectCXXCompiler)
 
 GetOSEnv()
 CheckCompilerEnvironment()
@@ -150,6 +152,24 @@ if (NOT MSVC)
     set(CMAKE_CXX_FLAGS_DEFAULT "${CMAKE_CXX_FLAGS} -std=c++14 -march=native -mtune=native -finput-charset=utf-8 -fPIC")
     set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_DEFAULT} -O3 -DNDEBUG")
     set(CMAKE_CXX_FLAGS_DEBUG   "${CMAKE_CXX_FLAGS_DEFAULT} -g -pg -D_DEBUG")
+
+    ## -faligned-new: GCC >= 7.1, CLANG >= 4.0
+    ## See: https://trac.wildfiregames.com/ticket/5139
+    if (CMAKE_COMPILER_IS_CLANGCXX)
+        if (CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL "4.0")
+            message("")
+            message(STATUS "Clang >= 4.0, Added CXX_FLAGS: -faligned-new")
+            message("")
+            set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -faligned-new")
+        endif()
+    elseif (CMAKE_COMPILER_IS_GNUCXX)
+        if (CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL "7.1")
+            message("")
+            message(STATUS "GCC >= 7.1, Added CXX_FLAGS: -faligned-new")
+            message("")
+            set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -faligned-new")
+        endif()
+    endif()
 endif()
 
 if (CMAKE_BUILD_TYPE STREQUAL Debug)

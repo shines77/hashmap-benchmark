@@ -12,7 +12,7 @@ if (NOT MSVC)
     # For gcc or clang warning setting
     target_compile_options(benchmark
         PUBLIC
-            -Wall -Wno-unused-function -Wno-deprecated-declarations -Wno-unused-variable -Wno-deprecated -faligned-new
+            -Wall -Wno-unused-function -Wno-deprecated-declarations -Wno-unused-variable -Wno-deprecated
     )
 else()
     # Warning level 3 and all warnings as errors
@@ -52,7 +52,7 @@ if (NOT MSVC)
     # For gcc or clang warning setting
     target_compile_options(time_hash_map
         PUBLIC
-            -Wall -Wno-unused-function -Wno-deprecated-declarations -Wno-unused-variable -Wno-deprecated -faligned-new
+            -Wall -Wno-unused-function -Wno-deprecated-declarations -Wno-unused-variable -Wno-deprecated
     )
 else()
     # Warning level 3 and all warnings as errors
@@ -92,7 +92,7 @@ if (NOT MSVC)
     # For gcc or clang warning setting
     target_compile_options(cardinal_bench
         PUBLIC
-            -Wall -Wno-unused-function -Wno-deprecated-declarations -Wno-unused-variable -Wno-deprecated -faligned-new
+            -Wall -Wno-unused-function -Wno-deprecated-declarations -Wno-unused-variable -Wno-deprecated
     )
 else()
     # Warning level 3 and all warnings as errors
