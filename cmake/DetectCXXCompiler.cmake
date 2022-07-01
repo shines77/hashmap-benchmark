@@ -69,6 +69,9 @@ if (CMAKE_COMPILER_IS_CLANGCXX)
   string(REGEX MATCH "[0-9]+\\.[0-9]+" CMAKE_CLANG_REGEX_VERSION "${CMAKE_JSTD_CLANG_VERSION_FULL}")
 
 elseif (CMAKE_COMPILER_IS_GNUCXX)
+  ##
+  ## See: https://blog.csdn.net/zhizhengguan/article/details/120180054
+  ##
   execute_process(COMMAND ${CMAKE_CXX_COMPILER} ${CMAKE_CXX_COMPILER_ARG1} -dumpversion
                 OUTPUT_VARIABLE CMAKE_JSTD_GCC_VERSION_FULL
                 OUTPUT_STRIP_TRAILING_WHITESPACE)
