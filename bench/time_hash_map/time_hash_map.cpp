@@ -85,7 +85,7 @@
 #define USE_JSTD_DICTIONARY         0
 
 #define USE_STD_UNORDERED_MAP       1
-#define USE_JSTD_FLAT_HASH_MAP      1
+#define USE_JSTD_FLAT16_HASH_MAP    1
 #define USE_SKA_FLAT_HASH_MAP       1
 #define USE_SKA_BYTELL_HASH_MAP     1
 #define USE_ABSL_FLAT_HASH_MAP      1
@@ -138,7 +138,7 @@
 #define STDEXT_HASH_NAMESPACE __gnu_cxx
 #endif
 
-#if USE_JSTD_FLAT_HASH_MAP
+#if USE_JSTD_FLAT16_HASH_MAP
 #include <jstd/hashmap/flat16_hash_map.h>
 #endif
 #if USE_SKA_FLAT_HASH_MAP
@@ -1493,7 +1493,7 @@ static void test_all_hashmaps(std::size_t obj_size, std::size_t iters) {
             "std::unordered_map<K, V>", obj_size, 0, iters, has_stress_hash_function);
     }
 
-#if USE_JSTD_FLAT_HASH_MAP
+#if USE_JSTD_FLAT16_HASH_MAP
     if (FLAGS_test_jstd_flat16_hash_map) {
         typedef jstd::flat16_hash_map<HashObj, Value, HashFn<Value, HashObj::cSize, HashObj::cHashSize>> flat16_hash_map;
         measure_hashmap<jstd::flat16_hash_map<HashObj,   Value, HashFn<Value, HashObj::cSize, HashObj::cHashSize>>,
