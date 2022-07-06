@@ -83,7 +83,7 @@
 #define USE_JSTD_DICTIONARY         0
 
 #define USE_STD_UNORDERED_MAP       1
-#define USE_JSTD_FLAT_HASH_MAP      1
+#define USE_JSTD_FLAT16_HASH_MAP    1
 #define USE_SKA_FLAT_HASH_MAP       1
 #define USE_SKA_BYTELL_HASH_MAP     1
 #define USE_ABSL_FLAT_HASH_MAP      1
@@ -130,7 +130,7 @@
 #if USE_STD_UNORDERED_MAP
 #include <unordered_map>
 #endif
-#if USE_JSTD_FLAT_HASH_MAP
+#if USE_JSTD_FLAT16_HASH_MAP
 #include <jstd/hashmap/flat16_hash_map.h>
 #endif
 #if USE_SKA_FLAT_HASH_MAP
@@ -161,10 +161,6 @@
 // From: https://dirtysalt.github.io/html/hashtable-perf-comparison.html
 //
 
-#define PRINT_MACRO_HELPER(x)   #x
-#define PRINT_MACRO(x)          PRINT_MACRO_HELPER(x)
-#define PRINT_MACRO_VAR(x)      #x " = " PRINT_MACRO_HELPER(x)
-
 #define ID_STD_HASH             0   // std::hash<T>
 #define ID_SIMPLE_HASH          1   // test::hash<T>
 #define ID_INTEGAL_HASH         2   // test::IntegalHash<T>
@@ -182,6 +178,18 @@
 #else
   #define HASH_MAP_FUNCTION     std::hash
 #endif // HASH_FUNCTION_MODE
+
+#define MACRO_TO_STRING(x)      #x
+#define PRINT_MACRO(x)          MACRO_TO_STRING(x)
+#define PRINT_MACRO_VAR(x)      #x " = " MACRO_TO_STRING(x)
+
+#ifndef UINT64_High
+#define UINT64_High(u64)        ((uint32_t)(u64 >> 32))
+#endif
+
+#ifndef UINT64_Low
+#define UINT64_Low(u64)         ((uint32_t)(u64 & 0x00000000FFFFFFFFull))
+#endif
 
 #ifndef _DEBUG
 static const std::size_t kDefaultIters = 10000000;
@@ -429,7 +437,7 @@ void benchmark_insert_random_impl()
 #if USE_STD_UNORDERED_MAP
     run_insert_random<std::unordered_map<Key, Value>>   (name0, keys, Cardinal);
 #endif
-#if USE_JSTD_FLAT_HASH_MAP
+#if USE_JSTD_FLAT16_HASH_MAP
     run_insert_random<jstd::flat16_hash_map<Key, Value>>(name1, keys, Cardinal);
 #endif
 #if USE_SKA_FLAT_HASH_MAP
@@ -450,6 +458,7 @@ template <typename Key, typename Value>
 void benchmark_insert_random(std::size_t iters)
 {
     static constexpr std::size_t Factor = 16;
+#ifndef _DEBUG
     static constexpr std::size_t DataSize = 1024 * 1000 * Factor;
     static constexpr std::size_t Cardinal0 = 60 * Factor;
     static constexpr std::size_t Cardinal1 = 600 * Factor;
@@ -458,6 +467,16 @@ void benchmark_insert_random(std::size_t iters)
     static constexpr std::size_t Cardinal4 = 600000 * Factor;
     static constexpr std::size_t Cardinal5 = 6000000 * Factor;
     static constexpr std::size_t Cardinal6 = 60000000 * Factor;
+#else
+    static constexpr std::size_t DataSize = 1024 * 10 * Factor;
+    static constexpr std::size_t Cardinal0 = 6 * Factor;
+    static constexpr std::size_t Cardinal1 = 60 * Factor;
+    static constexpr std::size_t Cardinal2 = 600 * Factor;
+    static constexpr std::size_t Cardinal3 = 6000 * Factor;
+    static constexpr std::size_t Cardinal4 = 60000 * Factor;
+    static constexpr std::size_t Cardinal5 = 600000 * Factor;
+    static constexpr std::size_t Cardinal6 = 600000 * Factor;
+#endif
 
     printf("DataSize = %u\n\n", (uint32_t)DataSize);
 
@@ -485,6 +504,27 @@ void benchmark_all_hashmaps(std::size_t iters)
     benchmark_insert_random<std::size_t, std::size_t>(iters);
 }
 
+void std_hash_test()
+{
+    printf("#define HASH_MAP_FUNCTION = %s\n\n", PRINT_MACRO(HASH_MAP_FUNCTION));
+
+    printf("%s<std::uint32_t>\n\n", PRINT_MACRO(HASH_MAP_FUNCTION));
+    for (std::uint32_t i = 0; i < 8; i++) {
+        std::size_t hash_code = HASH_MAP_FUNCTION<std::uint32_t>()(i);
+        printf("key = %3u, hash_code = 0x%08X%08X\n",
+               i, UINT64_High(hash_code), UINT64_Low(hash_code));
+    }
+    printf("\n");
+
+    printf("%s<std::uint64_t>\n\n", PRINT_MACRO(HASH_MAP_FUNCTION));
+    for (std::uint64_t i = 0; i < 8; i++) {
+        std::size_t hash_code = HASH_MAP_FUNCTION<std::uint64_t>()(i);
+        printf("key = %3" PRIuPTR ", hash_code = 0x%08X%08X\n",
+               i, UINT64_High(hash_code), UINT64_Low(hash_code));
+    }
+    printf("\n");
+}
+
 int main(int argc, char * argv[])
 {
     jstd::RandomGen   RandomGen(20200831);
@@ -498,9 +538,10 @@ int main(int argc, char * argv[])
 
     jtest::CPU::warm_up(1000);
 
-    printf("#define HASH_MAP_FUNCTION = %s\n\n", PRINT_MACRO(HASH_MAP_FUNCTION));
+    if (1) { std_hash_test(); }
 
-    if (1) {
+    if (1)
+    {
         printf("------------------------------ benchmark_all_hashmaps ------------------------------\n\n");
         benchmark_all_hashmaps(iters);
     }
