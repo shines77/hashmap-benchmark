@@ -68,10 +68,8 @@ message("")
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
 
-## include(CMakeASM_NASMInformation)
+include(CMakeASM_NASMInformation)
 include(DetectCPUArchitectures)
-
-if (0)
 
 enable_language(ASM_NASM)
 
@@ -83,8 +81,6 @@ if (CMAKE_CL_64)
     set(CMAKE_CL_ARCH x64)
 else()
     set(CMAKE_CL_ARCH x86)
-endif()
-
 endif()
 
 ##

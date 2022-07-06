@@ -22,7 +22,7 @@ set(detect_cpu_architectures_INC)
 # Set ppc_support to TRUE before including this file or ppc and ppc64
 # will be treated as invalid architectures since they are no longer supported by Apple
 
-# TODO: add more chips!!!! Tedious though.    
+# TODO: add more chips!!!! Tedious though.
 enable_language(C) # this must be at file-scope not function scope. Thus include-guard.
 
 set(archdetect_c_code "
@@ -88,7 +88,7 @@ set(archdetect_c_code "
 /* ------------------------------ Power PC  --------------------------------- */
 
 #elif defined(__ppc__) || defined(__ppc) || defined(__PPC__)  || defined(__PPC) || defined(__powerpc__) || defined(__powerpc) || defined(_ARCH_COM) || defined(_ARCH_PWR) || defined(_ARCH_PPC) || defined(_M_MPPC) || defined(_M_PPC) || defined(__POWERPC__)
-    #if defined(__ppc64__) || defined(__PPC64__) || defined(__powerpc64__) || defined(__64BIT__) 
+    #if defined(__ppc64__) || defined(__PPC64__) || defined(__powerpc64__) || defined(__64BIT__)
         #error cmake_ARCH ppc64
     #else
         #error cmake_ARCH ppc32
