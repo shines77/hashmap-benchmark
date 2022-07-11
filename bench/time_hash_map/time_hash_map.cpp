@@ -3,10 +3,10 @@
 
   CC BY-SA 4.0 License
 
-  Copyright (c) 2020-2022 XiongHui Guo (gz_shines@msn.com)
+  Copyright (c) 2020-2022 XiongHui Guo (gz_shines at msn.com)
 
-  https://github.com/shines77/jstd_hash_map
-  https://gitee.com/shines77/jstd_hash_map
+  https://github.com/shines77/hashmap-benchmark
+  https://gitee.com/shines77/hashmap-benchmark
 
 *************************************************************************************
 
