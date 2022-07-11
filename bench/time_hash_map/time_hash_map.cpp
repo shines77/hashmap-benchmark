@@ -1522,8 +1522,8 @@ static void test_all_hashmaps(std::size_t obj_size, std::size_t iters) {
 #if USE_JSTD_ROBIN16_HASH_MAP
     if (FLAGS_test_jstd_robin16_hash_map) {
         typedef jstd::robin16_hash_map<HashObj, Value, HashFn<Value, HashObj::cSize, HashObj::cHashSize>> robin16_hash_map;
-        measure_hashmap<jstd::flat16_hash_map<HashObj,   Value, HashFn<Value, HashObj::cSize, HashObj::cHashSize>>,
-                        jstd::flat16_hash_map<HashObj *, Value, HashFn<Value, HashObj::cSize, HashObj::cHashSize>>
+        measure_hashmap<jstd::robin16_hash_map<HashObj,   Value, HashFn<Value, HashObj::cSize, HashObj::cHashSize>>,
+                        jstd::robin16_hash_map<HashObj *, Value, HashFn<Value, HashObj::cSize, HashObj::cHashSize>>
                         >(
             "jstd::robin16_hash_map<K, V>", obj_size,
             sizeof(typename robin16_hash_map::node_type), iters, has_stress_hash_function);
