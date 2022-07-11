@@ -83,6 +83,7 @@
 
 #define USE_STD_UNORDERED_MAP       1
 #define USE_JSTD_FLAT16_HASH_MAP    1
+#define USE_JSTD_ROBIN16_HASH_MAP   1
 #define USE_SKA_FLAT_HASH_MAP       1
 #define USE_SKA_BYTELL_HASH_MAP     0
 #define USE_ABSL_FLAT_HASH_MAP      1
@@ -131,6 +132,9 @@
 #endif
 #if USE_JSTD_FLAT16_HASH_MAP
 #include <jstd/hashmap/flat16_hash_map.h>
+#endif
+#if USE_JSTD_ROBIN16_HASH_MAP
+#include <jstd/hashmap/robin16_hash_map.h>
 #endif
 #if USE_SKA_FLAT_HASH_MAP
 #include <flat_hash_map/flat_hash_map.hpp>
@@ -422,34 +426,38 @@ void run_insert_random(const std::string & name, std::vector<Key> & keys, std::s
 template <typename Key, typename Value, std::size_t DataSize, std::size_t Cardinal>
 void benchmark_insert_random_impl()
 {
-    std::string name0, name1, name2, name3, name4, name5;
+    std::string name0, name1, name2, name3, name4, name5, name6;
     name0 = get_hashmap_name<Key, Value>("std::unordered_map<%s, %s>");
     name1 = get_hashmap_name<Key, Value>("jstd::flat16_hash_map<%s, %s>");
-    name2 = get_hashmap_name<Key, Value>("ska::flat_hash_map<%s, %s>");
-    name3 = get_hashmap_name<Key, Value>("ska::bytell_hash_map<%s, %s>");
-    name4 = get_hashmap_name<Key, Value>("absl::flat_hash_map<%s, %s>");
-    name5 = get_hashmap_name<Key, Value>("absl::node_hash_map<%s, %s>");
+    name2 = get_hashmap_name<Key, Value>("jstd::robin16_hash_map<%s, %s>");
+    name3 = get_hashmap_name<Key, Value>("ska::flat_hash_map<%s, %s>");
+    name4 = get_hashmap_name<Key, Value>("ska::bytell_hash_map<%s, %s>");
+    name5 = get_hashmap_name<Key, Value>("absl::flat_hash_map<%s, %s>");
+    name6 = get_hashmap_name<Key, Value>("absl::node_hash_map<%s, %s>");
 
     std::vector<Key> keys;
     generate_random_keys<Key>(keys, DataSize, Cardinal);
 
 #if USE_STD_UNORDERED_MAP
-    run_insert_random<std::unordered_map<Key, Value>>   (name0, keys, Cardinal);
+    run_insert_random<std::unordered_map<Key, Value>>    (name0, keys, Cardinal);
 #endif
 #if USE_JSTD_FLAT16_HASH_MAP
-    run_insert_random<jstd::flat16_hash_map<Key, Value>>(name1, keys, Cardinal);
+    run_insert_random<jstd::flat16_hash_map<Key, Value>> (name1, keys, Cardinal);
+#endif
+#if USE_JSTD_ROBIN16_HASH_MAP
+    run_insert_random<jstd::robin16_hash_map<Key, Value>>(name2, keys, Cardinal);
 #endif
 #if USE_SKA_FLAT_HASH_MAP
-    run_insert_random<ska::flat_hash_map<Key, Value>>   (name2, keys, Cardinal);
+    run_insert_random<ska::flat_hash_map<Key, Value>>    (name3, keys, Cardinal);
 #endif
 #if USE_SKA_BYTELL_HASH_MAP
-    run_insert_random<ska::bytell_hash_map<Key, Value>> (name3, keys, Cardinal);
+    run_insert_random<ska::bytell_hash_map<Key, Value>>  (name4, keys, Cardinal);
 #endif
 #if USE_ABSL_FLAT_HASH_MAP
-    run_insert_random<absl::flat_hash_map<Key, Value>>  (name4, keys, Cardinal);
+    run_insert_random<absl::flat_hash_map<Key, Value>>   (name5, keys, Cardinal);
 #endif
 #if USE_ABSL_NODE_HASH_MAP
-    run_insert_random<absl::node_hash_map<Key, Value>>  (name5, keys, Cardinal);
+    run_insert_random<absl::node_hash_map<Key, Value>>   (name6, keys, Cardinal);
 #endif
 }
 
@@ -477,7 +485,7 @@ void benchmark_insert_random(std::size_t iters)
     static constexpr std::size_t Cardinal6 = 600000 * Factor;
 #endif
 
-    printf("DataSize = %u, %s<T>\n\n", (uint32_t)DataSize, PRINT_MACRO(HASH_MAP_FUNCTION));
+    printf("DataSize = %u, std::hash<T>\n\n", (uint32_t)DataSize);
 
     benchmark_insert_random_impl<Key, Value, DataSize, Cardinal0>();
     printf("-----------------------------------------------------------------------\n\n");
@@ -507,6 +515,23 @@ void std_hash_test()
 {
     printf("#define HASH_MAP_FUNCTION = %s\n\n", PRINT_MACRO(HASH_MAP_FUNCTION));
 
+    printf("std::hash<std::uint32_t>\n\n");
+    for (std::uint32_t i = 0; i < 8; i++) {
+        std::size_t hash_code = std::hash<std::uint32_t>()(i);
+        printf("key = %3u, hash_code = 0x%08X%08X\n",
+               i, UINT64_High(hash_code), UINT64_Low(hash_code));
+    }
+    printf("\n");
+
+    printf("std::hash<std::uint64_t>\n\n");
+    for (std::uint64_t i = 0; i < 8; i++) {
+        std::size_t hash_code = std::hash<std::uint64_t>()(i);
+        printf("key = %3" PRIu64 ", hash_code = 0x%08X%08X\n",
+               i, UINT64_High(hash_code), UINT64_Low(hash_code));
+    }
+    printf("\n");
+
+#if (HASH_FUNCTION_ID != ID_STD_HASH)
     printf("%s<std::uint32_t>\n\n", PRINT_MACRO(HASH_MAP_FUNCTION));
     for (std::uint32_t i = 0; i < 8; i++) {
         std::size_t hash_code = HASH_MAP_FUNCTION<std::uint32_t>()(i);
@@ -518,10 +543,11 @@ void std_hash_test()
     printf("%s<std::uint64_t>\n\n", PRINT_MACRO(HASH_MAP_FUNCTION));
     for (std::uint64_t i = 0; i < 8; i++) {
         std::size_t hash_code = HASH_MAP_FUNCTION<std::uint64_t>()(i);
-        printf("key = %3" PRIuPTR ", hash_code = 0x%08X%08X\n",
+        printf("key = %3" PRIu64 ", hash_code = 0x%08X%08X\n",
                i, UINT64_High(hash_code), UINT64_Low(hash_code));
     }
     printf("\n");
+#endif
 }
 
 int main(int argc, char * argv[])

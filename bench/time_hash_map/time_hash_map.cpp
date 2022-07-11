@@ -86,10 +86,11 @@
 
 #define USE_STD_UNORDERED_MAP       1
 #define USE_JSTD_FLAT16_HASH_MAP    1
+#define USE_JSTD_ROBIN16_HASH_MAP   1
 #define USE_SKA_FLAT_HASH_MAP       1
-#define USE_SKA_BYTELL_HASH_MAP     1
+#define USE_SKA_BYTELL_HASH_MAP     0
 #define USE_ABSL_FLAT_HASH_MAP      1
-#define USE_ABSL_NODE_HASH_MAP      1
+#define USE_ABSL_NODE_HASH_MAP      0
 
 #ifdef _MSC_VER
 #undef USE_ABSL_FLAT_HASH_MAP
@@ -141,6 +142,9 @@
 #if USE_JSTD_FLAT16_HASH_MAP
 #include <jstd/hashmap/flat16_hash_map.h>
 #endif
+#if USE_JSTD_ROBIN16_HASH_MAP
+#include <jstd/hashmap/robin16_hash_map.h>
+#endif
 #if USE_SKA_FLAT_HASH_MAP
 #include <flat_hash_map/flat_hash_map.hpp>
 #endif
@@ -164,10 +168,6 @@
 #include <jstd/test/ProcessMemInfo.h>
 
 #include "BenchmarkResult.h"
-
-#define PRINT_MACRO_HELPER(x)   #x
-#define PRINT_MACRO(x)          PRINT_MACRO_HELPER(x)
-#define PRINT_MACRO_VAR(x)      #x " = " PRINT_MACRO_HELPER(x)
 
 #define USE_STAT_COUNTER        1
 
@@ -200,23 +200,36 @@
   #define HASH_MAP_FUNCTION     std::hash
 #endif // HASH_FUNCTION_ID
 
+#define MACRO_TO_STRING(x)      #x
+#define PRINT_MACRO(x)          MACRO_TO_STRING(x)
+#define PRINT_MACRO_VAR(x)      #x " = " MACRO_TO_STRING(x)
+
+#ifndef UINT64_High
+#define UINT64_High(u64)        ((uint32_t)(u64 >> 32))
+#endif
+
+#ifndef UINT64_Low
+#define UINT64_Low(u64)         ((uint32_t)(u64 & 0x00000000FFFFFFFFull))
+#endif
+
 #pragma message(PRINT_MACRO_VAR(HASH_MAP_FUNCTION))
 
-static constexpr bool FLAGS_test_sparse_hash_map = true;
-static constexpr bool FLAGS_test_dense_hash_map = true;
+static bool FLAGS_test_sparse_hash_map = true;
+static bool FLAGS_test_dense_hash_map = true;
 
 #if defined(_MSC_VER)
-static constexpr bool FLAGS_test_std_hash_map = false;
+static bool FLAGS_test_std_hash_map = false;
 #else
-static constexpr bool FLAGS_test_std_hash_map = false;
+static bool FLAGS_test_std_hash_map = false;
 #endif
-static constexpr bool FLAGS_test_std_unordered_map = true;
-static constexpr bool FLAGS_test_jstd_flat16_hash_map = true;
-static constexpr bool FLAGS_test_ska_flat_hash_map = true;
-static constexpr bool FLAGS_test_ska_bytell_hash_map = true;
-static constexpr bool FLAGS_test_absl_flat_hash_map = true;
-static constexpr bool FLAGS_test_absl_node_hash_map = true;
-static constexpr bool FLAGS_test_map = false;
+static bool FLAGS_test_std_unordered_map = true;
+static bool FLAGS_test_jstd_flat16_hash_map = true;
+static bool FLAGS_test_jstd_robin16_hash_map = true;
+static bool FLAGS_test_ska_flat_hash_map = true;
+static bool FLAGS_test_ska_bytell_hash_map = true;
+static bool FLAGS_test_absl_flat_hash_map = true;
+static bool FLAGS_test_absl_node_hash_map = true;
+static bool FLAGS_test_map = false;
 
 static constexpr bool FLAGS_test_4_bytes = true;
 static constexpr bool FLAGS_test_8_bytes = true;
@@ -1486,12 +1499,14 @@ static void test_all_hashmaps(std::size_t obj_size, std::size_t iters) {
             "stdext::hash_map<K, V>", obj_size, 0, iters, has_stress_hash_function);
     }
 
+#if USE_STD_UNORDERED_MAP
     if (FLAGS_test_std_unordered_map) {
         measure_hashmap<std::unordered_map<HashObj,   Value, HashFn<Value, HashObj::cSize, HashObj::cHashSize>>,
                         std::unordered_map<HashObj *, Value, HashFn<Value, HashObj::cSize, HashObj::cHashSize>>
                         >(
             "std::unordered_map<K, V>", obj_size, 0, iters, has_stress_hash_function);
     }
+#endif
 
 #if USE_JSTD_FLAT16_HASH_MAP
     if (FLAGS_test_jstd_flat16_hash_map) {
@@ -1501,6 +1516,17 @@ static void test_all_hashmaps(std::size_t obj_size, std::size_t iters) {
                         >(
             "jstd::flat16_hash_map<K, V>", obj_size,
             sizeof(typename flat16_hash_map::node_type), iters, has_stress_hash_function);
+    }
+#endif
+
+#if USE_JSTD_ROBIN16_HASH_MAP
+    if (FLAGS_test_jstd_robin16_hash_map) {
+        typedef jstd::robin16_hash_map<HashObj, Value, HashFn<Value, HashObj::cSize, HashObj::cHashSize>> robin16_hash_map;
+        measure_hashmap<jstd::flat16_hash_map<HashObj,   Value, HashFn<Value, HashObj::cSize, HashObj::cHashSize>>,
+                        jstd::flat16_hash_map<HashObj *, Value, HashFn<Value, HashObj::cSize, HashObj::cHashSize>>
+                        >(
+            "jstd::robin16_hash_map<K, V>", obj_size,
+            sizeof(typename robin16_hash_map::node_type), iters, has_stress_hash_function);
     }
 #endif
 
@@ -1575,19 +1601,41 @@ void benchmark_all_hashmaps(std::size_t iters)
 
 void std_hash_test()
 {
+    printf("#define HASH_MAP_FUNCTION = %s\n\n", PRINT_MACRO(HASH_MAP_FUNCTION));
+
     printf("std::hash<std::uint32_t>\n\n");
-    for(std::uint32_t i = 0; i < 8; i++) {
-        std::size_t hash_code = HASH_MAP_FUNCTION<std::uint32_t>()(i);
-        printf("key = %3u, hash_code = %" PRIuPTR "\n", i, hash_code);
+    for (std::uint32_t i = 0; i < 8; i++) {
+        std::size_t hash_code = std::hash<std::uint32_t>()(i);
+        printf("key = %3u, hash_code = 0x%08X%08X\n",
+               i, UINT64_High(hash_code), UINT64_Low(hash_code));
     }
     printf("\n");
 
     printf("std::hash<std::uint64_t>\n\n");
-    for(std::size_t i = 0; i < 8; i++) {
-        std::size_t hash_code = HASH_MAP_FUNCTION<std::uint64_t>()(i);
-        printf("key = %3" PRIuPTR ", hash_code = %" PRIuPTR "\n", i, hash_code);
+    for (std::uint64_t i = 0; i < 8; i++) {
+        std::size_t hash_code = std::hash<std::uint64_t>()(i);
+        printf("key = %3" PRIu64 ", hash_code = 0x%08X%08X\n",
+               i, UINT64_High(hash_code), UINT64_Low(hash_code));
     }
     printf("\n");
+
+#if (HASH_FUNCTION_ID != ID_STD_HASH)
+    printf("%s<std::uint32_t>\n\n", PRINT_MACRO(HASH_MAP_FUNCTION));
+    for (std::uint32_t i = 0; i < 8; i++) {
+        std::size_t hash_code = HASH_MAP_FUNCTION<std::uint32_t>()(i);
+        printf("key = %3u, hash_code = 0x%08X%08X\n",
+               i, UINT64_High(hash_code), UINT64_Low(hash_code));
+    }
+    printf("\n");
+
+    printf("%s<std::uint64_t>\n\n", PRINT_MACRO(HASH_MAP_FUNCTION));
+    for (std::uint64_t i = 0; i < 8; i++) {
+        std::size_t hash_code = HASH_MAP_FUNCTION<std::uint64_t>()(i);
+        printf("key = %3" PRIu64 ", hash_code = 0x%08X%08X\n",
+               i, UINT64_High(hash_code), UINT64_Low(hash_code));
+    }
+    printf("\n");
+#endif
 }
 
 int main(int argc, char * argv[])
@@ -1603,11 +1651,10 @@ int main(int argc, char * argv[])
 
     jtest::CPU::warm_up(1000);
 
-    printf("#define HASH_MAP_FUNCTION = %s\n\n", PRINT_MACRO(HASH_MAP_FUNCTION));
+    if (1) { std_hash_test(); }
 
-    if (1) std_hash_test();
-
-    if (1) {
+    if (1)
+    {
         printf("-------------------------- benchmark_all_hashmaps(iters) ---------------------------\n\n");
         benchmark_all_hashmaps(iters);
     }
