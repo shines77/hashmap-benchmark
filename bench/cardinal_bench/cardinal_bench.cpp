@@ -573,6 +573,8 @@ int main(int argc, char * argv[])
 
     printf("------------------------------------------------------------------------------------\n\n");
 
-    //jstd::Console::ReadKey();
+#if defined(_MSC_VER) && defined(_DEBUG)
+    jstd::Console::ReadKey();
+#endif
     return 0;
 }

@@ -80,11 +80,12 @@
 #define USE_JSTD_DICTIONARY         0
 
 #define USE_STD_UNORDERED_MAP       1
-#define USE_JSTD_FLAT_HASH_MAP      1
+#define USE_JSTD_FLAT16_HASH_MAP    1
+#define USE_JSTD_ROBIN16_HASH_MAP   1
 #define USE_SKA_FLAT_HASH_MAP       1
-#define USE_SKA_BYTELL_HASH_MAP     1
+#define USE_SKA_BYTELL_HASH_MAP     0
 #define USE_ABSL_FLAT_HASH_MAP      1
-#define USE_ABSL_NODE_HASH_MAP      1
+#define USE_ABSL_NODE_HASH_MAP      0
 
 #ifdef _MSC_VER
 #undef USE_ABSL_FLAT_HASH_MAP
@@ -127,8 +128,11 @@
 
 #include <unordered_map>
 
-#if USE_JSTD_FLAT_HASH_MAP
+#if USE_JSTD_FLAT16_HASH_MAP
 #include <jstd/hashmap/flat16_hash_map.h>
+#endif
+#if USE_JSTD_ROBIN16_HASH_MAP
+#include <jstd/hashmap/robin16_hash_map.h>
 #endif
 #if USE_SKA_FLAT_HASH_MAP
 #include <flat_hash_map/flat_hash_map.hpp>
@@ -1178,7 +1182,7 @@ void hashmap_benchmark_simple(const std::string & cat_name,
 
 void jstd_flat16_hash_map_benchmark()
 {
-#if USE_JSTD_FLAT_HASH_MAP
+#if USE_JSTD_FLAT16_HASH_MAP
     jtest::BenchmarkResult test_result;
     test_result.setName("std::unordered_map", "jstd::flat16_hash_map");
 
@@ -1241,8 +1245,8 @@ void jstd_flat16_hash_map_benchmark()
 
         copy_vector_and_reverse_item(reverse_data_uu, test_data_uu);
 
-        std::unordered_map<std::size_t, std::size_t> std_map_uu;
-        jstd::flat16_hash_map<std::size_t, std::size_t>   jstd_dict_uu;
+        std::unordered_map<std::size_t, std::size_t>    std_map_uu;
+        jstd::flat16_hash_map<std::size_t, std::size_t> jstd_dict_uu;
 
         printf(" hash_map<std::size_t, std::size_t>\n\n");
 
@@ -1254,8 +1258,8 @@ void jstd_flat16_hash_map_benchmark()
     }
 
     {
-        std::unordered_map<std::string, std::string> std_map_ss;
-        jstd::flat16_hash_map<std::string, std::string>   jstd_dict_ss;
+        std::unordered_map<std::string, std::string>    std_map_ss;
+        jstd::flat16_hash_map<std::string, std::string> jstd_dict_ss;
 
         std::vector<std::pair<std::string, std::string>> reverse_data_ss;
         copy_vector_and_reverse_item(reverse_data_ss, test_data_ss);
@@ -1291,6 +1295,139 @@ void jstd_flat16_hash_map_benchmark()
 
             std::unordered_map<jstd::string_view, jstd::string_view>    std_map_svsv;
             jstd::flat16_hash_map<jstd::string_view, jstd::string_view> jstd_dict_svsv;
+
+            printf(" hash_map<jstd::string_view, jstd::string_view>\n\n");
+
+            hashmap_benchmark_simple("hash_map<jstd::string_view, jstd::string_view>",
+                                     std_map_svsv, jstd_dict_svsv,
+                                     test_data_svsv, reverse_data_svsv, test_result);
+
+            printf("\n");
+        }
+    }
+
+    sw.stop();
+
+    printf("\n");
+    test_result.printResult(dict_filename, sw.getElapsedMillisec());
+#endif
+}
+
+void jstd_robin16_hash_map_benchmark()
+{
+#if USE_JSTD_ROBIN16_HASH_MAP
+    jtest::BenchmarkResult test_result;
+    test_result.setName("std::unordered_map", "jstd::robin16_hash_map");
+
+    jtest::StopWatch sw;
+    sw.start();
+
+    //
+    // std::unordered_map<std::string, std::string>
+    //
+    std::vector<std::pair<std::string, std::string>> test_data_ss;
+
+    if (!dict_words_is_ready) {
+        std::string field_str[kHeaderFieldSize];
+        std::string index_str[kHeaderFieldSize];
+        for (std::size_t i = 0; i < kHeaderFieldSize; i++) {
+            test_data_ss.push_back(std::make_pair(std::string(header_fields[i]), std::to_string(i)));
+        }
+    }
+    else {
+        for (std::size_t i = 0; i < dict_words.size(); i++) {
+            test_data_ss.push_back(std::make_pair(dict_words[i], std::to_string(i)));
+        }
+    }
+
+    {
+        //
+        // std::unordered_map<int, int>
+        //
+        std::vector<std::pair<int, int>> test_data_ii;
+        std::vector<std::pair<int, int>> reverse_data_ii;
+
+        for (std::size_t i = 0; i < test_data_ss.size(); i++) {
+            test_data_ii.push_back(std::make_pair(int(i), int(i + 1)));
+        }
+
+        copy_vector_and_reverse_item(reverse_data_ii, test_data_ii);
+
+        std::unordered_map<int, int>        std_map_ii;
+        jstd::robin16_hash_map<int, int>    jstd_dict_ii;
+
+        printf(" hash_map<int, int>\n\n");
+
+        hashmap_benchmark_simple("hash_map<int, int>",
+                                 std_map_ii, jstd_dict_ii,
+                                 test_data_ii, reverse_data_ii, test_result);
+
+        printf("\n");
+    }
+
+    {
+        //
+        // std::unordered_map<size_t, size_t>
+        //
+        std::vector<std::pair<std::size_t, std::size_t>> test_data_uu;
+        std::vector<std::pair<std::size_t, std::size_t>> reverse_data_uu;
+
+        for (std::size_t i = 0; i < test_data_ss.size(); i++) {
+            test_data_uu.push_back(std::make_pair(i, i + 1));
+        }
+
+        copy_vector_and_reverse_item(reverse_data_uu, test_data_uu);
+
+        std::unordered_map<std::size_t, std::size_t>        std_map_uu;
+        jstd::robin16_hash_map<std::size_t, std::size_t>    jstd_dict_uu;
+
+        printf(" hash_map<std::size_t, std::size_t>\n\n");
+
+        hashmap_benchmark_simple("hash_map<std::size_t, std::size_t>",
+                                 std_map_uu, jstd_dict_uu,
+                                 test_data_uu, reverse_data_uu, test_result);
+
+        printf("\n");
+    }
+
+    {
+        std::unordered_map<std::string, std::string>        std_map_ss;
+        jstd::robin16_hash_map<std::string, std::string>    jstd_dict_ss;
+
+        std::vector<std::pair<std::string, std::string>> reverse_data_ss;
+        copy_vector_and_reverse_item(reverse_data_ss, test_data_ss);
+
+        printf(" hash_map<std::string, std::string>\n\n");
+
+        hashmap_benchmark_simple("hash_map<std::string, std::string>",
+                                 std_map_ss, jstd_dict_ss,
+                                 test_data_ss, reverse_data_ss, test_result);
+
+        printf("\n");
+
+        //
+        // Note: Don't remove these braces '{' and '}',
+        // because the life cycle of jstd::string_view depends on std::string.
+        //
+        {
+            //
+            // std::unordered_map<jstd::string_view, jstd::string_view>
+            //
+            typedef jstd::string_view_array<jstd::string_view, jstd::string_view> string_view_array_t;
+            typedef typename string_view_array_t::element_type                    element_type;
+
+            string_view_array_t test_data_svsv;
+            string_view_array_t reverse_data_svsv;
+
+            for (std::size_t i = 0; i < test_data_ss.size(); i++) {
+                test_data_svsv.push_back(new element_type(test_data_ss[i].first, test_data_ss[i].second));
+            }
+            for (std::size_t i = 0; i < reverse_data_ss.size(); i++) {
+                reverse_data_svsv.push_back(new element_type(reverse_data_ss[i].first, reverse_data_ss[i].second));
+            }
+
+            std::unordered_map<jstd::string_view, jstd::string_view>     std_map_svsv;
+            jstd::robin16_hash_map<jstd::string_view, jstd::string_view> jstd_dict_svsv;
 
             printf(" hash_map<jstd::string_view, jstd::string_view>\n\n");
 
@@ -1374,8 +1511,8 @@ void ska_flat_hash_map_benchmark()
 
         copy_vector_and_reverse_item(reverse_data_uu, test_data_uu);
 
-        std::unordered_map<std::size_t, std::size_t> std_map_uu;
-        ska::flat_hash_map<std::size_t, std::size_t>   jstd_dict_uu;
+        std::unordered_map<std::size_t, std::size_t>    std_map_uu;
+        ska::flat_hash_map<std::size_t, std::size_t>    jstd_dict_uu;
 
         printf(" hash_map<std::size_t, std::size_t>\n\n");
 
@@ -1901,41 +2038,57 @@ int main(int argc, char * argv[])
 
     jtest::CPU::warm_up(1000);
 
-    if (1) {
-        #if USE_JSTD_FLAT_HASH_MAP
+#if USE_JSTD_FLAT16_HASH_MAP
+    if (1)
+    {
         jstd_flat16_hash_map_benchmark();
         jstd::Console::ReadKey();
-        #endif
     }
+#endif
 
-    if (1) {
-        #if USE_SKA_FLAT_HASH_MAP
+#if USE_JSTD_ROBIN16_HASH_MAP
+    if (1)
+    {
+        jstd_robin16_hash_map_benchmark();
+        jstd::Console::ReadKey();
+    }
+#endif
+
+#if USE_SKA_FLAT_HASH_MAP
+    if (1)
+    {
         ska_flat_hash_map_benchmark();
         jstd::Console::ReadKey();
-        #endif
     }
+#endif
 
-    if (1) {
-        #if USE_SKA_BYTELL_HASH_MAP
+#if USE_SKA_BYTELL_HASH_MAP
+    if (1)
+    {
         ska_bytell_hash_map_benchmark();
         jstd::Console::ReadKey();
-        #endif
     }
+#endif
 
-    if (1) {
-        #if USE_ABSL_FLAT_HASH_MAP
+#if USE_ABSL_FLAT_HASH_MAP
+    if (1)
+    {
         absl_flat_hash_map_benchmark();
         jstd::Console::ReadKey();
-        #endif
     }
+#endif
 
-    if (1) {
-        #if USE_ABSL_NODE_HASH_MAP
+#if USE_ABSL_NODE_HASH_MAP
+    if (1)
+    {
         absl_node_hash_map_benchmark();
         jstd::Console::ReadKey();
-        #endif
     }
+#endif
 
+#if defined(_MSC_VER) && defined(_DEBUG)
+    jstd::Console::ReadKey();
+#endif
     return 0;
 }
 
