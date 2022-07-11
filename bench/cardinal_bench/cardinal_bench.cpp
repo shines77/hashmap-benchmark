@@ -1,4 +1,3 @@
-
 /************************************************************************************
 
   CC BY-SA 4.0 License
@@ -85,9 +84,9 @@
 #define USE_STD_UNORDERED_MAP       1
 #define USE_JSTD_FLAT16_HASH_MAP    1
 #define USE_SKA_FLAT_HASH_MAP       1
-#define USE_SKA_BYTELL_HASH_MAP     1
+#define USE_SKA_BYTELL_HASH_MAP     0
 #define USE_ABSL_FLAT_HASH_MAP      1
-#define USE_ABSL_NODE_HASH_MAP      1
+#define USE_ABSL_NODE_HASH_MAP      0
 
 #ifdef _MSC_VER
 #undef USE_ABSL_FLAT_HASH_MAP
@@ -239,7 +238,7 @@ struct IntegalHash
                                 (std::is_integral<UInt32>::value &&
                                 (sizeof(UInt32) <= 4))>::type * = nullptr>
     result_type operator () (UInt32 value) const noexcept {
-        result_type hash = (result_type)((std::uint32_t)value * 2654435761ul + 16777619ul);
+        result_type hash = (result_type)(((std::uint64_t)value * 2654435769ul) >> 12);
         return hash;
     }
 
@@ -247,7 +246,7 @@ struct IntegalHash
                                 (std::is_integral<UInt64>::value &&
                                 (sizeof(UInt64) > 4 && sizeof(UInt64) <= 8))>::type * = nullptr>
     result_type operator () (UInt64 value) const noexcept {
-        result_type hash = (result_type)((std::uint64_t)value * 14695981039346656037ull + 1099511628211ull);
+        result_type hash = (result_type)(((std::uint64_t)value * 11400714819323198485ull) >> 28);
         return hash;
     }
 
@@ -478,7 +477,7 @@ void benchmark_insert_random(std::size_t iters)
     static constexpr std::size_t Cardinal6 = 600000 * Factor;
 #endif
 
-    printf("DataSize = %u\n\n", (uint32_t)DataSize);
+    printf("DataSize = %u, %s<T>\n\n", (uint32_t)DataSize, PRINT_MACRO(HASH_MAP_FUNCTION));
 
     benchmark_insert_random_impl<Key, Value, DataSize, Cardinal0>();
     printf("-----------------------------------------------------------------------\n\n");
