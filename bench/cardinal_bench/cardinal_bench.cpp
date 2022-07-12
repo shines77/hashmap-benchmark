@@ -149,6 +149,7 @@
 #include <absl/container/node_hash_map.h>
 #endif
 #include <jstd/hashmap/hashmap_analyzer.h>
+#include <jstd/hasher/hash.h>
 #include <jstd/hasher/hash_helper.h>
 #include <jstd/string/string_view.h>
 #include <jstd/string/string_view_array.h>
@@ -167,17 +168,20 @@
 #define ID_STD_HASH             0   // std::hash<T>
 #define ID_SIMPLE_HASH          1   // test::hash<T>
 #define ID_INTEGAL_HASH         2   // test::IntegalHash<T>
+#define ID_MUM_HASH             3   // test::MumHash<T>
 
 #ifdef _MSC_VER
-#define HASH_FUNCTION_ID        ID_SIMPLE_HASH
+#define HASH_FUNCTION_ID        ID_MUM_HASH
 #else
-#define HASH_FUNCTION_ID        ID_STD_HASH
+#define HASH_FUNCTION_ID        ID_MUM_HASH
 #endif
 
 #if (HASH_FUNCTION_ID == ID_SIMPLE_HASH)
   #define HASH_MAP_FUNCTION     test::SimpleHash
 #elif (HASH_FUNCTION_ID == ID_INTEGAL_HASH)
   #define HASH_MAP_FUNCTION     test::IntegalHash
+#elif (HASH_FUNCTION_ID == ID_MUM_HASH)
+  #define HASH_MAP_FUNCTION     test::MumHash
 #else
   #define HASH_MAP_FUNCTION     std::hash
 #endif // HASH_FUNCTION_MODE
@@ -258,6 +262,37 @@ struct IntegalHash
                                   (!std::is_integral<Argument>::value ||
                                   sizeof(Argument) > 8)>::type * = nullptr>
     result_type operator () (const Argument & value) const {
+        std::hash<Argument> hasher;
+        return static_cast<result_type>(hasher(value));
+    }
+};
+
+template <typename T>
+struct MumHash
+{
+    typedef T           argument_type;
+    typedef std::size_t result_type;
+
+    template <typename UInt32, typename std::enable_if<
+                                (std::is_integral<UInt32>::value &&
+                                (sizeof(UInt32) <= 4))>::type * = nullptr>
+    result_type operator () (UInt32 value) const noexcept {
+        result_type hash = (result_type)(jstd::hashers::mum_hash64((std::uint64_t)value, 11400714819323198485ull));
+        return hash;
+    }
+
+    template <typename UInt64, typename std::enable_if<
+                                (std::is_integral<UInt64>::value &&
+                                (sizeof(UInt64) > 4 && sizeof(UInt64) <= 8))>::type * = nullptr>
+    result_type operator () (UInt64 value) const noexcept {
+        result_type hash = (result_type)(jstd::hashers::mum_hash64((std::uint64_t)value, 11400714819323198485ull));
+        return hash;
+    }
+
+    template <typename Argument, typename std::enable_if<
+                                  (!std::is_integral<Argument>::value ||
+                                  sizeof(Argument) > 8)>::type * = nullptr>
+    result_type operator () (const Argument & value) const noexcept {
         std::hash<Argument> hasher;
         return static_cast<result_type>(hasher(value));
     }
@@ -502,13 +537,102 @@ void benchmark_insert_random(std::size_t iters)
     benchmark_insert_random_impl<Key, Value, DataSize, Cardinal6>();
 }
 
+template <typename Key, typename Value, std::size_t DataSize, std::size_t Cardinal>
+void benchmark_MumHash_insert_random_impl()
+{
+    std::string name0, name1, name2, name3, name4, name5, name6;
+    name0 = get_hashmap_name<Key, Value>("std::unordered_map<%s, %s>");
+    name1 = get_hashmap_name<Key, Value>("jstd::flat16_hash_map<%s, %s>");
+    name2 = get_hashmap_name<Key, Value>("jstd::robin16_hash_map<%s, %s>");
+    name3 = get_hashmap_name<Key, Value>("ska::flat_hash_map<%s, %s>");
+    name4 = get_hashmap_name<Key, Value>("ska::bytell_hash_map<%s, %s>");
+    name5 = get_hashmap_name<Key, Value>("absl::flat_hash_map<%s, %s>");
+    name6 = get_hashmap_name<Key, Value>("absl::node_hash_map<%s, %s>");
+
+    std::vector<Key> keys;
+    generate_random_keys<Key>(keys, DataSize, Cardinal);
+
+#if USE_STD_UNORDERED_MAP
+    run_insert_random<std::unordered_map<Key, Value, test::MumHash<Key>>>    (name0, keys, Cardinal);
+#endif
+#if USE_JSTD_FLAT16_HASH_MAP
+    run_insert_random<jstd::flat16_hash_map<Key, Value, test::MumHash<Key>>> (name1, keys, Cardinal);
+#endif
+#if USE_JSTD_ROBIN16_HASH_MAP
+    run_insert_random<jstd::robin16_hash_map<Key, Value, test::MumHash<Key>>>(name2, keys, Cardinal);
+#endif
+#if USE_SKA_FLAT_HASH_MAP
+    run_insert_random<ska::flat_hash_map<Key, Value, test::MumHash<Key>>>    (name3, keys, Cardinal);
+#endif
+#if USE_SKA_BYTELL_HASH_MAP
+    run_insert_random<ska::bytell_hash_map<Key, Value, test::MumHash<Key>>>  (name4, keys, Cardinal);
+#endif
+#if USE_ABSL_FLAT_HASH_MAP
+    run_insert_random<absl::flat_hash_map<Key, Value, test::MumHash<Key>>>   (name5, keys, Cardinal);
+#endif
+#if USE_ABSL_NODE_HASH_MAP
+    run_insert_random<absl::node_hash_map<Key, Value, test::MumHash<Key>>>   (name6, keys, Cardinal);
+#endif
+}
+
+template <typename Key, typename Value>
+void benchmark_MumHash_insert_random(std::size_t iters)
+{
+    static constexpr std::size_t Factor = 16;
+#ifndef _DEBUG
+    static constexpr std::size_t DataSize = 1024 * 1000 * Factor;
+    static constexpr std::size_t Cardinal0 = 60 * Factor;
+    static constexpr std::size_t Cardinal1 = 600 * Factor;
+    static constexpr std::size_t Cardinal2 = 6000 * Factor;
+    static constexpr std::size_t Cardinal3 = 60000 * Factor;
+    static constexpr std::size_t Cardinal4 = 600000 * Factor;
+    static constexpr std::size_t Cardinal5 = 6000000 * Factor;
+    static constexpr std::size_t Cardinal6 = 60000000 * Factor;
+#else
+    static constexpr std::size_t DataSize = 1024 * 10 * Factor;
+    static constexpr std::size_t Cardinal0 = 6 * Factor;
+    static constexpr std::size_t Cardinal1 = 60 * Factor;
+    static constexpr std::size_t Cardinal2 = 600 * Factor;
+    static constexpr std::size_t Cardinal3 = 6000 * Factor;
+    static constexpr std::size_t Cardinal4 = 60000 * Factor;
+    static constexpr std::size_t Cardinal5 = 600000 * Factor;
+    static constexpr std::size_t Cardinal6 = 600000 * Factor;
+#endif
+
+    printf("DataSize = %u, test::MumHash<T>\n\n", (uint32_t)DataSize);
+
+    benchmark_MumHash_insert_random_impl<Key, Value, DataSize, Cardinal0>();
+    printf("-----------------------------------------------------------------------\n\n");
+    benchmark_MumHash_insert_random_impl<Key, Value, DataSize, Cardinal1>();
+    printf("-----------------------------------------------------------------------\n\n");
+    benchmark_MumHash_insert_random_impl<Key, Value, DataSize, Cardinal2>();
+    printf("-----------------------------------------------------------------------\n\n");
+    benchmark_MumHash_insert_random_impl<Key, Value, DataSize, Cardinal3>();
+    printf("-----------------------------------------------------------------------\n\n");
+    benchmark_MumHash_insert_random_impl<Key, Value, DataSize, Cardinal4>();
+    printf("-----------------------------------------------------------------------\n\n");
+    //benchmark_MumHash_insert_random_impl<Key, Value, DataSize, Cardinal5>();
+    //printf("-----------------------------------------------------------------------\n\n");
+    benchmark_MumHash_insert_random_impl<Key, Value, DataSize, Cardinal6>();
+}
+
 void benchmark_all_hashmaps(std::size_t iters)
 {
+#if 1
     benchmark_insert_random<int, int>(iters);
 
     printf("------------------------------------------------------------------------------------\n\n");
 
     benchmark_insert_random<std::size_t, std::size_t>(iters);
+
+    printf("------------------------------------------------------------------------------------\n\n");
+#endif
+
+    benchmark_MumHash_insert_random<int, int>(iters);
+
+    printf("------------------------------------------------------------------------------------\n\n");
+
+    benchmark_MumHash_insert_random<std::size_t, std::size_t>(iters);
 }
 
 void std_hash_test()
