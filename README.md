@@ -10,8 +10,8 @@
 
 依赖以下开源库:
 
-* `jstd_hashmap`: [https://gitee.com/shines77/jstd_hashmap](https://gitee.com/shines77/jstd_hashmap)
-* `flat_hash_map`: [https://github.com/skarupke/flat_hash_map](https://github.com/skarupke/flat_hash_map)
+* `jstd_hashmap`：[https://gitee.com/shines77/jstd_hashmap](https://gitee.com/shines77/jstd_hashmap)
+* `flat_hash_map`：[https://github.com/skarupke/flat_hash_map](https://github.com/skarupke/flat_hash_map)
 * `Google` 的 `abseil-cpp` 库：[https://github.com/abseil/abseil-cpp](https://github.com/abseil/abseil-cpp)
 
 由于 `github` 访问比较困难，使用的是 `gitee` 的镜像。
