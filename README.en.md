@@ -77,7 +77,7 @@ make
 
 ### 4. Update to lastest version
 
-If you have compiled `abseil-cpp`, and wanna update to lastest version of this repository.
+If you have compiled `abseil-cpp` and `hashmap-benchmark`, and wanna update to lastest version of this repository.
 
 You can use following command:
 

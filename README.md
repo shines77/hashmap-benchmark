@@ -71,13 +71,14 @@ make install
 ```bash
 # 从 ./3rd_party/abseil-cpp/build 切换回 hashmap-benchmark 根目录
 cd ../../../
-cmake -DABSL_BUILD_TESTING=OFF -DABSL_USE_GOOGLETEST_HEAD=OFF -DABSL_PROPAGATE_CXX_STD=ON -DCMAKE_PREFIX_PATH=./install .
+cmake -DABSL_BUIL
+D_TESTING=OFF -DABSL_USE_GOOGLETEST_HEAD=OFF -DABSL_PROPAGATE_CXX_STD=ON -DCMAKE_PREFIX_PATH=./install .
 make
 ```
 
 ### 4. 更新到最新版本
 
-如果你已经成功编译了 `abseil-cpp` ，并且想更新到本仓库的最新代码，你可以使用如下命令：
+如果你已经成功编译了 `abseil-cpp` 和 `hashmap-benchmark` ，并且想更新到本仓库的最新代码，你可以使用如下命令：
 
 ```bash
 git pull
@@ -91,7 +92,6 @@ make
 ```bash
 # 跟 Google sprasehash 开源库类似的测试
 ./bin/time_hash_map
-
 # 低、中、高、超高 - 基数测试
 ./bin/cardinal_bench
 
