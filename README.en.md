@@ -69,7 +69,7 @@ make install
 And then, Configure and compile `hashmap-benchmark`:
 
 ```bash
-# switch to hashmap-benchmark root dir
+# Switch from ./3rd_party/abseil-cpp/build to hashmap-benchmark root dir
 cd ../../../
 cmake -DABSL_BUILD_TESTING=OFF -DABSL_USE_GOOGLETEST_HEAD=OFF -DABSL_PROPAGATE_CXX_STD=ON -DCMAKE_PREFIX_PATH=./install .
 make

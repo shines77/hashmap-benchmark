@@ -69,7 +69,7 @@ make install
 再配置和编译 `hashmap-benchmark`：
 
 ```bash
-# 切换回 hashmap-benchmark 根目录
+# 从 ./3rd_party/abseil-cpp/build 切换回 hashmap-benchmark 根目录
 cd ../../../
 cmake -DABSL_BUILD_TESTING=OFF -DABSL_USE_GOOGLETEST_HEAD=OFF -DABSL_PROPAGATE_CXX_STD=ON -DCMAKE_PREFIX_PATH=./install .
 make
