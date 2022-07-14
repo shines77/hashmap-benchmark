@@ -66,7 +66,7 @@ make
 make install
 ```
 
-Configure and compile `hashmap-benchmark`:
+And then, Configure and compile `hashmap-benchmark`:
 
 ```bash
 # switch to hashmap-benchmark root dir

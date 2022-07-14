@@ -66,7 +66,7 @@ make
 make install
 ```
 
-配置和编译 `hashmap-benchmark`：
+再配置和编译 `hashmap-benchmark`：
 
 ```bash
 # 切换回 hashmap-benchmark 根目录
