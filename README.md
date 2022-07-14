@@ -29,7 +29,15 @@
 * 添加了 `bytell_hash_map.hpp` 中缺失的头文件 "#include \<limits\>";
 * 为 `ska::flat_hash_map<K,V>` 和 `ska::bytell_hash_map<K,V>` 添加了静态成员函数 `name()`;
 
-### 1. 更新子模块
+### 1. 克隆 Git 仓库
+
+```bash
+git clone https://gitee.com/shines77/hashmap-benchmark
+# 或者
+git clone https://github.com/shines77/hashmap-benchmark
+```
+
+### 2. 初始化子模块
 
 由于引用了以上 `3` 个开源库，`clone` 完以后必须先更新 `submodule`：
 
@@ -46,7 +54,7 @@ git submodule update --init --recursive
 git submodule update --remote --recursive
 ```
 
-### 2. 配置与编译
+### 3. 配置与编译
 
 先配置和编译 `Google` 的 `abseil-cpp` 库：
 
@@ -65,20 +73,31 @@ make install
 cd ../../../
 cmake -DABSL_BUILD_TESTING=OFF -DABSL_USE_GOOGLETEST_HEAD=OFF -DABSL_PROPAGATE_CXX_STD=ON -DCMAKE_PREFIX_PATH=./install .
 make
-````
+```
 
-### 3. 运行 benchmark
+### 4. 更新到最新版本
+
+如果你已经成功编译了 `abseil-cpp` ，并且想更新到本仓库的最新代码，你可以使用如下命令：
+
+```bash
+git pull
+git submodule update --init --recursive
+
+make
+```
+
+### 5. 运行 benchmark
 
 ```bash
 # 跟 Google sprasehash 开源库类似的测试
 ./bin/time_hash_map
+
+# 低、中、高、超高 - 基数测试
+./bin/cardinal_bench
 
 # 小数据集测试
 ./bin/benchmark
 
 # 中数据集测试
 ./bin/benchmark ./data/Maven.keys.txt
-
-# 低、中、高、超高 - 基数测试
-./bin/cardinal_bench
 ```

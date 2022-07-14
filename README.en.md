@@ -14,11 +14,11 @@ Dependent on:
 * `flat_hash_map`: [https://github.com/skarupke/flat_hash_map](https://github.com/skarupke/flat_hash_map)
 * `Google` - `abseil-cpp`: [https://github.com/abseil/abseil-cpp](https://github.com/abseil/abseil-cpp)
 
-Since `github` is difficult to access in China, so use a mirror repository of `gitee`.
+Because `github` is difficult to access in China, so I use a mirror repository of `gitee.com`.
 
-`flat_hash_map` China mirror and modify: [https://gitee.com/shines77/flat_hash_map](https://gitee.com/shines77/flat_hash_map)
+`flat_hash_map` China mirror and modified version: [https://gitee.com/shines77/flat_hash_map](https://gitee.com/shines77/flat_hash_map)
 
-`abseil-cpp` China mirror：[https://gitee.com/arjing/abseil-cpp](https://gitee.com/arjing/abseil-cpp)
+`abseil-cpp` China mirror: [https://gitee.com/arjing/abseil-cpp](https://gitee.com/arjing/abseil-cpp)
 
 I made some changes to `flat_hash_map` and fixed some `bugs` so that it can be used normally in this test code.
 
@@ -29,9 +29,17 @@ ChangeLog:
 * Added missing header file "#include \<limits\>" in bytell_hash_map.hpp;
 * Added static name() member method for ska::flat_hash_map<K,V> and ska::bytell_hash_map<K,V>;
 
-### 1. Update submodule(s)
+### 1. Clone git repository
 
-Since the above 3 open source libraries are referenced, the submodule must be updated after clone:
+```bash
+git clone https://github.com/shines77/hashmap-benchmark
+or
+git clone https://gitee.com/shines77/hashmap-benchmark
+```
+
+### 2. Init submodule(s)
+
+Since the above 3 open source libraries are referenced, the submodule must be init and update after clone:
 
 ```shell
 git submodule init
@@ -46,7 +54,7 @@ If you want to update to the latest version of the sub-module, you can use the f
 git submodule update --remote --recursive
 ```
 
-### 2. Configure and Compile
+### 3. Configure and Compile
 
 First, configure and compile `abseil-cpp`:
 
@@ -65,20 +73,33 @@ Configure and compile `hashmap-benchmark`:
 cd ../../../
 cmake -DABSL_BUILD_TESTING=OFF -DABSL_USE_GOOGLETEST_HEAD=OFF -DABSL_PROPAGATE_CXX_STD=ON -DCMAKE_PREFIX_PATH=./install .
 make
-````
+```
 
-### 3. Run benchmark
+### 4. Update to lastest version
+
+If you have compiled `abseil-cpp`, and wanna update to lastest version of this repository.
+
+You can use following command:
+
+```bash
+git pull
+git submodule update --init --recursive
+
+make
+```
+
+### 5. Run benchmark
 
 ```bash
 # like Google sprasehash benchmark code
 ./bin/time_hash_map
+
+# Small, Middle, Big, Huge - Cardinal benchmark
+./bin/cardinal_bench
 
 # Small test case
 ./bin/benchmark
 
 # Middle test case
 ./bin/benchmark ./data/Maven.keys.txt
-
-# Small, Middle, Big, Huge - Cardinal benchmark
-./bin/cardinal_bench
 ```

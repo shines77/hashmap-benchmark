@@ -997,7 +997,7 @@ static void time_map_find(char const * title, std::size_t iters,
                           const Vector & indices) {
     typedef typename MapType::mapped_type mapped_type;
 
-    MapType hashmap(kInitCapacity);
+    MapType hashmap;
     jtest::StopWatch sw;
     std::size_t r;
     mapped_type i;
@@ -1052,7 +1052,7 @@ template <class MapType>
 static void time_map_find_failed(std::size_t iters) {
     typedef typename MapType::mapped_type mapped_type;
 
-    MapType hashmap(kInitCapacity);
+    MapType hashmap;
     jtest::StopWatch sw;
     std::size_t r;
     mapped_type i;
@@ -1079,7 +1079,7 @@ template <class MapType>
 static void time_map_find_empty(std::size_t iters) {
     typedef typename MapType::mapped_type mapped_type;
 
-    MapType hashmap(kInitCapacity);
+    MapType hashmap;
     jtest::StopWatch sw;
     std::size_t r;
     mapped_type i;
@@ -1102,7 +1102,7 @@ template <class MapType>
 static void time_map_insert(std::size_t iters) {
     typedef typename MapType::mapped_type mapped_type;
 
-    MapType hashmap(kInitCapacity);
+    MapType hashmap;
     jtest::StopWatch sw;
 
     mapped_type max_iters = static_cast<mapped_type>(iters);
@@ -1124,7 +1124,7 @@ template <class MapType>
 static void time_map_insert_predicted(std::size_t iters) {
     typedef typename MapType::mapped_type mapped_type;
 
-    MapType hashmap(kInitCapacity);
+    MapType hashmap;
     jtest::StopWatch sw;
 
     mapped_type max_iters = static_cast<mapped_type>(iters);
@@ -1148,7 +1148,7 @@ template <class MapType>
 static void time_map_insert_replace(std::size_t iters) {
     typedef typename MapType::mapped_type mapped_type;
 
-    MapType hashmap(kInitCapacity);
+    MapType hashmap;
     jtest::StopWatch sw;
 
     mapped_type max_iters = static_cast<mapped_type>(iters);
@@ -1174,7 +1174,7 @@ template <class MapType>
 static void time_map_emplace(std::size_t iters) {
     typedef typename MapType::mapped_type mapped_type;
 
-    MapType hashmap(kInitCapacity);
+    MapType hashmap;
     jtest::StopWatch sw;
 
     mapped_type max_iters = static_cast<mapped_type>(iters);
@@ -1196,7 +1196,7 @@ template <class MapType>
 static void time_map_emplace_predicted(std::size_t iters) {
     typedef typename MapType::mapped_type mapped_type;
 
-    MapType hashmap(kInitCapacity);
+    MapType hashmap;
     jtest::StopWatch sw;
 
     mapped_type max_iters = static_cast<mapped_type>(iters);
@@ -1220,7 +1220,7 @@ template <class MapType>
 static void time_map_emplace_replace(std::size_t iters) {
     typedef typename MapType::mapped_type mapped_type;
 
-    MapType hashmap(kInitCapacity);
+    MapType hashmap;
     jtest::StopWatch sw;
 
     mapped_type max_iters = static_cast<mapped_type>(iters);
@@ -1246,7 +1246,7 @@ template <class MapType>
 static void time_map_operator_at(std::size_t iters) {
     typedef typename MapType::mapped_type mapped_type;
 
-    MapType hashmap(kInitCapacity);
+    MapType hashmap;
     jtest::StopWatch sw;
 
     mapped_type max_iters = static_cast<mapped_type>(iters);
@@ -1268,7 +1268,7 @@ template <class MapType>
 static void time_map_operator_at_predicted(std::size_t iters) {
     typedef typename MapType::mapped_type mapped_type;
 
-    MapType hashmap(kInitCapacity);
+    MapType hashmap;
     jtest::StopWatch sw;
 
     mapped_type max_iters = static_cast<mapped_type>(iters);
@@ -1292,7 +1292,7 @@ template <class MapType>
 static void time_map_operator_at_replace(std::size_t iters) {
     typedef typename MapType::mapped_type mapped_type;
 
-    MapType hashmap(kInitCapacity);
+    MapType hashmap;
     jtest::StopWatch sw;
 
     mapped_type max_iters = static_cast<mapped_type>(iters);
@@ -1318,7 +1318,7 @@ template <class MapType>
 static void time_map_erase(std::size_t iters) {
     typedef typename MapType::mapped_type mapped_type;
 
-    MapType hashmap(kInitCapacity);
+    MapType hashmap;
     jtest::StopWatch sw;
 
     mapped_type max_iters = static_cast<mapped_type>(iters);
@@ -1344,7 +1344,7 @@ template <class MapType>
 static void time_map_erase_failed(std::size_t iters) {
     typedef typename MapType::mapped_type mapped_type;
 
-    MapType hashmap(kInitCapacity);
+    MapType hashmap;
     jtest::StopWatch sw;
 
     mapped_type max_iters = static_cast<mapped_type>(iters);
@@ -1370,7 +1370,7 @@ template <class MapType>
 static void time_map_toggle(std::size_t iters) {
     typedef typename MapType::mapped_type mapped_type;
 
-    MapType hashmap(kInitCapacity);
+    MapType hashmap;
     jtest::StopWatch sw;
 
     mapped_type max_iters = static_cast<mapped_type>(iters);
@@ -1394,7 +1394,7 @@ static void time_map_iterate(std::size_t iters) {
     typedef typename MapType::mapped_type       mapped_type;
     typedef typename MapType::const_iterator    const_iterator;
 
-    MapType hashmap(kInitCapacity);
+    MapType hashmap;
     jtest::StopWatch sw;
     mapped_type r;
 
@@ -1630,7 +1630,7 @@ void benchmark_all_hashmaps(std::size_t iters)
     }
 
     if (FLAGS_test_256_bytes) {
-        test_all_hashmaps<HashObject<std::size_t, 256, 32>, std::size_t>(256, iters / 32);
+        test_all_hashmaps<HashObject<std::size_t, 256, 32>, std::size_t>(256, iters / 16);
     }
 }
 
