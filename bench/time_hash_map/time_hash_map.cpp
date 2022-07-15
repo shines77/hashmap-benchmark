@@ -301,8 +301,7 @@ struct SimpleHash {
                                   (!std::is_integral<Argument>::value ||
                                   sizeof(Argument) > 8)>::type * = nullptr>
     result_type operator () (const Argument & value) const {
-        std::hash<Argument> hasher;
-        return static_cast<result_type>(hasher(value));
+        return static_cast<result_type>(std::hash<Argument>()(value));
     }
 };
 
@@ -332,8 +331,7 @@ struct IntegalHash
                                   (!std::is_integral<Argument>::value ||
                                   sizeof(Argument) > 8)>::type * = nullptr>
     result_type operator () (const Argument & value) const noexcept {
-        std::hash<Argument> hasher;
-        return static_cast<result_type>(hasher(value));
+        return static_cast<result_type>(std::hash<Argument>()(value));
     }
 };
 
@@ -343,18 +341,10 @@ struct MumHash
     typedef T           argument_type;
     typedef std::size_t result_type;
 
-    template <typename UInt32, typename std::enable_if<
-                                (std::is_integral<UInt32>::value &&
-                                (sizeof(UInt32) <= 4))>::type * = nullptr>
-    result_type operator () (UInt32 value) const noexcept {
-        result_type hash = (result_type)(jstd::hashes::mum_hash64((std::uint64_t)value, 11400714819323198485ull));
-        return hash;
-    }
-
-    template <typename UInt64, typename std::enable_if<
-                                (std::is_integral<UInt64>::value &&
-                                (sizeof(UInt64) > 4 && sizeof(UInt64) <= 8))>::type * = nullptr>
-    result_type operator () (UInt64 value) const noexcept {
+    template <typename Integer, typename std::enable_if<
+                                (std::is_integral<Integer>::value &&
+                                (sizeof(Integer) <= 8))>::type * = nullptr>
+    result_type operator () (Integer value) const noexcept {
         result_type hash = (result_type)(jstd::hashes::mum_hash64((std::uint64_t)value, 11400714819323198485ull));
         return hash;
     }
@@ -363,8 +353,7 @@ struct MumHash
                                   (!std::is_integral<Argument>::value ||
                                   sizeof(Argument) > 8)>::type * = nullptr>
     result_type operator () (const Argument & value) const noexcept {
-        std::hash<Argument> hasher;
-        return static_cast<result_type>(hasher(value));
+        return static_cast<result_type>(std::hash<Argument>()(value));
     }
 };
 
@@ -613,7 +602,8 @@ public:
 #endif // _WIN64 || __amd64__
 
 template <typename Key, std::size_t Size = sizeof(Key),
-                        std::size_t HashSize = sizeof(Key)>
+                        std::size_t HashSize = sizeof(Key),
+                        bool is_special = false>
 class HashFn {
 public:
     typedef Key                             key_type;
@@ -628,11 +618,17 @@ public:
     static const std::size_t min_buckets = 8;
 
     result_type operator () (const key_type & key) {
-        return static_cast<result_type>(HASH_MAP_FUNCTION<key_type>()(key));
+        if (is_special)
+            return static_cast<result_type>(test::MumHash<key_type>()(key));
+        else
+            return static_cast<result_type>(HASH_MAP_FUNCTION<key_type>()(key));
     }
 
     result_type operator () (const key_type & key) const {
-        return static_cast<result_type>(HASH_MAP_FUNCTION<key_type>()(key));
+        if (is_special)
+            return static_cast<result_type>(test::MumHash<key_type>()(key));
+        else
+            return static_cast<result_type>(HASH_MAP_FUNCTION<key_type>()(key));
     }
 
     result_type operator () (const pair_type & pair) {
