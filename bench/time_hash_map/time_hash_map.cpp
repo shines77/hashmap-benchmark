@@ -1067,8 +1067,7 @@ static void map_sequential_find_success(std::size_t iters) {
     typedef typename MapType::mapped_type mapped_type;
 
     mapped_type max_iters = static_cast<mapped_type>(iters);
-    std::vector<mapped_type> v;
-    v.reserve(iters);
+    std::vector<mapped_type> v(iters);
     for (mapped_type i = 0; i < max_iters; i++) {
         v[i] = i + 1;
     }
@@ -1081,8 +1080,7 @@ static void map_sequential_find_random(std::size_t iters) {
     typedef typename MapType::mapped_type mapped_type;
 
     mapped_type max_iters = static_cast<mapped_type>(iters);
-    std::vector<mapped_type> v;
-    v.reserve(iters);
+    std::vector<mapped_type> v(iters);
     for (mapped_type i = 0; i < max_iters; i++) {
         v[i] = i + 1;
     }
