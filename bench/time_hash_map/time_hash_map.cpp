@@ -301,7 +301,8 @@ struct SimpleHash {
                                   (!std::is_integral<Argument>::value ||
                                   sizeof(Argument) > 8)>::type * = nullptr>
     result_type operator () (const Argument & value) const {
-        return static_cast<result_type>(std::hash<Argument>()(value));
+        std::hash<Argument> hasher;
+        return static_cast<result_type>(hasher(value));
     }
 };
 
@@ -331,7 +332,8 @@ struct IntegalHash
                                   (!std::is_integral<Argument>::value ||
                                   sizeof(Argument) > 8)>::type * = nullptr>
     result_type operator () (const Argument & value) const noexcept {
-        return static_cast<result_type>(std::hash<Argument>()(value));
+        std::hash<Argument> hasher;
+        return static_cast<result_type>(hasher(value));
     }
 };
 
@@ -353,7 +355,8 @@ struct MumHash
                                   (!std::is_integral<Argument>::value ||
                                   sizeof(Argument) > 8)>::type * = nullptr>
     result_type operator () (const Argument & value) const noexcept {
-        return static_cast<result_type>(std::hash<Argument>()(value));
+        std::hash<Argument> hasher;
+        return static_cast<result_type>(hasher(value));
     }
 };
 

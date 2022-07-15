@@ -337,9 +337,9 @@ void copy_and_shuffle_vector(Vector & dest_list, const Vector & src_list) {
     }
 
     // shuffle
-    for (std::size_t n = dest_list.size() - 1; n > 0; n--) {
-        std::size_t rnd_idx = jstd::MtRandomGen::nextUInt32(static_cast<std::uint32_t>(n));
-        std::swap(dest_list[n], dest_list[rnd_idx]);
+    for (std::size_t n = dest_list.size(); n >= 2; n--) {
+        std::size_t rnd_idx = std::size_t(jstd::MtRandomGen::nextUInt()) % n;
+        std::swap(dest_list[n - 1], dest_list[rnd_idx]);
     }
 }
 
@@ -359,9 +359,9 @@ void copy_and_shuffle_vector(jstd::string_view_array<jstd::string_view, jstd::st
     }
 
     // shuffle
-    for (std::size_t n = dest_list.size() - 1; n > 0; n--) {
-        std::size_t rnd_idx = jstd::MtRandomGen::nextUInt32(static_cast<std::uint32_t>(n));
-        std::swap(dest_list[n], dest_list[rnd_idx]);
+    for (std::size_t n = dest_list.size(); n >= 2; n--) {
+        std::size_t rnd_idx = std::size_t(jstd::MtRandomGen::nextUInt()) % n;
+        std::swap(dest_list[n - 1], dest_list[rnd_idx]);
     }
 }
 
