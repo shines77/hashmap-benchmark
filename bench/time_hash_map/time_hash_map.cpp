@@ -648,11 +648,17 @@ public:
     }
 
     result_type operator () (const argument_type & obj) {
-        return static_cast<result_type>(obj.Hash());
+        if (is_special)
+            return static_cast<result_type>(test::MumHash<key_type>()(obj.Hash()));
+        else
+            return static_cast<result_type>(obj.Hash());
     }
 
     result_type operator () (const argument_type & obj) const {
-        return static_cast<result_type>(obj.Hash());
+        if (is_special)
+            return static_cast<result_type>(test::MumHash<key_type>()(obj.Hash()));
+        else
+            return static_cast<result_type>(obj.Hash());
     }
 
 #if 1
@@ -687,12 +693,18 @@ public:
 
     template <typename UKey, std::size_t nSize, std::size_t nHashSize>
     result_type operator () (const HashObject<UKey, nSize, nHashSize> & obj) {
-        return static_cast<result_type>(obj.Hash());
+        if (is_special)
+            return static_cast<result_type>(test::MumHash<key_type>()(obj.Hash()));
+        else
+            return static_cast<result_type>(obj.Hash());
     }
 
     template <typename UKey, std::size_t nSize, std::size_t nHashSize>
     result_type operator () (const HashObject<UKey, nSize, nHashSize> & obj) const {
-        return static_cast<result_type>(obj.Hash());
+        if (is_special)
+            return static_cast<result_type>(test::MumHash<key_type>()(obj.Hash()));
+        else
+            return static_cast<result_type>(obj.Hash());
     }
 
 #if 1
@@ -2097,8 +2109,8 @@ static void test_all_hashmaps(std::size_t obj_size, std::size_t iters) {
 
 #if USE_ABSL_FLAT_HASH_MAP
     if (FLAGS_test_absl_flat_hash_map) {
-        measure_hashmap<absl::flat_hash_map<HashObj,   Value, test::MumHash<HashObj>>,
-                        absl::flat_hash_map<HashObj *, Value, test::MumHash<HashObj>>
+        measure_hashmap<absl::flat_hash_map<HashObj,   Value, HashFn<Value, HashObj::cSize, HashObj::cHashSize, true>>,
+                        absl::flat_hash_map<HashObj *, Value, HashFn<Value, HashObj::cSize, HashObj::cHashSize, true>>
                         >(
             "absl::flat_hash_map<K, V>", obj_size, 0, iters, has_stress_hash_function);
     }
