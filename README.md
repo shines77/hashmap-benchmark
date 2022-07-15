@@ -71,8 +71,7 @@ make install
 ```bash
 # 从 ./3rd_party/abseil-cpp/build 切换回 hashmap-benchmark 根目录
 cd ../../../
-cmake -DABSL_BUIL
-D_TESTING=OFF -DABSL_USE_GOOGLETEST_HEAD=OFF -DABSL_PROPAGATE_CXX_STD=ON -DCMAKE_PREFIX_PATH=./install .
+cmake -DABSL_BUILD_TESTING=OFF -DABSL_USE_GOOGLETEST_HEAD=OFF -DABSL_PROPAGATE_CXX_STD=ON -DCMAKE_PREFIX_PATH=./install .
 make
 ```
 
