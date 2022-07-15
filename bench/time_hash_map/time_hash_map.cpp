@@ -2149,7 +2149,7 @@ void benchmark_all_hashmaps(std::size_t iters)
     }
 
     if (FLAGS_test_256_bytes) {
-        test_all_hashmaps<HashObject<std::size_t, 256, 32>, std::size_t>(256, iters / 16);
+        test_all_hashmaps<HashObject<std::size_t, 256, 32>, std::size_t>(256, iters / 32);
     }
 }
 
