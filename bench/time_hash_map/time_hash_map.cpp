@@ -190,7 +190,7 @@
 #ifdef _MSC_VER
 #define HASH_FUNCTION_ID        ID_SIMPLE_HASH
 #else
-#define HASH_FUNCTION_ID        ID_SIMPLE_HASH
+#define HASH_FUNCTION_ID        ID_STD_HASH
 #endif
 
 #if (HASH_FUNCTION_ID == ID_STDEXT_HASH)
@@ -2101,8 +2101,8 @@ static void test_all_hashmaps(std::size_t obj_size, std::size_t iters) {
 
 #if USE_ABSL_FLAT_HASH_MAP
     if (FLAGS_test_absl_flat_hash_map) {
-        measure_hashmap<absl::flat_hash_map<HashObj,   Value, HashFn<Value, HashObj::cSize, HashObj::cHashSize>>,
-                        absl::flat_hash_map<HashObj *, Value, HashFn<Value, HashObj::cSize, HashObj::cHashSize>>
+        measure_hashmap<absl::flat_hash_map<HashObj,   Value, test::MumHash<HashObj>>,
+                        absl::flat_hash_map<HashObj *, Value, test::MumHash<HashObj>>
                         >(
             "absl::flat_hash_map<K, V>", obj_size, 0, iters, has_stress_hash_function);
     }
