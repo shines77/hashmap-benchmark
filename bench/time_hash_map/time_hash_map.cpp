@@ -172,8 +172,7 @@
 #include <jstd/test/StopWatch.h>
 #include <jstd/test/CPUWarmUp.h>
 #include <jstd/test/ProcessMemInfo.h>
-
-#include "BenchmarkResult.h"
+#include <jstd/test/ReadRss.h>
 
 #define USE_STAT_COUNTER        1
 
@@ -279,7 +278,7 @@ void reset_counter()
 static inline
 std::size_t CurrentMemoryUsage()
 {
-    return jtest::GetCurrentMemoryUsage();
+    return jtest::getCurrentRSS();
 }
 
 namespace test {
@@ -990,10 +989,25 @@ void print_test_time(std::size_t checksum, double elapsedTime)
 static void report_result(char const * title, double ut, std::size_t iters,
                           size_t start_memory, size_t end_memory) {
     // Construct heap growth report text if applicable
-    char heap[128] = "";
+    char heap[128];
+    heap[0] = '\0';
+#if 0
     if (end_memory > start_memory) {
-        snprintf(heap, sizeof(heap), "%7.1f MB", (end_memory - start_memory) / 1048576.0);
+        snprintf(heap, sizeof(heap), "%7.1f MB", (double)(end_memory - start_memory) / 1048576.0);
     }
+#else
+    if (end_memory > start_memory) {
+        snprintf(heap, sizeof(heap), "%7.1f MB (+%0.1f MB)",
+                 (double)start_memory / 1048576.0,
+                 (double)(end_memory - start_memory) / 1048576.0);
+    } else if (start_memory > end_memory) {
+        snprintf(heap, sizeof(heap), "%7.1f MB (-%0.1f MB)",
+                 (double)start_memory / 1048576.0,
+                 (double)(start_memory - end_memory) / 1048576.0);
+    } else if ((start_memory == end_memory) && (start_memory != 0)) {
+        snprintf(heap, sizeof(heap), "%7.1f MB", (double)start_memory / 1048576.0);
+    }
+#endif
 
 #if (USE_STAT_COUNTER == 0)
     printf("%-35s %8.2f ns  %s\n", title, (ut * 1000000000.0 / iters), heap);
@@ -1155,11 +1169,12 @@ template <class MapType>
 static void map_sequential_insert(std::size_t iters) {
     typedef typename MapType::mapped_type mapped_type;
 
+    std::size_t start = CurrentMemoryUsage();
+
     MapType hashmap;
     jtest::StopWatch sw;
 
     mapped_type max_iters = static_cast<mapped_type>(iters);
-    const std::size_t start = CurrentMemoryUsage();
 
     reset_counter();
     sw.start();
@@ -1169,7 +1184,10 @@ static void map_sequential_insert(std::size_t iters) {
     sw.stop();
 
     double ut = sw.getElapsedSecond();
-    const std::size_t finish = CurrentMemoryUsage();
+    std::size_t finish = CurrentMemoryUsage();
+
+    // Ensure the HashMap is not destructed
+    ::srand(static_cast<unsigned int>(hashmap.size()));
     report_result("sequential_insert", ut, iters, start, finish);
 }
 
@@ -1177,11 +1195,12 @@ template <class MapType>
 static void map_sequential_insert_predicted(std::size_t iters) {
     typedef typename MapType::mapped_type mapped_type;
 
+    std::size_t start = CurrentMemoryUsage();
+
     MapType hashmap;
     jtest::StopWatch sw;
 
     mapped_type max_iters = static_cast<mapped_type>(iters);
-    const std::size_t start = CurrentMemoryUsage();
 
     hashmap.rehash(max_iters);
 
@@ -1193,7 +1212,10 @@ static void map_sequential_insert_predicted(std::size_t iters) {
     sw.stop();
 
     double ut = sw.getElapsedSecond();
-    const std::size_t finish = CurrentMemoryUsage();
+    std::size_t finish = CurrentMemoryUsage();
+
+    // Ensure the HashMap is not destructed
+    ::srand(static_cast<unsigned int>(hashmap.size()));
     report_result("sequential_insert_predicted", ut, iters, start, finish);
 }
 
@@ -1209,7 +1231,7 @@ static void map_sequential_insert_replace(std::size_t iters) {
         hashmap.insert(std::make_pair(i, i + 1));
     }
 
-    const std::size_t start = CurrentMemoryUsage();
+    std::size_t start = CurrentMemoryUsage();
 
     reset_counter();
     sw.start();
@@ -1219,7 +1241,10 @@ static void map_sequential_insert_replace(std::size_t iters) {
     sw.stop();
 
     double ut = sw.getElapsedSecond();
-    const std::size_t finish = CurrentMemoryUsage();
+    std::size_t finish = CurrentMemoryUsage();
+
+    // Ensure the HashMap is not destructed
+    ::srand(static_cast<unsigned int>(hashmap.size()));
     report_result("sequential_insert_replace", ut, iters, start, finish);
 }
 
@@ -1227,11 +1252,12 @@ template <class MapType>
 static void map_sequential_emplace(std::size_t iters) {
     typedef typename MapType::mapped_type mapped_type;
 
+    std::size_t start = CurrentMemoryUsage();
+
     MapType hashmap;
     jtest::StopWatch sw;
 
     mapped_type max_iters = static_cast<mapped_type>(iters);
-    const std::size_t start = CurrentMemoryUsage();
 
     reset_counter();
     sw.start();
@@ -1241,7 +1267,10 @@ static void map_sequential_emplace(std::size_t iters) {
     sw.stop();
 
     double ut = sw.getElapsedSecond();
-    const std::size_t finish = CurrentMemoryUsage();
+    std::size_t finish = CurrentMemoryUsage();
+
+    // Ensure the HashMap is not destructed
+    ::srand(static_cast<unsigned int>(hashmap.size()));
     report_result("sequential_emplace", ut, iters, start, finish);
 }
 
@@ -1249,11 +1278,12 @@ template <class MapType>
 static void map_sequential_emplace_predicted(std::size_t iters) {
     typedef typename MapType::mapped_type mapped_type;
 
+    std::size_t start = CurrentMemoryUsage();
+
     MapType hashmap;
     jtest::StopWatch sw;
 
     mapped_type max_iters = static_cast<mapped_type>(iters);
-    const std::size_t start = CurrentMemoryUsage();
 
     hashmap.rehash(iters);
 
@@ -1265,7 +1295,10 @@ static void map_sequential_emplace_predicted(std::size_t iters) {
     sw.stop();
 
     double ut = sw.getElapsedSecond();
-    const std::size_t finish = CurrentMemoryUsage();
+    std::size_t finish = CurrentMemoryUsage();
+
+    // Ensure the HashMap is not destructed
+    ::srand(static_cast<unsigned int>(hashmap.size()));
     report_result("sequential_emplace_predicted", ut, iters, start, finish);
 }
 
@@ -1281,7 +1314,7 @@ static void map_sequential_emplace_replace(std::size_t iters) {
         hashmap.emplace(i, i + 1);
     }
 
-    const std::size_t start = CurrentMemoryUsage();
+    std::size_t start = CurrentMemoryUsage();
 
     reset_counter();
     sw.start();
@@ -1291,7 +1324,10 @@ static void map_sequential_emplace_replace(std::size_t iters) {
     sw.stop();
 
     double ut = sw.getElapsedSecond();
-    const std::size_t finish = CurrentMemoryUsage();
+    std::size_t finish = CurrentMemoryUsage();
+
+    // Ensure the HashMap is not destructed
+    ::srand(static_cast<unsigned int>(hashmap.size()));
     report_result("sequential_emplace_replace", ut, iters, start, finish);
 }
 
@@ -1299,11 +1335,12 @@ template <class MapType>
 static void map_sequential_operator(std::size_t iters) {
     typedef typename MapType::mapped_type mapped_type;
 
+    std::size_t start = CurrentMemoryUsage();
+
     MapType hashmap;
     jtest::StopWatch sw;
 
     mapped_type max_iters = static_cast<mapped_type>(iters);
-    const std::size_t start = CurrentMemoryUsage();
 
     reset_counter();
     sw.start();
@@ -1313,7 +1350,10 @@ static void map_sequential_operator(std::size_t iters) {
     sw.stop();
 
     double ut = sw.getElapsedSecond();
-    const std::size_t finish = CurrentMemoryUsage();
+    std::size_t finish = CurrentMemoryUsage();
+
+    // Ensure the HashMap is not destructed
+    ::srand(static_cast<unsigned int>(hashmap.size()));
     report_result("sequential_operator []", ut, iters, start, finish);
 }
 
@@ -1321,11 +1361,12 @@ template <class MapType>
 static void map_sequential_operator_predicted(std::size_t iters) {
     typedef typename MapType::mapped_type mapped_type;
 
+    std::size_t start = CurrentMemoryUsage();
+
     MapType hashmap;
     jtest::StopWatch sw;
 
     mapped_type max_iters = static_cast<mapped_type>(iters);
-    const std::size_t start = CurrentMemoryUsage();
 
     hashmap.rehash(max_iters);
 
@@ -1337,7 +1378,10 @@ static void map_sequential_operator_predicted(std::size_t iters) {
     sw.stop();
 
     double ut = sw.getElapsedSecond();
-    const std::size_t finish = CurrentMemoryUsage();
+    std::size_t finish = CurrentMemoryUsage();
+
+    // Ensure the HashMap is not destructed
+    ::srand(static_cast<unsigned int>(hashmap.size()));
     report_result("sequential_operator [] predicted", ut, iters, start, finish);
 }
 
@@ -1353,7 +1397,7 @@ static void map_sequential_operator_replace(std::size_t iters) {
         hashmap[i] = i + 1;
     }
 
-    const std::size_t start = CurrentMemoryUsage();
+    std::size_t start = CurrentMemoryUsage();
 
     reset_counter();
     sw.start();
@@ -1363,7 +1407,10 @@ static void map_sequential_operator_replace(std::size_t iters) {
     sw.stop();
 
     double ut = sw.getElapsedSecond();
-    const std::size_t finish = CurrentMemoryUsage();
+    std::size_t finish = CurrentMemoryUsage();
+
+    // Ensure the HashMap is not destructed
+    ::srand(static_cast<unsigned int>(hashmap.size()));
     report_result("sequential_operator [] replace", ut, iters, start, finish);
 }
 
@@ -1379,7 +1426,7 @@ static void map_sequential_erase(std::size_t iters) {
         hashmap.emplace(i, i + 1);
     }
 
-    const std::size_t start = CurrentMemoryUsage();
+    std::size_t start = CurrentMemoryUsage();
 
     reset_counter();
     sw.start();
@@ -1389,7 +1436,10 @@ static void map_sequential_erase(std::size_t iters) {
     sw.stop();
 
     double ut = sw.getElapsedSecond();
-    const std::size_t finish = CurrentMemoryUsage();
+    std::size_t finish = CurrentMemoryUsage();
+
+    // Ensure the HashMap is not destructed
+    ::srand(static_cast<unsigned int>(hashmap.size()));
     report_result("sequential_erase", ut, iters, start, finish);
 }
 
@@ -1405,7 +1455,7 @@ static void map_sequential_erase_failed(std::size_t iters) {
         hashmap.emplace(i, i + 1);
     }
 
-    const std::size_t start = CurrentMemoryUsage();
+    std::size_t start = CurrentMemoryUsage();
 
     reset_counter();
     sw.start();
@@ -1415,7 +1465,10 @@ static void map_sequential_erase_failed(std::size_t iters) {
     sw.stop();
 
     double ut = sw.getElapsedSecond();
-    const std::size_t finish = CurrentMemoryUsage();
+    std::size_t finish = CurrentMemoryUsage();
+
+    // Ensure the HashMap is not destructed
+    ::srand(static_cast<unsigned int>(hashmap.size()));
     report_result("sequential_erase_failed", ut, iters, start, finish);
 }
 
@@ -1423,11 +1476,12 @@ template <class MapType>
 static void map_sequential_toggle(std::size_t iters) {
     typedef typename MapType::mapped_type mapped_type;
 
+    std::size_t start = CurrentMemoryUsage();
+
     MapType hashmap;
     jtest::StopWatch sw;
 
     mapped_type max_iters = static_cast<mapped_type>(iters);
-    const std::size_t start = CurrentMemoryUsage();
 
     reset_counter();
     sw.start();
@@ -1438,7 +1492,10 @@ static void map_sequential_toggle(std::size_t iters) {
     sw.stop();
 
     double ut = sw.getElapsedSecond();
-    const std::size_t finish = CurrentMemoryUsage();
+    std::size_t finish = CurrentMemoryUsage();
+
+    // Ensure the HashMap is not destructed
+    ::srand(static_cast<unsigned int>(hashmap.size()));
     report_result("sequential_toggle", ut, iters, start, finish);
 }
 
@@ -1456,7 +1513,7 @@ static void map_sequential_iterate(std::size_t iters) {
         hashmap.emplace(i, i + 1);
     }
 
-    const std::size_t start = CurrentMemoryUsage();
+    std::size_t start = CurrentMemoryUsage();
 
     r = 1;
     reset_counter();
@@ -1467,8 +1524,13 @@ static void map_sequential_iterate(std::size_t iters) {
     sw.stop();
 
     double ut = sw.getElapsedSecond();
-    const std::size_t finish = CurrentMemoryUsage();
-    ::srand(static_cast<unsigned int>(r));   // keep compiler from optimizing away r (we never call rand())
+    std::size_t finish = CurrentMemoryUsage();
+
+    // keep compiler from optimizing away r (we never call rand())
+    ::srand(static_cast<unsigned int>(r));
+
+    // Ensure the HashMap is not destructed
+    ::srand(static_cast<unsigned int>(hashmap.size()));
     report_result("sequential_emplace - iterate", ut, iters, start, finish);
 }
 
@@ -1582,11 +1644,12 @@ template <class MapType, class Vector>
 static void map_random_insert(std::size_t iters, const Vector & indices) {
     typedef typename MapType::mapped_type mapped_type;
 
+    std::size_t start = CurrentMemoryUsage();
+
     MapType hashmap;
     jtest::StopWatch sw;
 
     mapped_type max_iters = static_cast<mapped_type>(iters);
-    const std::size_t start = CurrentMemoryUsage();
 
     reset_counter();
     sw.start();
@@ -1596,7 +1659,10 @@ static void map_random_insert(std::size_t iters, const Vector & indices) {
     sw.stop();
 
     double ut = sw.getElapsedSecond();
-    const std::size_t finish = CurrentMemoryUsage();
+    std::size_t finish = CurrentMemoryUsage();
+
+    // Ensure the HashMap is not destructed
+    ::srand(static_cast<unsigned int>(hashmap.size()));
     report_result("random_insert", ut, iters, start, finish);
 }
 
@@ -1604,11 +1670,12 @@ template <class MapType, class Vector>
 static void map_random_insert_predicted(std::size_t iters, const Vector & indices) {
     typedef typename MapType::mapped_type mapped_type;
 
+    std::size_t start = CurrentMemoryUsage();
+
     MapType hashmap;
     jtest::StopWatch sw;
 
     mapped_type max_iters = static_cast<mapped_type>(iters);
-    const std::size_t start = CurrentMemoryUsage();
 
     hashmap.rehash(max_iters);
 
@@ -1620,7 +1687,10 @@ static void map_random_insert_predicted(std::size_t iters, const Vector & indice
     sw.stop();
 
     double ut = sw.getElapsedSecond();
-    const std::size_t finish = CurrentMemoryUsage();
+    std::size_t finish = CurrentMemoryUsage();
+
+    // Ensure the HashMap is not destructed
+    ::srand(static_cast<unsigned int>(hashmap.size()));
     report_result("random_insert_predicted", ut, iters, start, finish);
 }
 
@@ -1636,7 +1706,7 @@ static void map_random_insert_replace(std::size_t iters, const Vector & indices)
         hashmap.insert(std::make_pair(indices[i], i));
     }
 
-    const std::size_t start = CurrentMemoryUsage();
+    std::size_t start = CurrentMemoryUsage();
 
     reset_counter();
     sw.start();
@@ -1646,7 +1716,10 @@ static void map_random_insert_replace(std::size_t iters, const Vector & indices)
     sw.stop();
 
     double ut = sw.getElapsedSecond();
-    const std::size_t finish = CurrentMemoryUsage();
+    std::size_t finish = CurrentMemoryUsage();
+
+    // Ensure the HashMap is not destructed
+    ::srand(static_cast<unsigned int>(hashmap.size()));
     report_result("random_insert_replace", ut, iters, start, finish);
 }
 
@@ -1654,11 +1727,12 @@ template <class MapType, class Vector>
 static void map_random_emplace(std::size_t iters, const Vector & indices) {
     typedef typename MapType::mapped_type mapped_type;
 
+    std::size_t start = CurrentMemoryUsage();
+
     MapType hashmap;
     jtest::StopWatch sw;
 
     mapped_type max_iters = static_cast<mapped_type>(iters);
-    const std::size_t start = CurrentMemoryUsage();
 
     reset_counter();
     sw.start();
@@ -1668,7 +1742,10 @@ static void map_random_emplace(std::size_t iters, const Vector & indices) {
     sw.stop();
 
     double ut = sw.getElapsedSecond();
-    const std::size_t finish = CurrentMemoryUsage();
+    std::size_t finish = CurrentMemoryUsage();
+
+    // Ensure the HashMap is not destructed
+    ::srand(static_cast<unsigned int>(hashmap.size()));
     report_result("random_emplace", ut, iters, start, finish);
 }
 
@@ -1676,11 +1753,12 @@ template <class MapType, class Vector>
 static void map_random_emplace_predicted(std::size_t iters, const Vector & indices) {
     typedef typename MapType::mapped_type mapped_type;
 
+    std::size_t start = CurrentMemoryUsage();
+
     MapType hashmap;
     jtest::StopWatch sw;
 
     mapped_type max_iters = static_cast<mapped_type>(iters);
-    const std::size_t start = CurrentMemoryUsage();
 
     hashmap.rehash(iters);
 
@@ -1692,7 +1770,10 @@ static void map_random_emplace_predicted(std::size_t iters, const Vector & indic
     sw.stop();
 
     double ut = sw.getElapsedSecond();
-    const std::size_t finish = CurrentMemoryUsage();
+    std::size_t finish = CurrentMemoryUsage();
+
+    // Ensure the HashMap is not destructed
+    ::srand(static_cast<unsigned int>(hashmap.size()));
     report_result("random_emplace_predicted", ut, iters, start, finish);
 }
 
@@ -1708,7 +1789,7 @@ static void map_random_emplace_replace(std::size_t iters, const Vector & indices
         hashmap.emplace(indices[i], i);
     }
 
-    const std::size_t start = CurrentMemoryUsage();
+    std::size_t start = CurrentMemoryUsage();
 
     reset_counter();
     sw.start();
@@ -1718,7 +1799,10 @@ static void map_random_emplace_replace(std::size_t iters, const Vector & indices
     sw.stop();
 
     double ut = sw.getElapsedSecond();
-    const std::size_t finish = CurrentMemoryUsage();
+    std::size_t finish = CurrentMemoryUsage();
+
+    // Ensure the HashMap is not destructed
+    ::srand(static_cast<unsigned int>(hashmap.size()));
     report_result("random_emplace_replace", ut, iters, start, finish);
 }
 
@@ -1726,11 +1810,12 @@ template <class MapType, class Vector>
 static void map_random_operator(std::size_t iters, const Vector & indices) {
     typedef typename MapType::mapped_type mapped_type;
 
+    std::size_t start = CurrentMemoryUsage();
+
     MapType hashmap;
     jtest::StopWatch sw;
 
     mapped_type max_iters = static_cast<mapped_type>(iters);
-    const std::size_t start = CurrentMemoryUsage();
 
     reset_counter();
     sw.start();
@@ -1740,7 +1825,10 @@ static void map_random_operator(std::size_t iters, const Vector & indices) {
     sw.stop();
 
     double ut = sw.getElapsedSecond();
-    const std::size_t finish = CurrentMemoryUsage();
+    std::size_t finish = CurrentMemoryUsage();
+
+    // Ensure the HashMap is not destructed
+    ::srand(static_cast<unsigned int>(hashmap.size()));
     report_result("random_operator []", ut, iters, start, finish);
 }
 
@@ -1748,11 +1836,12 @@ template <class MapType, class Vector>
 static void map_random_operator_predicted(std::size_t iters, const Vector & indices) {
     typedef typename MapType::mapped_type mapped_type;
 
+    std::size_t start = CurrentMemoryUsage();
+
     MapType hashmap;
     jtest::StopWatch sw;
 
     mapped_type max_iters = static_cast<mapped_type>(iters);
-    const std::size_t start = CurrentMemoryUsage();
 
     hashmap.rehash(max_iters);
 
@@ -1764,7 +1853,10 @@ static void map_random_operator_predicted(std::size_t iters, const Vector & indi
     sw.stop();
 
     double ut = sw.getElapsedSecond();
-    const std::size_t finish = CurrentMemoryUsage();
+    std::size_t finish = CurrentMemoryUsage();
+
+    // Ensure the HashMap is not destructed
+    ::srand(static_cast<unsigned int>(hashmap.size()));
     report_result("random_operator [] predicted", ut, iters, start, finish);
 }
 
@@ -1780,7 +1872,7 @@ static void map_random_operator_replace(std::size_t iters, const Vector & indice
         hashmap[indices[i]] = i;
     }
 
-    const std::size_t start = CurrentMemoryUsage();
+    std::size_t start = CurrentMemoryUsage();
 
     reset_counter();
     sw.start();
@@ -1790,7 +1882,10 @@ static void map_random_operator_replace(std::size_t iters, const Vector & indice
     sw.stop();
 
     double ut = sw.getElapsedSecond();
-    const std::size_t finish = CurrentMemoryUsage();
+    std::size_t finish = CurrentMemoryUsage();
+
+    // Ensure the HashMap is not destructed
+    ::srand(static_cast<unsigned int>(hashmap.size()));
     report_result("random_operator [] replace", ut, iters, start, finish);
 }
 
@@ -1806,7 +1901,7 @@ static void map_random_erase(std::size_t iters, const Vector & indices) {
         hashmap.emplace(indices[i], i);
     }
 
-    const std::size_t start = CurrentMemoryUsage();
+    std::size_t start = CurrentMemoryUsage();
 
     reset_counter();
     sw.start();
@@ -1816,7 +1911,10 @@ static void map_random_erase(std::size_t iters, const Vector & indices) {
     sw.stop();
 
     double ut = sw.getElapsedSecond();
-    const std::size_t finish = CurrentMemoryUsage();
+    std::size_t finish = CurrentMemoryUsage();
+
+    // Ensure the HashMap is not destructed
+    ::srand(static_cast<unsigned int>(hashmap.size()));
     report_result("random_erase", ut, iters, start, finish);
 }
 
@@ -1832,7 +1930,7 @@ static void map_random_erase_failed(std::size_t iters, const Vector & indices) {
         hashmap.emplace(indices[i], i);
     }
 
-    const std::size_t start = CurrentMemoryUsage();
+    std::size_t start = CurrentMemoryUsage();
 
     reset_counter();
     sw.start();
@@ -1842,7 +1940,10 @@ static void map_random_erase_failed(std::size_t iters, const Vector & indices) {
     sw.stop();
 
     double ut = sw.getElapsedSecond();
-    const std::size_t finish = CurrentMemoryUsage();
+    std::size_t finish = CurrentMemoryUsage();
+
+    // Ensure the HashMap is not destructed
+    ::srand(static_cast<unsigned int>(hashmap.size()));
     report_result("random_erase_failed", ut, iters, start, finish);
 }
 
@@ -1850,11 +1951,12 @@ template <class MapType, class Vector>
 static void map_random_toggle(std::size_t iters, const Vector & indices) {
     typedef typename MapType::mapped_type mapped_type;
 
+    std::size_t start = CurrentMemoryUsage();
+
     MapType hashmap;
     jtest::StopWatch sw;
 
     mapped_type max_iters = static_cast<mapped_type>(iters);
-    const std::size_t start = CurrentMemoryUsage();
 
     reset_counter();
     sw.start();
@@ -1865,7 +1967,10 @@ static void map_random_toggle(std::size_t iters, const Vector & indices) {
     sw.stop();
 
     double ut = sw.getElapsedSecond();
-    const std::size_t finish = CurrentMemoryUsage();
+    std::size_t finish = CurrentMemoryUsage();
+
+    // Ensure the HashMap is not destructed
+    ::srand(static_cast<unsigned int>(hashmap.size()));
     report_result("random_toggle", ut, iters, start, finish);
 }
 
@@ -1883,7 +1988,7 @@ static void map_random_iterate(std::size_t iters, const Vector & indices) {
         hashmap.emplace(indices[i], i);
     }
 
-    const std::size_t start = CurrentMemoryUsage();
+    std::size_t start = CurrentMemoryUsage();
 
     r = 1;
     reset_counter();
@@ -1894,8 +1999,13 @@ static void map_random_iterate(std::size_t iters, const Vector & indices) {
     sw.stop();
 
     double ut = sw.getElapsedSecond();
-    const std::size_t finish = CurrentMemoryUsage();
-    ::srand(static_cast<unsigned int>(r));   // keep compiler from optimizing away r (we never call rand())
+    std::size_t finish = CurrentMemoryUsage();
+
+    // keep compiler from optimizing away r (we never call rand())
+    ::srand(static_cast<unsigned int>(r));
+
+    // Ensure the HashMap is not destructed
+    ::srand(static_cast<unsigned int>(hashmap.size()));
     report_result("random_emplace - iterate", ut, iters, start, finish);
 }
 

@@ -154,9 +154,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\..\bench\time_hash_map\BenchmarkResult.h" />
-  </ItemGroup>
-  <ItemGroup>
     <ClCompile Include="..\..\..\bench\time_hash_map\time_hash_map.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
