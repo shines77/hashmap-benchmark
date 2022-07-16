@@ -156,6 +156,9 @@
   <ItemGroup>
     <ClCompile Include="..\..\..\bench\time_hash_map\time_hash_map.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\bench\time_hash_map\time_hash_map_func.hpp" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

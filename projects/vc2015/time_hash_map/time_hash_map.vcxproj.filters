@@ -11,4 +11,9 @@
       <Filter>src</Filter>
     </ClCompile>
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\bench\time_hash_map\time_hash_map_func.hpp">
+      <Filter>src</Filter>
+    </ClInclude>
+  </ItemGroup>
 </Project>
