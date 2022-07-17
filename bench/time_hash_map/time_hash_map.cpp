@@ -986,7 +986,7 @@ void print_test_time(std::size_t checksum, double elapsedTime)
     printf("sum = %-10" PRIuPTR "  time: %8.3f ms\n", checksum, elapsedTime);
 }
 
-static void report_result(char const * title, double ut, std::size_t iters,
+static void report_result(char const * title, double ut, double lf, std::size_t iters,
                           size_t start_memory, size_t end_memory) {
     // Construct heap growth report text if applicable
     char heap[128];
@@ -1010,18 +1010,18 @@ static void report_result(char const * title, double ut, std::size_t iters,
 #endif
 
 #if (USE_STAT_COUNTER == 0)
-    printf("%-35s %8.2f ns  %s\n", title, (ut * 1000000000.0 / iters), heap);
+    printf("%-35s %8.2f ns  lf=%0.3f  %s\n", title, (ut * 1000000000.0 / iters), lf, heap);
 #else
   #if USE_CTOR_COUNTER
-    printf("%-35s %8.2f ns  (%8" PRIuPTR " hashes, %8" PRIuPTR " copies, %8" PRIuPTR " ctor) %s\n",
+    printf("%-35s %8.2f ns  (%8" PRIuPTR " hashes, %8" PRIuPTR " copies, %8" PRIuPTR " ctor) lf=%0.3f %s\n",
            title, (ut * 1000000000.0 / iters),
            g_num_hashes, g_num_copies, g_num_constructor,
-           heap);
+           lf, heap);
   #else
-    printf("%-35s %8.2f ns  (%8" PRIuPTR " hashes, %8" PRIuPTR " copies) %s\n",
+    printf("%-35s %8.2f ns  (%8" PRIuPTR " hashes, %8" PRIuPTR " copies) lf=%0.3f %s\n",
            title, (ut * 1000000000.0 / iters),
            g_num_hashes, g_num_copies,
-           heap);
+           lf, heap);
   #endif
 #endif
     ::fflush(stdout);
