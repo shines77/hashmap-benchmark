@@ -87,6 +87,7 @@
 #define USE_SKA_BYTELL_HASH_MAP     0
 #define USE_ABSL_FLAT_HASH_MAP      1
 #define USE_ABSL_NODE_HASH_MAP      0
+#define USE_EMHASH5_FLAT_HASH_MAP   1
 
 #ifdef _MSC_VER
 #undef USE_ABSL_FLAT_HASH_MAP
@@ -146,6 +147,9 @@
 #endif
 #if USE_ABSL_NODE_HASH_MAP
 #include <absl/container/node_hash_map.h>
+#endif
+#if USE_EMHASH5_FLAT_HASH_MAP
+#include <emhash/hash_table5.hpp>
 #endif
 #include <jstd/hashmap/hashmap_analyzer.h>
 #include <jstd/hasher/hashes.h>
@@ -452,7 +456,7 @@ void run_insert_random(const std::string & name, std::vector<Key> & keys, std::s
 template <typename Key, typename Value, std::size_t DataSize, std::size_t Cardinal>
 void benchmark_insert_random_impl()
 {
-    std::string name0, name1, name2, name3, name4, name5, name6;
+    std::string name0, name1, name2, name3, name4, name5, name6, name7;
     name0 = get_hashmap_name<Key, Value>("std::unordered_map<%s, %s>");
     name1 = get_hashmap_name<Key, Value>("jstd::flat16_hash_map<%s, %s>");
     name2 = get_hashmap_name<Key, Value>("jstd::robin16_hash_map<%s, %s>");
@@ -460,6 +464,7 @@ void benchmark_insert_random_impl()
     name4 = get_hashmap_name<Key, Value>("ska::bytell_hash_map<%s, %s>");
     name5 = get_hashmap_name<Key, Value>("absl::flat_hash_map<%s, %s>");
     name6 = get_hashmap_name<Key, Value>("absl::node_hash_map<%s, %s>");
+    name7 = get_hashmap_name<Key, Value>("emhash5::HashMap<%s, %s>");
 
     std::vector<Key> keys;
     generate_random_keys<Key>(keys, DataSize, Cardinal);
@@ -484,6 +489,9 @@ void benchmark_insert_random_impl()
 #endif
 #if USE_ABSL_NODE_HASH_MAP
     run_insert_random<absl::node_hash_map<Key, Value>>   (name6, keys, Cardinal);
+#endif
+#if USE_EMHASH5_FLAT_HASH_MAP
+    run_insert_random<emhash5::HashMap<Key, Value>>   (name7, keys, Cardinal);
 #endif
 }
 
@@ -531,7 +539,7 @@ void benchmark_insert_random(std::size_t iters)
 template <typename Key, typename Value, std::size_t DataSize, std::size_t Cardinal>
 void benchmark_MumHash_insert_random_impl()
 {
-    std::string name0, name1, name2, name3, name4, name5, name6;
+    std::string name0, name1, name2, name3, name4, name5, name6, name7;
     name0 = get_hashmap_name<Key, Value>("std::unordered_map<%s, %s>");
     name1 = get_hashmap_name<Key, Value>("jstd::flat16_hash_map<%s, %s>");
     name2 = get_hashmap_name<Key, Value>("jstd::robin16_hash_map<%s, %s>");
@@ -539,6 +547,7 @@ void benchmark_MumHash_insert_random_impl()
     name4 = get_hashmap_name<Key, Value>("ska::bytell_hash_map<%s, %s>");
     name5 = get_hashmap_name<Key, Value>("absl::flat_hash_map<%s, %s>");
     name6 = get_hashmap_name<Key, Value>("absl::node_hash_map<%s, %s>");
+    name7 = get_hashmap_name<Key, Value>("emhash::HashMap<%s, %s>");
 
     std::vector<Key> keys;
     generate_random_keys<Key>(keys, DataSize, Cardinal);
@@ -563,6 +572,9 @@ void benchmark_MumHash_insert_random_impl()
 #endif
 #if USE_ABSL_NODE_HASH_MAP
     run_insert_random<absl::node_hash_map<Key, Value, test::MumHash<Key>>>   (name6, keys, Cardinal);
+#endif
+#if USE_EMHASH5_FLAT_HASH_MAP
+    run_insert_random<emhash5::HashMap<Key, Value, test::MumHash<Key>>>   (name7, keys, Cardinal);
 #endif
 }
 
