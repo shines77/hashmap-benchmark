@@ -221,6 +221,7 @@ include_directories(src)
 include_directories(test)
 include_directories(3rd_party)
 include_directories(3rd_party/jstd_hashmap/src)
+include_directories(3rd_party/emhash)
 include_directories(install/include)
 ## include_directories(3rd_party/abseil-cpp)
 
