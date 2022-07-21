@@ -10,7 +10,3 @@
     path = 3rd_party/abseil-cpp
     url = https://gitee.com/arjing/abseil-cpp.git
     branch = master
-[submodule "3rd_party/emhash"]
-	path = 3rd_party/emhash
-	url = https://gitee.com/shines77/emhash.git
-	branch = master
