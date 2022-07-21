@@ -83,15 +83,16 @@
 #define USE_JSTD_HASH_TABLE         0
 #define USE_JSTD_DICTIONARY         0
 
-#define USE_STD_HASH_MAP            1
-#define USE_STD_UNORDERED_MAP       0
+#define USE_STD_HASH_MAP            0
+#define USE_STD_UNORDERED_MAP       1
 #define USE_JSTD_FLAT16_HASH_MAP    1
 #define USE_JSTD_ROBIN16_HASH_MAP   1
+#define USE_JSTD_ROBIN_HASH_MAP     1
 #define USE_SKA_FLAT_HASH_MAP       1
 #define USE_SKA_BYTELL_HASH_MAP     0
+#define USE_EMHASH5_FLAT_HASH_MAP   1
 #define USE_ABSL_FLAT_HASH_MAP      1
 #define USE_ABSL_NODE_HASH_MAP      0
-#define USE_EMHASH5_FLAT_HASH_MAP   1
 
 #ifdef _MSC_VER
 #undef USE_ABSL_FLAT_HASH_MAP
@@ -150,6 +151,9 @@
 #endif
 #if USE_JSTD_ROBIN16_HASH_MAP
 #include <jstd/hashmap/robin16_hash_map.h>
+#endif
+#if USE_JSTD_ROBIN_HASH_MAP
+#include <jstd/hashmap/robin_hash_map.h>
 #endif
 #if USE_SKA_FLAT_HASH_MAP
 #include <flat_hash_map/flat_hash_map.hpp>
@@ -234,6 +238,7 @@ static bool FLAGS_test_std_hash_map = false;
 static bool FLAGS_test_std_unordered_map = true;
 static bool FLAGS_test_jstd_flat16_hash_map = true;
 static bool FLAGS_test_jstd_robin16_hash_map = true;
+static bool FLAGS_test_jstd_robin_hash_map = true;
 static bool FLAGS_test_ska_flat_hash_map = true;
 static bool FLAGS_test_ska_bytell_hash_map = true;
 static bool FLAGS_test_emhash5_flat_hash_map = true;
@@ -1204,6 +1209,15 @@ static void test_all_hashmaps(std::size_t obj_size, std::size_t iters) {
                         jstd::robin16_hash_map<HashObj *, Value, HashFn<Value, HashObj::cSize, HashObj::cHashSize>>
                         >(
             "jstd::robin16_hash_map<K, V>", obj_size, 0, iters, has_stress_hash_function);
+    }
+#endif
+
+#if USE_JSTD_ROBIN_HASH_MAP
+    if (FLAGS_test_jstd_robin_hash_map) {
+        measure_hashmap<jstd::robin_hash_map<HashObj,   Value, HashFn<Value, HashObj::cSize, HashObj::cHashSize>>,
+                        jstd::robin_hash_map<HashObj *, Value, HashFn<Value, HashObj::cSize, HashObj::cHashSize>>
+                        >(
+            "jstd::robin_hash_map<K, V>", obj_size, 0, iters, has_stress_hash_function);
     }
 #endif
 
