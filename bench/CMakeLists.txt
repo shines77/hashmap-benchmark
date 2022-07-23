@@ -3,7 +3,7 @@
 ## benchmark
 ##
 set(BENCHMARK_SOURCE_FILES
-    ../bench/benchmark/benchmark.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/benchmark/benchmark.cpp
 )
 
 add_executable(benchmark ${BENCHMARK_SOURCE_FILES})
@@ -33,9 +33,8 @@ PUBLIC
 
 target_include_directories(benchmark
 PUBLIC
-    "${PROJECT_SOURCE_DIR}/bench/time_hash_map"
-    "${PROJECT_SOURCE_DIR}/install/include"
-    "${PROJECT_BINARY_DIR}"
+    "${CMAKE_CURRENT_LIST_DIR}/time_hash_map"
+    "${CMAKE_CURRENT_LIST_DIR}/../install/include"
     ${EXTRA_INCLUDES}
 )
 
@@ -43,7 +42,7 @@ PUBLIC
 ## time_hash_map
 ##
 set(TIME_HASH_MAP_SOURCE_FILES
-    ../bench/time_hash_map/time_hash_map.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/time_hash_map/time_hash_map.cpp
 )
 
 add_executable(time_hash_map ${TIME_HASH_MAP_SOURCE_FILES})
@@ -73,9 +72,8 @@ PUBLIC
 
 target_include_directories(time_hash_map
 PUBLIC
-    "${PROJECT_SOURCE_DIR}/bench/time_hash_map"
-    "${PROJECT_SOURCE_DIR}/install/include"
-    "${PROJECT_BINARY_DIR}"
+    "${CMAKE_CURRENT_LIST_DIR}/time_hash_map"
+    "${CMAKE_CURRENT_LIST_DIR}/../install/include"
     ${EXTRA_INCLUDES}
 )
 
@@ -83,7 +81,7 @@ PUBLIC
 ## cardinal_bench
 ##
 set(CARDINAL_BENCH_SOURCE_FILES
-    ../bench/cardinal_bench/cardinal_bench.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/cardinal_bench/cardinal_bench.cpp
 )
 
 add_executable(cardinal_bench ${CARDINAL_BENCH_SOURCE_FILES})
@@ -113,8 +111,7 @@ PUBLIC
 
 target_include_directories(cardinal_bench
 PUBLIC
-    "${PROJECT_SOURCE_DIR}/bench/cardinal_bench"
-    "${PROJECT_SOURCE_DIR}/install/include"
-    "${PROJECT_BINARY_DIR}"
+    "${CMAKE_CURRENT_LIST_DIR}/cardinal_bench"
+    "${CMAKE_CURRENT_LIST_DIR}/../install/include"
     ${EXTRA_INCLUDES}
 )

@@ -9,7 +9,7 @@ set(PROJECT_MINOR_VERSION "0")
 set(PROJECT_PATCH_VERSION "0")
 set(PROJECT_VERSION_STRING "${PROJECT_MAJOR_VERSION}.${PROJECT_MINOR_VERSION}.${PROJECT_PATCH_VERSION}")
 
-if (CMAKE_VERSION VERSION_GREATER_EQUAL 3.0)
+if (CMAKE_VERSION VERSION_GREATER_EQUAL "3.0")
     # Fixed CMP0048: https://github.com/Tencent/rapidjson/issues/1154
     cmake_policy(SET CMP0048 NEW)
     project(hashmap_benchmark VERSION "${PROJECT_VERSION_STRING}")
@@ -27,16 +27,23 @@ message(STATUS "  project: ${PROJECT_NAME}, version: ${PROJECT_VERSION_STRING}")
 message(STATUS "-----------------------------------------------")
 message("")
 
-set(CMAKE_ALLOW_LOOSE_LOOP_CONSTRUCTS ON)
-set(CMAKE_VERBOSE_MAKEFILE ON)
-
-message(STATUS "----------------- Build Env -------------------")
+message(STATUS "------------------ Build Env -------------------")
 message(STATUS "CMAKE_SOURCE_DIR   : ${CMAKE_SOURCE_DIR}")
 message(STATUS "CMAKE_BINARY_DIR   : ${CMAKE_BINARY_DIR}")
 message(STATUS "PROJECT_SOURCE_DIR : ${PROJECT_SOURCE_DIR}")
 message(STATUS "PROJECT_BINARY_DIR : ${PROJECT_BINARY_DIR}")
-message(STATUS "-----------------------------------------------")
+message(STATUS "------------------------------------------------")
 message("")
+
+message(STATUS "------------------ Current Build Env -------------------")
+message(STATUS "CMAKE_CURRENT_SOURCE_DIR   : ${CMAKE_CURRENT_SOURCE_DIR}")
+message(STATUS "CMAKE_CURRENT_BINARY_DIR   : ${CMAKE_CURRENT_BINARY_DIR}")
+message(STATUS "CMAKE_CURRENT_LIST_DIR     : ${CMAKE_CURRENT_LIST_DIR}")
+message(STATUS "--------------------------------------------------------")
+message("")
+
+set(CMAKE_ALLOW_LOOSE_LOOP_CONSTRUCTS ON)
+set(CMAKE_VERBOSE_MAKEFILE ON)
 
 ##
 ## See: https://blog.csdn.net/u012487272/article/details/12882283
@@ -115,6 +122,34 @@ CheckCompilerEnvironment()
 GetCompilerToolset(CMAKE_C_TOOLSET   "c")
 GetCompilerToolset(CMAKE_CXX_TOOLSET "cxx")
 
+set(ipo_supported NO)
+set(CMakeIPOEnable FALSE)
+
+if (CMAKE_VERSION VERSION_GREATER_EQUAL "3.9")
+    ##
+    ## Supported INTERPROCEDURAL_OPTIMIZATION since CMake 3.9, support for Visual Studio generators since CMake 3.13.
+    ##
+    cmake_policy(SET CMP0069 NEW)
+    if (CMAKE_VERSION VERSION_GREATER_EQUAL "3.24")
+        cmake_policy(SET CMP0138 NEW)
+    endif()
+
+    ##
+    ## https://stackoverflow.com/questions/31355692/how-do-i-enable-link-time-optimization-lto-with-cmake
+    ##
+    include(CheckIPOSupported)
+    check_ipo_supported(RESULT ipo_supported OUTPUT error)
+
+    if (ipo_supported)
+        ## set(CMAKE_INTERPROCEDURAL_OPTIMIZATION TRUE)
+        set(CMakeIPOEnable FALSE)
+    else()
+        message(STATUS "IPO/LTO is not supported: <${error}>")
+    endif()
+else()
+    message(STATUS "CMake version is < 3.9, is not supported IPO/LTO.")
+endif()
+
 message(STATUS "-------------- Compiler Toolset ---------------")
 message(STATUS "CMAKE_C_TOOLSET   : ${CMAKE_C_TOOLSET}")
 message(STATUS "CMAKE_CXX_TOOLSET : ${CMAKE_CXX_TOOLSET}")
@@ -126,6 +161,7 @@ message(STATUS "CMAKE_BUILD_TYPE         : ${CMAKE_BUILD_TYPE}")
 message(STATUS "CMAKE_CL_ARCH            : ${CMAKE_CL_ARCH}")
 message(STATUS "CMAKE_PLATFORM_ARCH      : ${CMAKE_PLATFORM_ARCH}")
 message(STATUS "CMAKE_CPU_ARCHITECTURES  : ${CMAKE_CPU_ARCHITECTURES}")
+message(STATUS "CMAKE_IPO_SUPPORTED      : ${ipo_supported}")
 message(STATUS "-----------------------------------------------")
 message("")
 
@@ -145,17 +181,35 @@ find_package(absl REQUIRED)
 if (NOT MSVC)
     ## For C_FLAGS
     ## -mmmx -msse -msse2 -msse3 -mssse3 -msse4 -msse4a -msse4.1 -msse4.2 -mavx -mavx2 -mavx512vl -mavx512f
-    set(CMAKE_C_FLAGS_DEFAULT "${CMAKE_C_FLAGS} -std=c99 -march=native -mtune=native -finput-charset=utf-8 -fPIC")
-    set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_DEFAULT} -O3 -DNDEBUG")
-    set(CMAKE_C_FLAGS_DEBUG   "${CMAKE_C_FLAGS_DEFAULT} -g -pg -D_DEBUG")
+    if (CMakeIPOEnable)
+        set(CMAKE_C_FLAGS_DEFAULT       "${CMAKE_C_FLAGS} -std=c99 -march=native -finput-charset=utf-8 -flto -ffat-lto-objects -fPIC -fpic")
+    else()
+        set(CMAKE_C_FLAGS_DEFAULT       "${CMAKE_C_FLAGS} -std=c99 -march=native -finput-charset=utf-8 -fPIC -fpic")
+    endif()
+    set(CMAKE_C_FLAGS_RELEASE           "${CMAKE_C_FLAGS_DEFAULT} -O3 -DNDEBUG")
+    set(CMAKE_C_FLAGS_DEBUG             "${CMAKE_C_FLAGS_DEFAULT} -g -pg -D_DEBUG")
+    set(CMAKE_C_FLAGS_MINSIZEREL        "${CMAKE_C_FLAGS_DEFAULT} -Os -DNDEBUG")
+    set(CMAKE_C_FLAGS_RELWITHDEBINFO    "${CMAKE_C_FLAGS_DEFAULT} -O2 -g")
 
     ## For CXX_FLAGS
     ## -Wall -Werror -Wextra -Wno-format -Wno-unused-function
     ## -mmmx -msse -msse2 -msse3 -mssse3 -msse4 -msse4a -msse4.1 -msse4.2 -mavx -mavx2 -mavx512vl -mavx512f
     # -fexec-charset=gbk -finput-charset=gbk
-    set(CMAKE_CXX_FLAGS_DEFAULT "${CMAKE_CXX_FLAGS} -std=c++14 -march=native -mtune=native -finput-charset=utf-8 -fPIC")
-    set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_DEFAULT} -O3 -DNDEBUG")
-    set(CMAKE_CXX_FLAGS_DEBUG   "${CMAKE_CXX_FLAGS_DEFAULT} -g -pg -D_DEBUG")
+    if (CMakeIPOEnable)
+        set(CMAKE_CXX_FLAGS_DEFAULT     "${CMAKE_CXX_FLAGS} -std=c++11 -march=native -finput-charset=utf-8 -flto -ffat-lto-objects -fPIC -fpic")
+    else()
+        set(CMAKE_CXX_FLAGS_DEFAULT     "${CMAKE_CXX_FLAGS} -std=c++11 -march=native -finput-charset=utf-8 -fPIC -fpic")
+    endif()
+    set(CMAKE_CXX_FLAGS_RELEASE         "${CMAKE_CXX_FLAGS_DEFAULT} -O3 -DNDEBUG")
+    set(CMAKE_CXX_FLAGS_DEBUG           "${CMAKE_CXX_FLAGS_DEFAULT} -g -pg -D_DEBUG")
+    set(CMAKE_CXX_FLAGS_MINSIZEREL      "${CMAKE_CXX_FLAGS_DEFAULT} -Os -DNDEBUG")
+    set(CMAKE_CXX_FLAGS_RELWITHDEBINFO  "${CMAKE_CXX_FLAGS_DEFAULT} -O2 -g")
+
+    set(CMAKE_AR        "/usr/bin/gcc-ar")
+    set(CMAKE_LINKER    "/usr/bin/ld")
+    set(CMAKE_NM        "/usr/bin/gcc-nm")
+    set(CMAKE_OBJDUMP   "/usr/bin/objdump")
+    set(CMAKE_RANLIB    "/usr/bin/gcc-ranlib")
 
     ## -faligned-new: GCC >= 7.1, CLANG >= 4.0
     ## See: https://trac.wildfiregames.com/ticket/5139
@@ -266,8 +320,8 @@ endif()
 ##     set(EXTRA_INCLUDES ${EXTRA_INCLUDES} "${PROJECT_SOURCE_DIR}/src")
 ## endif()
 
-add_library(jstd STATIC ${JSTD_SOURCE_FILES})
-set(EXTRA_LIBS ${EXTRA_LIBS} jstd)
+## add_library(jstd STATIC ${JSTD_SOURCE_FILES})
+## set(EXTRA_LIBS ${EXTRA_LIBS} jstd)
 set(EXTRA_INCLUDES ${EXTRA_INCLUDES} "${PROJECT_SOURCE_DIR}/src")
 
 add_custom_target(debug
@@ -282,4 +336,4 @@ add_custom_target(release
     COMMENT "Switch CMAKE_BUILD_TYPE to Release"
 )
 
-add_subdirectory(./bench)
+add_subdirectory(bench)
