@@ -97,6 +97,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(SolutionDir)bench\cardinal_bench;..\..\..\bench\cardinal_bench;$(SolutionDir)3rd_party\jstd_hashmap\src;..\..\..\3rd_party\jstd_hashmap\src;$(SolutionDir)3rd_party\abseil-cpp;..\..\..\3rd_party\abseil-cpp;$(SolutionDir)3rd_party\emhash;..\..\..\3rd_party\emhash;$(SolutionDir)3rd_party;..\..\..\3rd_party;$(SolutionDir)src;..\..\..\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -111,6 +112,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(SolutionDir)bench\cardinal_bench;..\..\..\bench\cardinal_bench;$(SolutionDir)3rd_party\jstd_hashmap\src;..\..\..\3rd_party\jstd_hashmap\src;$(SolutionDir)3rd_party\abseil-cpp;..\..\..\3rd_party\abseil-cpp;$(SolutionDir)3rd_party\emhash;..\..\..\3rd_party\emhash;$(SolutionDir)3rd_party;..\..\..\3rd_party;$(SolutionDir)src;..\..\..\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -127,6 +129,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(SolutionDir)bench\cardinal_bench;..\..\..\bench\cardinal_bench;$(SolutionDir)3rd_party\jstd_hashmap\src;..\..\..\3rd_party\jstd_hashmap\src;$(SolutionDir)3rd_party\abseil-cpp;..\..\..\3rd_party\abseil-cpp;$(SolutionDir)3rd_party\emhash;..\..\..\3rd_party\emhash;$(SolutionDir)3rd_party;..\..\..\3rd_party;$(SolutionDir)src;..\..\..\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -145,6 +148,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(SolutionDir)bench\cardinal_bench;..\..\..\bench\cardinal_bench;$(SolutionDir)3rd_party\jstd_hashmap\src;..\..\..\3rd_party\jstd_hashmap\src;$(SolutionDir)3rd_party\abseil-cpp;..\..\..\3rd_party\abseil-cpp;$(SolutionDir)3rd_party\emhash;..\..\..\3rd_party\emhash;$(SolutionDir)3rd_party;..\..\..\3rd_party;$(SolutionDir)src;..\..\..\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
