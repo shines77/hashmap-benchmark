@@ -310,7 +310,7 @@ include_directories(../install/include)
 ## include_directories(../3rd_party/abseil-cpp)
 
 # Process Abseil's CMake build system
-add_subdirectory(../3rd_party/abseil-cpp)
+add_subdirectory("../3rd_party/abseil-cpp" "${CMAKE_CURRENT_BINARY_DIR}/abseil-cpp")
 
 set(JSTD_SOURCE_FILES
     ../3rd_party/jstd_hashmap/src/jstd/dll_main.cpp
