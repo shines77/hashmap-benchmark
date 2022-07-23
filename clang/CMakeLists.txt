@@ -178,7 +178,9 @@ message("")
 # Abseil currently supports C++11, C++14, and C++17.
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(ABSL_PROPAGATE_CXX_STD ON)
+if (CMAKE_VERSION VERSION_GREATER_EQUAL "3.8")
+    set(ABSL_PROPAGATE_CXX_STD ON)
+endif()
 
 # Import Abseil's CMake targets
 find_package(absl REQUIRED)
