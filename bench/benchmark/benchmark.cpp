@@ -78,9 +78,9 @@
 #define USE_JSTD_HASH_TABLE         0
 #define USE_JSTD_DICTIONARY         0
 
-#define USE_STD_UNORDERED_MAP       1
 #define USE_JSTD_FLAT16_HASH_MAP    1
-#define USE_JSTD_ROBIN16_HASH_MAP   1
+#define USE_JSTD_ROBIN16_HASH_MAP   0
+#define USE_JSTD_ROBIN_HASH_MAP     1
 #define USE_SKA_FLAT_HASH_MAP       1
 #define USE_SKA_BYTELL_HASH_MAP     0
 #define USE_ABSL_FLAT_HASH_MAP      1
@@ -132,6 +132,9 @@
 #endif
 #if USE_JSTD_ROBIN16_HASH_MAP
 #include <jstd/hashmap/robin16_hash_map.h>
+#endif
+#if USE_JSTD_ROBIN_HASH_MAP
+#include <jstd/hashmap/robin_hash_map.h>
 #endif
 #if USE_SKA_FLAT_HASH_MAP
 #include <flat_hash_map/flat_hash_map.hpp>
@@ -1245,8 +1248,8 @@ void jstd_flat16_hash_map_benchmark()
 
         copy_vector_and_reverse_item(reverse_data_uu, test_data_uu);
 
-        std::unordered_map<std::size_t, std::size_t>    std_map_uu;
-        jstd::flat16_hash_map<std::size_t, std::size_t> jstd_dict_uu;
+        std::unordered_map<std::size_t, std::size_t>        std_map_uu;
+        jstd::flat16_hash_map<std::size_t, std::size_t>     jstd_dict_uu;
 
         printf(" hash_map<std::size_t, std::size_t>\n\n");
 
@@ -1310,7 +1313,7 @@ void jstd_flat16_hash_map_benchmark()
 
     printf("\n");
     test_result.printResult(dict_filename, sw.getElapsedMillisec());
-#endif
+#endif // USE_JSTD_FLAT16_HASH_MAP
 }
 
 void jstd_robin16_hash_map_benchmark()
@@ -1443,7 +1446,140 @@ void jstd_robin16_hash_map_benchmark()
 
     printf("\n");
     test_result.printResult(dict_filename, sw.getElapsedMillisec());
-#endif
+#endif // USE_JSTD_ROBIN16_HASH_MAP
+}
+
+void jstd_robin_hash_map_benchmark()
+{
+#if USE_JSTD_ROBIN_HASH_MAP
+    jtest::BenchmarkResult test_result;
+    test_result.setName("std::unordered_map", "jstd::robin_hash_map");
+
+    jtest::StopWatch sw;
+    sw.start();
+
+    //
+    // std::unordered_map<std::string, std::string>
+    //
+    std::vector<std::pair<std::string, std::string>> test_data_ss;
+
+    if (!dict_words_is_ready) {
+        std::string field_str[kHeaderFieldSize];
+        std::string index_str[kHeaderFieldSize];
+        for (std::size_t i = 0; i < kHeaderFieldSize; i++) {
+            test_data_ss.push_back(std::make_pair(std::string(header_fields[i]), std::to_string(i)));
+        }
+    }
+    else {
+        for (std::size_t i = 0; i < dict_words.size(); i++) {
+            test_data_ss.push_back(std::make_pair(dict_words[i], std::to_string(i)));
+        }
+    }
+
+    {
+        //
+        // std::unordered_map<int, int>
+        //
+        std::vector<std::pair<int, int>> test_data_ii;
+        std::vector<std::pair<int, int>> reverse_data_ii;
+
+        for (std::size_t i = 0; i < test_data_ss.size(); i++) {
+            test_data_ii.push_back(std::make_pair(int(i), int(i + 1)));
+        }
+
+        copy_vector_and_reverse_item(reverse_data_ii, test_data_ii);
+
+        std::unordered_map<int, int>    std_map_ii;
+        jstd::robin_hash_map<int, int>  jstd_dict_ii;
+
+        printf(" hash_map<int, int>\n\n");
+
+        hashmap_benchmark_simple("hash_map<int, int>",
+                                 std_map_ii, jstd_dict_ii,
+                                 test_data_ii, reverse_data_ii, test_result);
+
+        printf("\n");
+    }
+
+    {
+        //
+        // std::unordered_map<size_t, size_t>
+        //
+        std::vector<std::pair<std::size_t, std::size_t>> test_data_uu;
+        std::vector<std::pair<std::size_t, std::size_t>> reverse_data_uu;
+
+        for (std::size_t i = 0; i < test_data_ss.size(); i++) {
+            test_data_uu.push_back(std::make_pair(i, i + 1));
+        }
+
+        copy_vector_and_reverse_item(reverse_data_uu, test_data_uu);
+
+        std::unordered_map<std::size_t, std::size_t>    std_map_uu;
+        jstd::robin_hash_map<std::size_t, std::size_t>  jstd_dict_uu;
+
+        printf(" hash_map<std::size_t, std::size_t>\n\n");
+
+        hashmap_benchmark_simple("hash_map<std::size_t, std::size_t>",
+                                 std_map_uu, jstd_dict_uu,
+                                 test_data_uu, reverse_data_uu, test_result);
+
+        printf("\n");
+    }
+
+    {
+        std::unordered_map<std::string, std::string>    std_map_ss;
+        jstd::robin_hash_map<std::string, std::string>  jstd_dict_ss;
+
+        std::vector<std::pair<std::string, std::string>> reverse_data_ss;
+        copy_vector_and_reverse_item(reverse_data_ss, test_data_ss);
+
+        printf(" hash_map<std::string, std::string>\n\n");
+
+        hashmap_benchmark_simple("hash_map<std::string, std::string>",
+                                 std_map_ss, jstd_dict_ss,
+                                 test_data_ss, reverse_data_ss, test_result);
+
+        printf("\n");
+
+        //
+        // Note: Don't remove these braces '{' and '}',
+        // because the life cycle of jstd::string_view depends on std::string.
+        //
+        {
+            //
+            // std::unordered_map<jstd::string_view, jstd::string_view>
+            //
+            typedef jstd::string_view_array<jstd::string_view, jstd::string_view> string_view_array_t;
+            typedef typename string_view_array_t::element_type                    element_type;
+
+            string_view_array_t test_data_svsv;
+            string_view_array_t reverse_data_svsv;
+
+            for (std::size_t i = 0; i < test_data_ss.size(); i++) {
+                test_data_svsv.push_back(new element_type(test_data_ss[i].first, test_data_ss[i].second));
+            }
+            for (std::size_t i = 0; i < reverse_data_ss.size(); i++) {
+                reverse_data_svsv.push_back(new element_type(reverse_data_ss[i].first, reverse_data_ss[i].second));
+            }
+
+            std::unordered_map<jstd::string_view, jstd::string_view>    std_map_svsv;
+            jstd::robin_hash_map<jstd::string_view, jstd::string_view>  jstd_dict_svsv;
+
+            printf(" hash_map<jstd::string_view, jstd::string_view>\n\n");
+
+            hashmap_benchmark_simple("hash_map<jstd::string_view, jstd::string_view>",
+                                     std_map_svsv, jstd_dict_svsv,
+                                     test_data_svsv, reverse_data_svsv, test_result);
+
+            printf("\n");
+        }
+    }
+
+    sw.stop();
+
+    printf("\n");
+    test_result.printResult(dict_filename, sw.getElapsedMillisec());
+#endif // USE_JSTD_ROBIN_HASH_MAP
 }
 
 void ska_flat_hash_map_benchmark()
@@ -1576,7 +1712,7 @@ void ska_flat_hash_map_benchmark()
 
     printf("\n");
     test_result.printResult(dict_filename, sw.getElapsedMillisec());
-#endif
+#endif // USE_SKA_FLAT_HASH_MAP
 }
 
 void ska_bytell_hash_map_benchmark()
@@ -1842,7 +1978,7 @@ void absl_flat_hash_map_benchmark()
 
     printf("\n");
     test_result.printResult(dict_filename, sw.getElapsedMillisec());
-#endif
+#endif // USE_SKA_BYTELL_HASH_MAP
 }
 
 void absl_node_hash_map_benchmark()
@@ -1975,7 +2111,7 @@ void absl_node_hash_map_benchmark()
 
     printf("\n");
     test_result.printResult(dict_filename, sw.getElapsedMillisec());
-#endif
+#endif // USE_ABSL_NODE_HASH_MAP
 }
 
 bool read_dict_words(const std::string & filename)
@@ -2054,6 +2190,14 @@ int main(int argc, char * argv[])
     }
 #endif
 
+#if USE_JSTD_ROBIN_HASH_MAP
+    if (1)
+    {
+        jstd_robin_hash_map_benchmark();
+        jstd::Console::ReadKey();
+    }
+#endif
+
 #if USE_SKA_FLAT_HASH_MAP
     if (1)
     {
@@ -2087,7 +2231,7 @@ int main(int argc, char * argv[])
 #endif
 
 #if defined(_MSC_VER) && defined(_DEBUG)
-    jstd::Console::ReadKey();
+    //jstd::Console::ReadKey();
 #endif
     return 0;
 }
@@ -2152,12 +2296,12 @@ uint64_t get_range_u32(uint64_t num)
 
 void IntegalHash_test()
 {
-    jstd::hasher::IntegalHash<std::uint32_t> integalHasher32;
-    jstd::hasher::IntegalHash<std::uint64_t> integalHasher64;
+    jstd::v1::hashes::IntegalHash<std::uint32_t> integalHasher32;
+    jstd::v1::hashes::IntegalHash<std::uint64_t> integalHasher64;
 
     printf("hash::IntegalHash(uint32_t) sequential\n\n");
     for (std::uint32_t i = 0; i < 16; i++) {
-        std::uint32_t hash32 = integalHasher32(i);
+        std::uint32_t hash32 = (std::uint32_t)integalHasher32(i);
         printf("value = %-10u, hash_code = %-10u (0x%08X), \n",
                i, hash32, hash32);
     }
@@ -2166,7 +2310,7 @@ void IntegalHash_test()
     printf("hash::IntegalHash(uint32_t) random\n\n");
     for (std::uint32_t i = 0; i < 16; i++) {
         std::uint32_t value = next_random_u32();
-        std::uint32_t hash32 = integalHasher32(value);
+        std::uint32_t hash32 = (std::uint32_t)integalHasher32(value);
         printf("value = %-10u, hash_code = %-10u (0x%08X), \n",
                value, hash32, hash32);
     }
@@ -2208,16 +2352,16 @@ void print_result(const PairType & pair) {
 void flat16_hash_map_int_int_test()
 {
     typedef jstd::flat16_hash_map<int, int> hash_map_t;
-    typedef typename hash_map_t::entry_type    entry_type;
-    typedef typename hash_map_t::cluster_type  cluster_type;
+    typedef typename hash_map_t::slot_type      slot_type;
+    typedef typename hash_map_t::group_type     group_type;
 
     hash_map_t flat_hash_map;
 
-    printf("flat_hash_map.clusters() = %p\n", flat_hash_map.clusters());
-    printf("sizeof(cluster_type)     = %u\n\n", (uint32_t)sizeof(cluster_type));
+    printf("flat_hash_map.groups()    = %p\n", flat_hash_map.groups());
+    printf("sizeof(group_type)        = %u\n\n", (uint32_t)sizeof(group_type));
 
-    printf("flat_hash_map.entries()  = %p\n", flat_hash_map.entries());
-    printf("sizeof(entry_type)       = %u\n\n", (uint32_t)sizeof(entry_type));
+    printf("flat_hash_map.slot_type() = %p\n", flat_hash_map.slots());
+    printf("sizeof(slot_type)         = %u\n\n", (uint32_t)sizeof(slot_type));
 
     flat_hash_map.insert(std::make_pair(1, 111));
     flat_hash_map.insert(std::make_pair(1, 999));
@@ -2245,16 +2389,16 @@ void flat16_hash_map_int_int_test()
 void flat16_hash_map_int64_string_test()
 {
     typedef jstd::flat16_hash_map<int64_t, std::string> hash_map_t;
-    typedef typename hash_map_t::entry_type    entry_type;
-    typedef typename hash_map_t::cluster_type  cluster_type;
+    typedef typename hash_map_t::slot_type      slot_type;
+    typedef typename hash_map_t::group_type     group_type;
 
     hash_map_t flat_hash_map;
 
-    printf("flat_hash_map.clusters() = %p\n", flat_hash_map.clusters());
-    printf("sizeof(cluster_type)     = %u\n\n", (uint32_t)sizeof(cluster_type));
+    printf("flat_hash_map.groups()     = %p\n", flat_hash_map.groups());
+    printf("sizeof(group_type)        = %u\n\n", (uint32_t)sizeof(group_type));
 
-    printf("flat_hash_map.entries()  = %p\n", flat_hash_map.entries());
-    printf("sizeof(entry_type)       = %u\n\n", (uint32_t)sizeof(entry_type));
+    printf("flat_hash_map.slot_type() = %p\n", flat_hash_map.slots());
+    printf("sizeof(slot_type)         = %u\n\n", (uint32_t)sizeof(slot_type));
 
     flat_hash_map.insert(std::make_pair(0, "abc"));
     flat_hash_map.insert(std::make_pair(0, "ABC"));
@@ -2287,16 +2431,16 @@ void flat16_hash_map_int64_string_test()
 void flat16_hash_map_string_string_test()
 {
     typedef jstd::flat16_hash_map<std::string, std::string> hash_map_t;
-    typedef typename hash_map_t::entry_type    entry_type;
-    typedef typename hash_map_t::cluster_type  cluster_type;
+    typedef typename hash_map_t::slot_type      slot_type;
+    typedef typename hash_map_t::group_type     group_type;
 
     hash_map_t flat_hash_map;
 
-    printf("flat_hash_map.clusters() = %p\n", flat_hash_map.clusters());
-    printf("sizeof(cluster_type)     = %u\n\n", (uint32_t)sizeof(cluster_type));
+    printf("flat_hash_map.groups()    = %p\n", flat_hash_map.groups());
+    printf("sizeof(group_type)        = %u\n\n", (uint32_t)sizeof(group_type));
 
-    printf("flat_hash_map.entries()  = %p\n", flat_hash_map.entries());
-    printf("sizeof(entry_type)       = %u\n\n", (uint32_t)sizeof(entry_type));
+    printf("flat_hash_map.slot_type() = %p\n", flat_hash_map.slots());
+    printf("sizeof(slot_type)         = %u\n\n", (uint32_t)sizeof(slot_type));
 
 #if 0
     print_result( flat_hash_map.insert("a", "a") );
@@ -2314,6 +2458,9 @@ void flat16_hash_map_string_string_test()
     print_result( flat_hash_map.emplace(std::piecewise_construct,
                                         std::forward_as_tuple("e0"),
                                         std::forward_as_tuple(10, 'd')) );
+    printf("\n");
+
+    print_result( flat_hash_map.insert_or_assign("f0", "in-place") );
     printf("\n");
 
     auto iter = flat_hash_map.find("b0");
