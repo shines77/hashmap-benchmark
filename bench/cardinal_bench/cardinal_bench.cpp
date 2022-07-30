@@ -198,11 +198,11 @@
 #define PRINT_MACRO_VAR(x)      #x " = " MACRO_TO_STRING(x)
 
 #ifndef UINT64_High
-#define UINT64_High(u64)        ((uint32_t)(u64 >> 32))
+#define UINT64_High(u64)        ((uint32_t)((uint64_t)u64 >> 32))
 #endif
 
 #ifndef UINT64_Low
-#define UINT64_Low(u64)         ((uint32_t)(u64 & 0x00000000FFFFFFFFull))
+#define UINT64_Low(u64)         ((uint32_t)((uint64_t)u64 & 0x00000000FFFFFFFFull))
 #endif
 
 #ifndef _DEBUG
@@ -384,13 +384,13 @@ std::string formatMsTime(double fMillisec) {
         snprintf(time_buf, sizeof(time_buf), "%7.2f Sec", fMillisec / 1000.0);
     }
     else if (fMillisec >= 1.0 * 1.0) {
-        snprintf(time_buf, sizeof(time_buf), "%7.2f ms ", fMillisec);
+        snprintf(time_buf, sizeof(time_buf), "%7.2f ms", fMillisec);
     }
     else if (fMillisec >= 0.001 * 10.0) {
-        snprintf(time_buf, sizeof(time_buf), "%7.2f us ", fMillisec * 1000.0);
+        snprintf(time_buf, sizeof(time_buf), "%7.2f us", fMillisec * 1000.0);
     }
     else {
-        snprintf(time_buf, sizeof(time_buf), "%7.2f ns ", fMillisec * 1000000.0);
+        snprintf(time_buf, sizeof(time_buf), "%7.2f ns", fMillisec * 1000000.0);
     }
 
     return std::string(time_buf);
@@ -529,6 +529,7 @@ void benchmark_insert_random(std::size_t iters)
 
     printf("DataSize = %u, std::hash<T>\n\n", (uint32_t)DataSize);
 
+#ifndef _DEBUG
     benchmark_insert_random_impl<Key, Value, DataSize, Cardinal0>();
     printf("-----------------------------------------------------------------------\n\n");
     benchmark_insert_random_impl<Key, Value, DataSize, Cardinal1>();
@@ -541,6 +542,7 @@ void benchmark_insert_random(std::size_t iters)
     printf("-----------------------------------------------------------------------\n\n");
     //benchmark_insert_random_impl<Key, Value, DataSize, Cardinal5>();
     //printf("-----------------------------------------------------------------------\n\n");
+#endif
     benchmark_insert_random_impl<Key, Value, DataSize, Cardinal6>();
 }
 
@@ -639,15 +641,19 @@ void benchmark_all_hashmaps(std::size_t iters)
     printf("------------------------------------------------------------------------------------\n\n");
 
     benchmark_insert_random<std::size_t, std::size_t>(iters);
+#endif
 
+#ifndef _DEBUG
     printf("------------------------------------------------------------------------------------\n\n");
 #endif
 
+#ifndef _DEBUG
     benchmark_MumHash_insert_random<int, int>(iters);
 
     printf("------------------------------------------------------------------------------------\n\n");
 
     benchmark_MumHash_insert_random<std::size_t, std::size_t>(iters);
+#endif
 }
 
 void std_hash_test()
