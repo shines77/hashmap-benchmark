@@ -205,9 +205,9 @@ if (NOT MSVC)
     # -fexec-charset=gbk -finput-charset=gbk
     set(CMAKE_CXX_COMPILER              "/usr/bin/clang++")
     if (CMakeIPOEnable)
-        set(CMAKE_CXX_FLAGS_DEFAULT     "${CMAKE_CXX_FLAGS} -std=c++11 -stdlib=libstdc++ -march=native -finput-charset=utf-8 -flto=thin -fPIC -fpic")
+        set(CMAKE_CXX_FLAGS_DEFAULT     "${CMAKE_CXX_FLAGS} -std=c++14 -stdlib=libc++ -march=native -finput-charset=utf-8 -flto=thin -fPIC -fpic")
     else()
-        set(CMAKE_CXX_FLAGS_DEFAULT     "${CMAKE_CXX_FLAGS} -std=c++11 -stdlib=libstdc++ -march=native -finput-charset=utf-8 -fPIC -fpic")
+        set(CMAKE_CXX_FLAGS_DEFAULT     "${CMAKE_CXX_FLAGS} -std=c++14 -stdlib=libc++ -march=native -finput-charset=utf-8 -fPIC -fpic")
     endif()
     set(CMAKE_CXX_FLAGS_RELEASE         "${CMAKE_CXX_FLAGS_DEFAULT} -O3 -DNDEBUG")
     set(CMAKE_CXX_FLAGS_DEBUG           "${CMAKE_CXX_FLAGS_DEFAULT} -g -pg -D_DEBUG")
@@ -220,7 +220,13 @@ if (NOT MSVC)
     set(CMAKE_OBJDUMP   "/usr/bin/llvm-objdump")
     set(CMAKE_RANLIB    "/usr/bin/llvm-ranlib")
 
-    set(CMAKE_EXE_LINKER_FLAGS "-lstdc++")
+    ##
+    ## GCC C++ Lib: -lstdc++ stdlib=libstdc++, Clang C++ Lib: -lc++ -stdlib=libc++
+    ##
+    ## Clang C++ lib: libc++
+    set(CMAKE_EXE_LINKER_FLAGS "-lc++ -stdlib=libc++")
+    ## GCC C++ lib: GLibCxx
+    ## set(CMAKE_EXE_LINKER_FLAGS "-lstdc++ stdlib=libstdc++")
 
     ##
     ## See: https://cloud.tencent.com/developer/ask/101584

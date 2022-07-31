@@ -198,9 +198,9 @@ if (NOT MSVC)
     ## -mmmx -msse -msse2 -msse3 -mssse3 -msse4 -msse4a -msse4.1 -msse4.2 -mavx -mavx2 -mavx512vl -mavx512f
     # -fexec-charset=gbk -finput-charset=gbk
     if (CMakeIPOEnable)
-        set(CMAKE_CXX_FLAGS_DEFAULT     "${CMAKE_CXX_FLAGS} -std=c++11 -march=native -finput-charset=utf-8 -flto -ffat-lto-objects -fPIC -fpic")
+        set(CMAKE_CXX_FLAGS_DEFAULT     "${CMAKE_CXX_FLAGS} -std=c++14 -march=native -finput-charset=utf-8 -flto -ffat-lto-objects -fPIC -fpic")
     else()
-        set(CMAKE_CXX_FLAGS_DEFAULT     "${CMAKE_CXX_FLAGS} -std=c++11 -march=native -finput-charset=utf-8 -fPIC -fpic")
+        set(CMAKE_CXX_FLAGS_DEFAULT     "${CMAKE_CXX_FLAGS} -std=c++14 -march=native -finput-charset=utf-8 -fPIC -fpic")
     endif()
     set(CMAKE_CXX_FLAGS_RELEASE         "${CMAKE_CXX_FLAGS_DEFAULT} -O3 -DNDEBUG")
     set(CMAKE_CXX_FLAGS_DEBUG           "${CMAKE_CXX_FLAGS_DEFAULT} -g -pg -D_DEBUG")
