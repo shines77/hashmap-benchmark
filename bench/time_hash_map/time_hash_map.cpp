@@ -98,6 +98,7 @@
 #ifdef _MSC_VER
 #undef USE_ABSL_FLAT_HASH_MAP
 #undef USE_ABSL_NODE_HASH_MAP
+#undef USE_EMHASH7_HASH_MAP
 #endif
 
 #ifdef __SSE4_2__
