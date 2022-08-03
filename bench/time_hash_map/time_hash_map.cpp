@@ -90,7 +90,8 @@
 #define USE_JSTD_ROBIN_HASH_MAP     1
 #define USE_SKA_FLAT_HASH_MAP       1
 #define USE_SKA_BYTELL_HASH_MAP     0
-#define USE_EMHASH5_FLAT_HASH_MAP   1
+#define USE_EMHASH5_HASH_MAP        1
+#define USE_EMHASH7_HASH_MAP        1
 #define USE_ABSL_FLAT_HASH_MAP      1
 #define USE_ABSL_NODE_HASH_MAP      0
 
@@ -98,17 +99,6 @@
 #undef USE_ABSL_FLAT_HASH_MAP
 #undef USE_ABSL_NODE_HASH_MAP
 #endif
-
-/* SIMD support features */
-#define JSTD_HAVE_MMX           1
-#define JSTD_HAVE_SSE           1
-#define JSTD_HAVE_SSE2          1
-#define JSTD_HAVE_SSE3          1
-#define JSTD_HAVE_SSSE3         1
-#define JSTD_HAVE_SSE4          1
-#define JSTD_HAVE_SSE4A         1
-#define JSTD_HAVE_SSE4_1        1
-#define JSTD_HAVE_SSE4_2        1
 
 #ifdef __SSE4_2__
 
@@ -161,8 +151,11 @@
 #if USE_SKA_BYTELL_HASH_MAP
 #include <flat_hash_map/bytell_hash_map.hpp>
 #endif
-#if USE_EMHASH5_FLAT_HASH_MAP
+#if USE_EMHASH5_HASH_MAP
 #include <emhash/hash_table5.hpp>
+#endif
+#if USE_EMHASH7_HASH_MAP
+#include <emhash/hash_table7.hpp>
 #endif
 #if USE_ABSL_FLAT_HASH_MAP
 #include <absl/container/flat_hash_map.h>
@@ -240,6 +233,7 @@ static bool FLAGS_test_jstd_robin_hash_map = true;
 static bool FLAGS_test_ska_flat_hash_map = true;
 static bool FLAGS_test_ska_bytell_hash_map = true;
 static bool FLAGS_test_emhash5_flat_hash_map = true;
+static bool FLAGS_test_emhash7_flat_hash_map = true;
 static bool FLAGS_test_absl_flat_hash_map = true;
 static bool FLAGS_test_absl_node_hash_map = true;
 static bool FLAGS_test_map = false;
@@ -1259,12 +1253,21 @@ static void test_all_hashmaps(std::size_t obj_size, std::size_t iters) {
     }
 #endif
 
-#if USE_EMHASH5_FLAT_HASH_MAP
+#if USE_EMHASH5_HASH_MAP
     if (FLAGS_test_emhash5_flat_hash_map) {
         measure_hashmap<emhash5::HashMap<HashObj,   Value, HashFn<Value, HashObj::cSize, HashObj::cHashSize, true>>,
                         emhash5::HashMap<HashObj *, Value, HashFn<Value, HashObj::cSize, HashObj::cHashSize, true>>
                         >(
             "emhash5::HashMap<K, V>", obj_size, 0, iters, has_stress_hash_function);
+    }
+#endif
+
+#if USE_EMHASH7_HASH_MAP
+    if (FLAGS_test_emhash7_flat_hash_map) {
+        measure_hashmap<emhash7::HashMap<HashObj,   Value, HashFn<Value, HashObj::cSize, HashObj::cHashSize, true>>,
+                        emhash7::HashMap<HashObj *, Value, HashFn<Value, HashObj::cSize, HashObj::cHashSize, true>>
+                        >(
+            "emhash7::HashMap<K, V>", obj_size, 0, iters, has_stress_hash_function);
     }
 #endif
 
