@@ -545,7 +545,8 @@ static void map_sequential_iterate(std::size_t iters) {
         r = 1;
         reset_counter();
         sw.start();
-        for (const_iterator it = hashmap.begin(), it_end = hashmap.end(); it != it_end; ++it) {
+        const_iterator it = hashmap.cbegin(), it_end = hashmap.cend();
+        for (; it != it_end; ++it) {
             r ^= it->second;
         }
         sw.stop();
@@ -1109,7 +1110,8 @@ static void map_random_iterate(std::size_t iters, const Vector & indices) {
         r = 1;
         reset_counter();
         sw.start();
-        for (const_iterator it = hashmap.begin(), it_end = hashmap.end(); it != it_end; ++it) {
+        const_iterator it = hashmap.cbegin(), it_end = hashmap.cend();
+        for (; it != it_end; ++it) {
             r ^= it->second;
         }
         sw.stop();

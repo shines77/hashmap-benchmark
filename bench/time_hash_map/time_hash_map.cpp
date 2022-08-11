@@ -395,7 +395,7 @@ private:
 
 public:
     HashObject() noexcept : key_(0) {
-        std::memset(this->buffer_, 0, kBufLen * sizeof(char));
+        std::memset(&this->buffer_[0], 0, kBufLen * sizeof(char));
 #if (USE_STAT_COUNTER != 0) && (USE_CTOR_COUNTER != 0)
         g_num_constructor++;
 #endif
@@ -423,7 +423,13 @@ public:
     }
 
     HashObject(const this_type & that) noexcept : key_(that.key_) {
-        std::memcpy(this->buffer_, that.buffer_, kBufLen * sizeof(char));
+        if (kBufLen == sizeof(key_type)) {
+            key_type * dest = (key_type *)&this->buffer_[0];
+            key_type * src  = (key_type *)&that.buffer_[0];
+            *dest = *src;
+        } else {
+            std::memcpy(&this->buffer_[0], &that.buffer_[0], kBufLen * sizeof(char));
+        }
 #if USE_STAT_COUNTER
         g_num_copies++;
 #endif
@@ -433,7 +439,13 @@ public:
 
     this_type & operator = (const this_type & that) noexcept {
         this->key_ = that.key_;
-        std::memcpy(this->buffer_, that.buffer_, kBufLen * sizeof(char));
+        if (kBufLen == sizeof(key_type)) {
+            key_type * dest = (key_type *)&this->buffer_[0];
+            key_type * src  = (key_type *)&that.buffer_[0];
+            *dest = *src;
+        } else {
+            std::memcpy(&this->buffer_[0], &that.buffer_[0], kBufLen * sizeof(char));
+        }
 #if USE_STAT_COUNTER
         g_num_assigns++;
 #endif
@@ -448,12 +460,13 @@ public:
         return (const char *)&this->buffer_[0];
     }
 
-    std::size_t Hash() const {
-        std::size_t hash_val = static_cast<std::size_t>(this->key_);
+    std::size_t Hash() const noexcept {
 #if 0
-        for (std::size_t i = 0; i < kHashLen; ++i) {
-            hash_val += this->buffer_[i];
-        }
+        std::size_t hash_val = static_cast<std::size_t>(this->key_);
+#else
+        std::size_t hash_val = static_cast<std::size_t>(
+            jstd::hashes::hash_crc32(&this->buffer_[0], kBufLen * sizeof(char))
+        );
 #endif
 #if USE_STAT_COUNTER
         g_num_hashes++;
@@ -528,7 +541,7 @@ public:
         return nullptr;
     }
 
-    std::size_t Hash() const {
+    std::size_t Hash() const noexcept {
 #if USE_STAT_COUNTER
         g_num_hashes++;
 #endif
@@ -553,6 +566,7 @@ public:
     }
 };
 
+// A specialization for the case sizeof(buffer_) == 0
 template <>
 class HashObject<std::uint64_t, sizeof(std::uint64_t), sizeof(std::uint64_t)> {
 public:
@@ -603,7 +617,7 @@ public:
         return nullptr;
     }
 
-    std::size_t Hash() const {
+    std::size_t Hash() const noexcept {
 #if USE_STAT_COUNTER
         g_num_hashes++;
 #endif
@@ -1311,7 +1325,7 @@ void benchmark_all_hashmaps(std::size_t iters)
     }
 
     if (FLAGS_test_256_bytes) {
-        test_all_hashmaps<HashObject<std::size_t, 256, 32>, std::size_t>(256, iters / 32);
+        test_all_hashmaps<HashObject<std::size_t, 256, 64>, std::size_t>(256, iters / 32);
     }
 }
 
