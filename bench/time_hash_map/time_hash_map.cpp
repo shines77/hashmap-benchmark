@@ -339,7 +339,7 @@ struct IntegalHash
     template <typename Argument, typename std::enable_if<
                                   (!std::is_integral<Argument>::value ||
                                   sizeof(Argument) > 8)>::type * = nullptr>
-    result_type operator () (const Argument & value) const noexcept
+    result_type operator () (const Argument & value) const
         noexcept(noexcept(std::declval<std::hash<Argument>>()(value))) {
         std::hash<Argument> hasher;
         return static_cast<result_type>(hasher(value));
@@ -778,7 +778,7 @@ public:
     }
 };
 
-#if 0
+#if 1
 
 namespace std {
 
@@ -839,7 +839,7 @@ struct hash<HashObject<Key, Size, HashSize>> {
 
 #endif
 
-#if 0
+#if 1
 
 namespace std {
 
@@ -866,6 +866,9 @@ struct is_trivially_copyable< HashObject<std::size_t, 16, 16> > : true_type { };
 template <>
 struct is_trivially_copyable< HashObject<std::size_t, 256, 32> > : true_type { };
 
+template <>
+struct is_trivially_copyable< HashObject<std::size_t, 256, 64> > : true_type { };
+
 // is_trivially_destructible
 
 template <std::size_t Size, std::size_t HashSize>
@@ -885,6 +888,9 @@ struct is_trivially_destructible< HashObject<std::size_t, 16, 16> > : true_type 
 
 template <>
 struct is_trivially_destructible< HashObject<std::size_t, 256, 32> > : true_type { };
+
+template <>
+struct is_trivially_destructible< HashObject<std::size_t, 256, 64> > : true_type { };
 
 } // namespace std
 
@@ -1424,11 +1430,12 @@ int main(int argc, char * argv[])
 
     if (1)
     {
-        printf("-------------------------- benchmark_all_hashmaps(iters) ---------------------------\n\n");
+        printf("---------------------- benchmark_all_hashmaps (iters = %u) ----------------------\n\n",
+               (std::uint32_t)iters);
         benchmark_all_hashmaps(iters);
     }
 
-    printf("------------------------------------------------------------------------------------\n\n");
+    printf("-----------------------------------------------------------------------------\n\n");
 
 #if defined(_MSC_VER) && defined(_DEBUG)
     jstd::Console::ReadKey();

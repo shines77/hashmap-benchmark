@@ -402,15 +402,19 @@ std::string format_hashmap_name(const char * fmt)
     return std::string(name);
 }
 
-template <typename Key>
-void generate_random_keys(std::vector<Key> & keys, std::size_t data_size, std::size_t key_range)
+template <typename Key, std::size_t Cardinal>
+void generate_random_keys(std::vector<Key> & keys, std::size_t data_size)
 {
     jstd::MtRandomGen mtRandomGen(20200831);
 
+    static constexpr std::size_t key_range = Cardinal;
+
     keys.clear();
-    keys.resize(data_size);
+    keys.reserve(data_size);
+
     for (std::size_t i = 0; i < data_size; i++) {
-        keys[i] = static_cast<Key>(mtRandomGen.nextUInt() % key_range);
+        Key key = static_cast<Key>(mtRandomGen.nextUInt() % key_range);
+        keys.push_back(key);
     }
 }
 
@@ -470,7 +474,7 @@ void benchmark_insert_random_impl()
     name9 = format_hashmap_name<Key, Value>("absl::node_hash_map<%s, %s>");
 
     std::vector<Key> keys;
-    generate_random_keys<Key>(keys, DataSize, Cardinal);
+    generate_random_keys<Key, Cardinal>(keys, DataSize);
 
 #if USE_STD_UNORDERED_MAP
     run_insert_random<std::unordered_map<Key, Value>>    (name0, keys, Cardinal);
@@ -563,7 +567,7 @@ void benchmark_MumHash_insert_random_impl()
     name9 = format_hashmap_name<Key, Value>("absl::node_hash_map<%s, %s>");
 
     std::vector<Key> keys;
-    generate_random_keys<Key>(keys, DataSize, Cardinal);
+    generate_random_keys<Key, Cardinal>(keys, DataSize);
 
 #if USE_STD_UNORDERED_MAP
     run_insert_random<std::unordered_map<Key, Value, test::MumHash<Key>>>    (name0, keys, Cardinal);
