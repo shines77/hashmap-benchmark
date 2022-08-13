@@ -647,19 +647,19 @@ void benchmark_all_hashmaps(std::size_t iters)
 #if 1
     benchmark_insert_random<int, int>(iters);
 
-    printf("------------------------------------------------------------------------------------\n\n");
+    printf("------------------------------------------------------------------------------------------\n\n");
 
     benchmark_insert_random<std::size_t, std::size_t>(iters);
 #endif
 
 #ifndef _DEBUG
-    printf("------------------------------------------------------------------------------------\n\n");
+    printf("------------------------------------------------------------------------------------------\n\n");
 #endif
 
 #ifndef _DEBUG
     benchmark_MumHash_insert_random<int, int>(iters);
 
-    printf("------------------------------------------------------------------------------------\n\n");
+    printf("------------------------------------------------------------------------------------------\n\n");
 
     benchmark_MumHash_insert_random<std::size_t, std::size_t>(iters);
 #endif
