@@ -1333,6 +1333,7 @@ void std_hash_test()
 {
     printf("#define HASH_MAP_FUNCTION = %s\n\n", PRINT_MACRO(HASH_MAP_FUNCTION));
 
+#if (HASH_FUNCTION_ID == ID_STD_HASH)
     printf("std::hash<std::uint32_t>\n\n");
     for (std::uint32_t i = 0; i < 8; i++) {
         std::size_t hash_code = std::hash<std::uint32_t>()(i);
@@ -1358,8 +1359,7 @@ void std_hash_test()
     }
     printf("std::hash<std::size_t>[0, 1048576]: diff = %" PRIu64 "\n\n", diff);
 #endif
-
-#if (HASH_FUNCTION_ID != ID_STD_HASH)
+#else
     printf("%s<std::uint32_t>\n\n", PRINT_MACRO(HASH_MAP_FUNCTION));
     for (std::uint32_t i = 0; i < 8; i++) {
         std::size_t hash_code = HASH_MAP_FUNCTION<std::uint32_t>()(i);
@@ -1375,7 +1375,32 @@ void std_hash_test()
                i, UINT64_High(hash_code), UINT64_Low(hash_code));
     }
     printf("\n");
-#endif
+#endif // HASH_FUNCTION_ID == ID_STD_HASH
+}
+
+template <typename Key, typename Value>
+void print_need_store_hash(const std::string & key, const std::string & value)
+{
+    static constexpr bool bIsPlainType = jstd::detail::is_plain_type<Key>::value;
+    static constexpr bool bNeedStoreHash = jstd::robin_hash_map<Key, Value>::kDetectStoreHash;
+
+    printf("jstd::detail::is_plain_type<%s>::value = %s\n",
+           key.c_str(), (bIsPlainType ? "True" : "False"));
+    printf("jstd::robin_hash_map<%s, %s>::kDetectStoreHash = %s\n",
+           key.c_str(), value.c_str(), (bNeedStoreHash ? "True" : "False"));
+    printf("\n");
+}
+
+void need_store_hash_test()
+{
+    print_need_store_hash<HashObject<std::uint32_t, 4, 4>,  std::uint32_t>(
+        "HashObject<std::uint32_t, 4, 4>",  "std::uint32_t");
+    print_need_store_hash<HashObject<std::uint64_t, 8, 8>,  std::uint64_t>(
+        "HashObject<std::uint64_t, 8, 8>",  "std::uint64_t");
+    print_need_store_hash<HashObject<std::size_t, 16, 16>,  std::size_t>(
+        "HashObject<std::size_t, 16, 16>",  "std::size_t");
+    print_need_store_hash<HashObject<std::size_t, 256, 64>, std::size_t>(
+        "HashObject<std::size_t, 256, 64>", "std::size_t");
 }
 
 int main(int argc, char * argv[])
@@ -1392,6 +1417,7 @@ int main(int argc, char * argv[])
     jtest::CPU::warm_up(1000);
 
     if (1) { std_hash_test(); }
+    if (1) { need_store_hash_test(); }
 
     if (1)
     {
