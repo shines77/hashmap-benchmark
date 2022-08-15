@@ -32,9 +32,9 @@
 ### 1. 克隆 Git 仓库
 
 ```bash
-git clone https://gitee.com/shines77/hashmap-benchmark
+git clone https://gitee.com/shines77/hashmap-benchmark.git
 # 或者
-git clone https://github.com/shines77/hashmap-benchmark
+git clone https://github.com/shines77/hashmap-benchmark.git
 ```
 
 ### 2. 初始化子模块
@@ -100,4 +100,14 @@ make
 
 # 中数据集测试
 ./bin/benchmark ./data/Maven.keys.txt
+```
+
+### 6. 其他脚本
+
+```bash
+# 清理 cmake 的缓存和编译结果（便于重新配置和编译）
+./cmake-clean.sh
+
+# 重新执行本仓库的 cmake 配置，建议先执行 cmake-clean.sh
+./cmake-config.sh
 ```

@@ -32,9 +32,9 @@ ChangeLog:
 ### 1. Clone git repository
 
 ```bash
-git clone https://github.com/shines77/hashmap-benchmark
+git clone https://github.com/shines77/hashmap-benchmark.git
 or
-git clone https://gitee.com/shines77/hashmap-benchmark
+git clone https://gitee.com/shines77/hashmap-benchmark.git
 ```
 
 ### 2. Init submodule(s)
@@ -102,4 +102,14 @@ make
 
 # Middle test case
 ./bin/benchmark ./data/Maven.keys.txt
+```
+
+### 6. Other script
+
+```bash
+# Clean up the cache and compilation results of cmake (easy to reconfigure and compile)
+./cmake-clean.sh
+
+# Configure this repository, it is recommended to execute cmake-clean.sh first
+./cmake-config.sh
 ```
