@@ -82,11 +82,10 @@
 
 #define USE_JSTD_HASH_TABLE         0
 #define USE_JSTD_DICTIONARY         0
-#define USE_STD_HASH_MAP            0
 
 #define USE_STD_HASH_MAP            0
 #define USE_STD_UNORDERED_MAP       1
-#define USE_JSTD_FLAT16_HASH_MAP    1
+#define USE_JSTD_FLAT16_HASH_MAP    0
 #define USE_JSTD_ROBIN16_HASH_MAP   1
 #define USE_JSTD_ROBIN_HASH_MAP     1
 #define USE_SKA_FLAT_HASH_MAP       1
@@ -317,7 +316,6 @@ struct hash<jstd::wstring_view> {
                                      std::uint32_t, jstd::HashFunc_CRC32C> hasher;
 
     result_type operator () (const argument_type & key) const noexcept {
-
         return static_cast<result_type>(hasher::getHashCode(key));
     }
 };
@@ -331,7 +329,6 @@ struct hash<jstd::basic_string_view<CharT, Traits>> {
                                      std::uint32_t, jstd::HashFunc_CRC32C> hasher;
 
     result_type operator () (const argument_type & key) const noexcept {
-
         return static_cast<result_type>(hasher::getHashCode(key));
     }
 };
