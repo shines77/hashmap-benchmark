@@ -1367,8 +1367,8 @@ void test_all_hashmaps(std::size_t obj_size, std::size_t iters)
 
 #if USE_JSTD_ROBIN_HASH_MAP
     if (FLAGS_test_jstd_robin_hash_map) {
-        measure_hashmap<jstd::robin_hash_map<Key,   Value, Value, HASH_MAP_FUNCTION<Key>>,
-                        jstd::robin_hash_map<Key *, Value, Value, HASH_MAP_FUNCTION<Key *>>>
+        measure_hashmap<jstd::robin_hash_map<Key,   Value, HASH_MAP_FUNCTION<Key>>,
+                        jstd::robin_hash_map<Key *, Value, HASH_MAP_FUNCTION<Key *>>>
             ("jstd::robin_hash_map<K, V>", obj_size, iters, has_stress_hash_function);
     }
 #endif
