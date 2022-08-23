@@ -497,7 +497,7 @@ void benchmark_insert_random_impl()
 #if USE_EMHASH5_HASH_MAP
     run_insert_random<emhash5::HashMap<Key, Value>>      (name6, keys, Cardinal);
 #endif
-#if USE_EMHASH5_HASH_MAP
+#if USE_EMHASH7_HASH_MAP
     run_insert_random<emhash7::HashMap<Key, Value>>      (name7, keys, Cardinal);
 #endif
 #if USE_ABSL_FLAT_HASH_MAP

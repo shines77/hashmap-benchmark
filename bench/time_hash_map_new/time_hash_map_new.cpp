@@ -5,8 +5,8 @@
 
   Copyright (c) 2020-2022 XiongHui Guo (gz_shines at msn.com)
 
-  https://github.com/shines77/hashmap-benchmark
-  https://gitee.com/shines77/hashmap-benchmark
+  https://github.com/shines77/jstd_hashmap
+  https://gitee.com/shines77/jstd_hashmap
 
 *************************************************************************************
 
@@ -82,6 +82,7 @@
 
 #define USE_JSTD_HASH_TABLE         0
 #define USE_JSTD_DICTIONARY         0
+#define USE_STD_HASH_MAP            0
 
 #define USE_STD_HASH_MAP            0
 #define USE_STD_UNORDERED_MAP       1
@@ -134,6 +135,7 @@
 #endif // USE_STD_HASH_MAP
 
 #include <string>
+#include <unordered_set>
 #if USE_STD_UNORDERED_MAP
 #include <unordered_map>
 #endif
@@ -225,9 +227,9 @@
 #endif
 
 #if defined(_MSC_VER)
-static bool FLAGS_test_std_hash_map = false;
+static const bool FLAGS_test_std_hash_map = false;
 #else
-static bool FLAGS_test_std_hash_map = false;
+static const bool FLAGS_test_std_hash_map = false;
 #endif
 static bool FLAGS_test_std_unordered_map = true;
 static bool FLAGS_test_jstd_flat16_hash_map = true;
@@ -244,7 +246,7 @@ static bool FLAGS_test_map = false;
 static constexpr bool FLAGS_test_4_bytes = true;
 static constexpr bool FLAGS_test_8_bytes = true;
 static constexpr bool FLAGS_test_16_bytes = true;
-static constexpr bool FLAGS_test_256_bytes = true;
+static constexpr bool FLAGS_test_32_bytes = true;
 
 #ifndef _DEBUG
 static constexpr std::size_t kDefaultIters = 10000000;
@@ -290,6 +292,51 @@ std::size_t CurrentMemoryUsage()
     __COMPILER_BARRIER();
     return usedMemory;
 }
+
+namespace std {
+
+template <>
+struct hash<jstd::string_view> {
+    typedef jstd::string_view   argument_type;
+    typedef std::uint32_t       result_type;
+
+    typedef jstd::string_hash_helper<jstd::string_view,
+                                     std::uint32_t, jstd::HashFunc_CRC32C> hasher;
+
+    result_type operator () (const argument_type & key) const noexcept {
+        return static_cast<result_type>(hasher::getHashCode(key));
+    }
+};
+
+template <>
+struct hash<jstd::wstring_view> {
+    typedef jstd::wstring_view  argument_type;
+    typedef std::uint32_t       result_type;
+
+    typedef jstd::string_hash_helper<jstd::wstring_view,
+                                     std::uint32_t, jstd::HashFunc_CRC32C> hasher;
+
+    result_type operator () (const argument_type & key) const noexcept {
+
+        return static_cast<result_type>(hasher::getHashCode(key));
+    }
+};
+
+template <typename CharT, typename Traits>
+struct hash<jstd::basic_string_view<CharT, Traits>> {
+    typedef jstd::basic_string_view<CharT, Traits>  argument_type;
+    typedef std::uint32_t                           result_type;
+
+    typedef jstd::string_hash_helper<jstd::basic_string_view<CharT, Traits>,
+                                     std::uint32_t, jstd::HashFunc_CRC32C> hasher;
+
+    result_type operator () (const argument_type & key) const noexcept {
+
+        return static_cast<result_type>(hasher::getHashCode(key));
+    }
+};
+
+} // namespace std
 
 namespace test {
 
@@ -656,49 +703,9 @@ public:
     typedef HashObject<Key, Size, HashSize> argument_type;
     typedef std::size_t                     result_type;
 
-    typedef std::pair<argument_type, Key>   pair_type;
-    typedef std::pair<argument_type *, Key> pair_type_2nd;
-
     // These two public members are required by msvc.  4 and 8 are defaults.
     static const std::size_t bucket_size = 4;
     static const std::size_t min_buckets = 8;
-
-    result_type operator () (const key_type & key) {
-        if (is_special)
-            return static_cast<result_type>(test::MumHash<key_type>()(key));
-        else
-            return static_cast<result_type>(HASH_MAP_FUNCTION<key_type>()(key));
-    }
-
-    result_type operator () (const key_type & key) const {
-        if (is_special)
-            return static_cast<result_type>(test::MumHash<key_type>()(key));
-        else
-            return static_cast<result_type>(HASH_MAP_FUNCTION<key_type>()(key));
-    }
-
-    result_type operator () (const pair_type & pair) {
-        return static_cast<result_type>(pair.first.Hash());
-    }
-
-    result_type operator () (const pair_type & pair) const {
-        return static_cast<result_type>(pair.first.Hash());
-    }
-
-    result_type operator () (const pair_type_2nd & pair) {
-        return static_cast<result_type>(pair.first->Hash());
-    }
-
-    result_type operator () (const pair_type_2nd & pair) const {
-        return static_cast<result_type>(pair.first->Hash());
-    }
-
-    result_type operator () (const argument_type & obj) {
-        if (is_special)
-            return static_cast<result_type>(test::MumHash<key_type>()(obj.Hash()));
-        else
-            return static_cast<result_type>(obj.Hash());
-    }
 
     result_type operator () (const argument_type & obj) const noexcept {
         if (is_special)
@@ -707,25 +714,9 @@ public:
             return static_cast<result_type>(obj.Hash());
     }
 
-#if 1
-    result_type operator () (const argument_type * obj) {
-        return reinterpret_cast<result_type>(obj);
-    }
-
     // Do the identity hash for pointers.
     result_type operator () (const argument_type * obj) const noexcept {
         return reinterpret_cast<result_type>(obj);
-    }
-#endif
-
-    template <typename UKey, std::size_t nSize, std::size_t nHashSize>
-    result_type operator () (const std::pair<HashObject<UKey, nSize, nHashSize>, key_type> & pair) {
-        return static_cast<result_type>(pair.first.Hash());
-    }
-
-    template <typename UKey, std::size_t nSize, std::size_t nHashSize>
-    result_type operator () (const std::pair<HashObject<UKey, nSize, nHashSize>, key_type> & pair) const {
-        return static_cast<result_type>(pair.first.Hash());
     }
 
     // Less operator for MSVC's hash containers.
@@ -737,45 +728,27 @@ public:
         return (a < b);
     }
 
-    template <typename UKey, std::size_t nSize, std::size_t nHashSize>
-    result_type operator () (const HashObject<UKey, nSize, nHashSize> & obj) {
-        if (is_special)
-            return static_cast<result_type>(test::MumHash<key_type>()(obj.Hash()));
-        else
-            return static_cast<result_type>(obj.Hash());
-    }
-
-    template <typename UKey, std::size_t nSize, std::size_t nHashSize>
-    result_type operator () (const HashObject<UKey, nSize, nHashSize> & obj) const noexcept {
-        if (is_special)
-            return static_cast<result_type>(test::MumHash<key_type>()(obj.Hash()));
-        else
-            return static_cast<result_type>(obj.Hash());
-    }
-
-#if 1
-    template <typename UKey, std::size_t nSize, std::size_t nHashSize>
-    result_type operator () (const HashObject<UKey, nSize, nHashSize> * obj) {
-        return reinterpret_cast<result_type>(obj);
+    template <std::size_t nSize, std::size_t nHashSize>
+    result_type operator () (const HashObject<key_type, nSize, nHashSize> & obj) const noexcept {
+        return static_cast<result_type>(obj.Hash());
     }
 
     // Do the identity hash for pointers.
-    template <typename UKey, std::size_t nSize, std::size_t nHashSize>
-    result_type operator () (const HashObject<UKey, nSize, nHashSize> * obj) const noexcept {
+    template <std::size_t nSize, std::size_t nHashSize>
+    result_type operator () (const HashObject<key_type, nSize, nHashSize> * obj) const noexcept {
         return reinterpret_cast<result_type>(obj);
     }
-#endif
 
     // Less operator for MSVC's hash containers.
-    template <typename UKey, std::size_t nSize, std::size_t nHashSize>
-    bool operator () (const HashObject<UKey, nSize, nHashSize> & a,
-                      const HashObject<UKey, nSize, nHashSize> & b) const noexcept {
+    template <std::size_t nSize, std::size_t nHashSize>
+    bool operator () (const HashObject<key_type, nSize, nHashSize> & a,
+                      const HashObject<key_type, nSize, nHashSize> & b) const noexcept {
         return (a < b);
     }
 
-    template <typename UKey, std::size_t nSize, std::size_t nHashSize>
-    bool operator () (const HashObject<UKey, nSize, nHashSize> * a,
-                      const HashObject<UKey, nSize, nHashSize> * b) const noexcept {
+    template <std::size_t nSize, std::size_t nHashSize>
+    bool operator () (const HashObject<key_type, nSize, nHashSize> * a,
+                      const HashObject<key_type, nSize, nHashSize> * b) const noexcept {
         return (a < b);
     }
 };
@@ -1112,16 +1085,22 @@ void shuffle_vector(Vector & vector, int seed = 0) {
 /* The implementation of test routine */
 #include "time_hash_map_func.hpp"
 
+/* The implementation of test routine */
+#include "time_hash_map_object_func.hpp"
+
 template <class MapType, class StressMapType>
-static void measure_hashmap(const char * name, std::size_t obj_size,
-                            std::size_t iters, bool is_stress_hash_function) {
+void measure_hashmap(const char * name, std::size_t obj_size,
+                     std::size_t iters, bool is_stress_hash_function)
+{
+    typedef typename MapType::value_type    value_type;
+    typedef typename MapType::mapped_type   mapped_type;
+
     printf("%s (%" PRIuPTR " byte objects, %" PRIuPTR " byte ValueType, %" PRIuPTR " iterations):\n",
-           name, obj_size, sizeof(typename MapType::value_type), iters);
+           name, obj_size, sizeof(value_type), iters);
+
     if (1) printf("\n");
 
     //------------------------------------------------------------
-
-    typedef typename MapType::mapped_type mapped_type;
     std::vector<mapped_type> rndIndices;
     rndIndices.reserve(iters);
     for (mapped_type i = 0; i < iters; i++) {
@@ -1206,108 +1185,328 @@ static void measure_hashmap(const char * name, std::size_t obj_size,
 #endif
 }
 
-template <typename HashObj, typename Value>
-static void test_all_hashmaps(std::size_t obj_size, std::size_t iters) {
+template <typename StringType, std::size_t minLen, std::size_t maxLen>
+StringType generate_random_string(jstd::MtRandomGen & randomGen)
+{
+    typedef StringType                      string_type;
+    typedef typename StringType::value_type char_type;
+
+    static constexpr std::size_t kMinAscii = 32;
+    static constexpr std::size_t kMaxAscii = 126;
+    static const char_type IdentChars[] =
+        "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_";
+    static const char_type BodyChars[] =
+        "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_+-=*\\/ [](){}<>#$%&@!~|,;:?'`";
+    static const std::size_t kMaxIdentChars = sizeof(IdentChars) - 1;
+    static const std::size_t kMaxBodyChars = sizeof(BodyChars) - 1;
+
+    string_type str;
+    char_type rndChar;
+    std::size_t length = minLen + (randomGen.nextInt() % std::size_t(maxLen - minLen));
+    str.reserve(length);
+
+    // First char: Ident
+    rndChar = IdentChars[randomGen.nextInt() % kMaxIdentChars];
+    str.push_back(rndChar);
+    for (std::size_t i = 0; i < length - 1; i++) {
+        rndChar = BodyChars[randomGen.nextInt() % kMaxBodyChars];
+        str.push_back(rndChar);
+    }
+    if (rndChar == ' ') {
+        rndChar = IdentChars[randomGen.nextInt() % kMaxIdentChars];
+        str.pop_back();
+        str.push_back(rndChar);
+    }
+    assert(std::strlen(str.c_str()) >= minLen);
+    return str;
+}
+
+template <typename ValueType, typename Key, typename Value,
+          std::size_t minKeyLen = 4, std::size_t maxKeyLen = 31,
+          std::size_t minValueLen = 1, std::size_t maxValueLen = 31>
+void generate_random_strings(std::size_t length, std::vector<ValueType> & kvs,
+                            std::vector<Key> & keys,
+                            std::vector<Key> & rnd_keys,
+                            std::vector<Key> & miss_keys)
+{
+    jstd::MtRandomGen mtRandomGen(20220714);
+    std::unordered_set<Key> key_used;
+
+    kvs.reserve(length);
+    keys.reserve(length);
+
+    for (std::size_t i = 0; i < length; i++) {
+        std::string key;
+        do {
+            key = generate_random_string<Key, minKeyLen, maxKeyLen>(mtRandomGen);
+        } while (key_used.count(key) != 0);
+        key_used.insert(key);
+
+        std::string value = generate_random_string<Value, minValueLen, maxValueLen>(mtRandomGen);
+
+        kvs.emplace_back(std::make_pair(key, value));
+        keys.emplace_back(key);
+    }
+
+    std::unordered_set<Key> miss_key_used;
+    miss_keys.reserve(length);
+
+    for (std::size_t i = 0; i < length; i++) {
+        std::string miss_key;
+        do {
+            miss_key = generate_random_string<Key, minKeyLen, maxKeyLen>(mtRandomGen);
+        } while (key_used.count(miss_key) != 0 || miss_key_used.count(miss_key) != 0);
+        miss_key_used.insert(miss_key);
+        miss_keys.emplace_back(miss_key);
+    }
+
+    rnd_keys = keys;
+    shuffle_vector(rnd_keys, 20220714);
+}
+
+template <typename MapType>
+void measure_string_hashmap(const char * name, std::size_t obj_size, std::size_t iters)
+{
+    typedef typename MapType::value_type    value_type;
+    typedef typename MapType::key_type      key_type;
+    typedef typename MapType::mapped_type   mapped_type;
+
+    printf("%s (%" PRIuPTR " byte objects, %" PRIuPTR " byte ValueType, %" PRIuPTR " iterations):\n",
+           name, obj_size, sizeof(value_type), iters);
+
+    if (1) printf("\n");
+
+    //------------------------------------------------------------
+    typedef std::vector<value_type> PairVector;
+    typedef std::vector<key_type>   KeyVector;
+
+    PairVector kvs;
+    KeyVector keys, rnd_keys, miss_keys;
+
+    generate_random_strings<value_type, key_type, mapped_type, 4u, 31u, 1u, 31u>(
+        iters, kvs, keys, rnd_keys, miss_keys);
+
+    //------------------------------------------------------------
+
+    if (1) map_serial_find_success<MapType, PairVector, KeyVector>(iters, kvs, keys);
+    if (1) map_random_find_success<MapType, PairVector, KeyVector>(iters, kvs, rnd_keys);
+    if (1) map_find_failed<MapType, PairVector, KeyVector>(iters, kvs, miss_keys);
+    if (1) map_find_empty<MapType, PairVector, KeyVector>(iters, kvs, keys);
+    if (1) printf("\n");
+
+    //------------------------------------------------------------
+
+    if (1) map_insert<MapType, PairVector>(iters, kvs);
+    if (1) map_insert_predicted<MapType, PairVector>(iters, kvs);
+    if (1) map_insert_replace<MapType, PairVector>(iters, kvs);
+    if (1) printf("\n");
+
+    if (1) map_emplace<MapType, PairVector>(iters, kvs);
+    if (1) map_emplace_predicted<MapType, PairVector>(iters, kvs);
+    if (1) map_emplace_replace<MapType, PairVector>(iters, kvs);
+    if (1) printf("\n");
+
+    if (1) map_try_emplace<MapType, PairVector>(iters, kvs);
+    if (1) map_try_emplace_predicted<MapType, PairVector>(iters, kvs);
+    if (1) map_try_emplace_replace<MapType, PairVector, KeyVector>(iters, kvs, rnd_keys);
+    if (1) printf("\n");
+
+    if (1) map_operator<MapType, PairVector>(iters, kvs);
+    if (1) map_operator_predicted<MapType, PairVector>(iters, kvs);
+    if (1) map_operator_replace<MapType, PairVector>(iters, kvs);
+    if (1) printf("\n");
+
+    //------------------------------------------------------------
+
+    if (1) map_serial_erase<MapType, PairVector>(iters, kvs);
+    if (1) map_random_erase<MapType, PairVector, KeyVector>(iters, kvs, rnd_keys);
+    if (1) map_erase_failed<MapType, PairVector, KeyVector>(iters, kvs, miss_keys);
+    if (1) printf("\n");
+
+    if (1) map_toggle<MapType, PairVector>(iters, kvs);
+    if (1) map_iterate<MapType, PairVector>(iters, kvs);
+    if (1) printf("\n");
+}
+
+template <typename Key, typename Value>
+void test_all_hashmaps(std::size_t obj_size, std::size_t iters)
+{
     const bool has_stress_hash_function = (obj_size <= 8);
 
 #if USE_STD_HASH_MAP
     if (FLAGS_test_std_hash_map) {
-        measure_hashmap<StdHashMap<HashObj,   Value, HashFn<Value, HashObj::cSize, HashObj::cHashSize>>,
-                        StdHashMap<HashObj *, Value, HashFn<Value, HashObj::cSize, HashObj::cHashSize>>
-                        >(
-            "stdext::hash_map<K, V>", obj_size, iters, has_stress_hash_function);
+        measure_hashmap<StdHashMap<Key,   Value, HASH_MAP_FUNCTION<Key>>,
+                        StdHashMap<Key *, Value, HASH_MAP_FUNCTION<Key *>>>
+            ("stdext::hash_map<K, V>", obj_size, iters, has_stress_hash_function);
     }
 #endif
 
 #if USE_STD_UNORDERED_MAP
     if (FLAGS_test_std_unordered_map) {
-        measure_hashmap<std::unordered_map<HashObj,   Value, HashFn<Value, HashObj::cSize, HashObj::cHashSize>>,
-                        std::unordered_map<HashObj *, Value, HashFn<Value, HashObj::cSize, HashObj::cHashSize>>
-                        >(
-            "std::unordered_map<K, V>", obj_size, iters, has_stress_hash_function);
+        measure_hashmap<std::unordered_map<Key,   Value, HASH_MAP_FUNCTION<Key>>,
+                        std::unordered_map<Key *, Value, HASH_MAP_FUNCTION<Key *>>>
+            ("std::unordered_map<K, V>", obj_size, iters, has_stress_hash_function);
     }
 #endif
 
 #if USE_JSTD_FLAT16_HASH_MAP
     if (FLAGS_test_jstd_flat16_hash_map) {
-        measure_hashmap<jstd::flat16_hash_map<HashObj,   Value, HashFn<Value, HashObj::cSize, HashObj::cHashSize>>,
-                        jstd::flat16_hash_map<HashObj *, Value, HashFn<Value, HashObj::cSize, HashObj::cHashSize>>
-                        >(
-            "jstd::flat16_hash_map<K, V>", obj_size, iters, has_stress_hash_function);
+        measure_hashmap<jstd::flat16_hash_map<Key,   Value, HASH_MAP_FUNCTION<Key>>,
+                        jstd::flat16_hash_map<Key *, Value, HASH_MAP_FUNCTION<Key *>>>
+            ("jstd::flat16_hash_map<K, V>", obj_size, iters, has_stress_hash_function);
     }
 #endif
 
 #if USE_JSTD_ROBIN16_HASH_MAP
     if (FLAGS_test_jstd_robin16_hash_map) {
-        measure_hashmap<jstd::robin16_hash_map<HashObj,   Value, HashFn<Value, HashObj::cSize, HashObj::cHashSize>>,
-                        jstd::robin16_hash_map<HashObj *, Value, HashFn<Value, HashObj::cSize, HashObj::cHashSize>>
-                        >(
-            "jstd::robin16_hash_map<K, V>", obj_size, iters, has_stress_hash_function);
+        measure_hashmap<jstd::robin16_hash_map<Key,   Value, HASH_MAP_FUNCTION<Key>>,
+                        jstd::robin16_hash_map<Key *, Value, HASH_MAP_FUNCTION<Key *>>>
+            ("jstd::robin16_hash_map<K, V>", obj_size, iters, has_stress_hash_function);
     }
 #endif
 
 #if USE_JSTD_ROBIN_HASH_MAP
     if (FLAGS_test_jstd_robin_hash_map) {
-        measure_hashmap<jstd::robin_hash_map<HashObj,   Value, HashFn<Value, HashObj::cSize, HashObj::cHashSize>>,
-                        jstd::robin_hash_map<HashObj *, Value, HashFn<Value, HashObj::cSize, HashObj::cHashSize>>
-                        >(
-            "jstd::robin_hash_map<K, V>", obj_size, iters, has_stress_hash_function);
+        measure_hashmap<jstd::robin_hash_map<Key,   Value, Value, HASH_MAP_FUNCTION<Key>>,
+                        jstd::robin_hash_map<Key *, Value, Value, HASH_MAP_FUNCTION<Key *>>>
+            ("jstd::robin_hash_map<K, V>", obj_size, iters, has_stress_hash_function);
     }
 #endif
 
 #if USE_SKA_FLAT_HASH_MAP
     if (FLAGS_test_ska_flat_hash_map) {
-        measure_hashmap<ska::flat_hash_map<HashObj,   Value, HashFn<Value, HashObj::cSize, HashObj::cHashSize>>,
-                        ska::flat_hash_map<HashObj *, Value, HashFn<Value, HashObj::cSize, HashObj::cHashSize>>
-                        >(
-            "ska::flat_hash_map<K, V>", obj_size, iters, has_stress_hash_function);
+        measure_hashmap<ska::flat_hash_map<Key,   Value, HASH_MAP_FUNCTION<Key>>,
+                        ska::flat_hash_map<Key *, Value, HASH_MAP_FUNCTION<Key *>>>
+            ("ska::flat_hash_map<K, V>", obj_size, iters, has_stress_hash_function);
     }
 #endif
 
 #if USE_SKA_BYTELL_HASH_MAP
     if (FLAGS_test_ska_bytell_hash_map) {
-        measure_hashmap<ska::bytell_hash_map<HashObj,   Value, HashFn<Value, HashObj::cSize, HashObj::cHashSize>>,
-                        ska::bytell_hash_map<HashObj *, Value, HashFn<Value, HashObj::cSize, HashObj::cHashSize>>
-                        >(
-            "ska::bytell_hash_map<K, V>", obj_size, iters, has_stress_hash_function);
+        measure_hashmap<ska::bytell_hash_map<Key,   Value, HASH_MAP_FUNCTION<Key>>,
+                        ska::bytell_hash_map<Key *, Value, HASH_MAP_FUNCTION<Key *>>>
+            ("ska::bytell_hash_map<K, V>", obj_size, iters, has_stress_hash_function);
     }
 #endif
 
 #if USE_EMHASH5_HASH_MAP
     if (FLAGS_test_emhash5_flat_hash_map) {
-        measure_hashmap<emhash5::HashMap<HashObj,   Value, HashFn<Value, HashObj::cSize, HashObj::cHashSize>>,
-                        emhash5::HashMap<HashObj *, Value, HashFn<Value, HashObj::cSize, HashObj::cHashSize>>
-                        >(
-            "emhash5::HashMap<K, V>", obj_size, iters, has_stress_hash_function);
+        measure_hashmap<emhash5::HashMap<Key,   Value, HASH_MAP_FUNCTION<Key>>,
+                        emhash5::HashMap<Key *, Value, HASH_MAP_FUNCTION<Key *>>>
+            ("emhash5::HashMap<K, V>", obj_size, iters, has_stress_hash_function);
     }
 #endif
 
 #if USE_EMHASH7_HASH_MAP
     if (FLAGS_test_emhash7_flat_hash_map) {
-        measure_hashmap<emhash7::HashMap<HashObj,   Value, HashFn<Value, HashObj::cSize, HashObj::cHashSize>>,
-                        emhash7::HashMap<HashObj *, Value, HashFn<Value, HashObj::cSize, HashObj::cHashSize>>
-                        >(
-            "emhash7::HashMap<K, V>", obj_size, iters, has_stress_hash_function);
+        measure_hashmap<emhash7::HashMap<Key,   Value, HASH_MAP_FUNCTION<Key>>,
+                        emhash7::HashMap<Key *, Value, HASH_MAP_FUNCTION<Key *>>>
+            ("emhash7::HashMap<K, V>", obj_size, iters, has_stress_hash_function);
     }
 #endif
 
 #if USE_ABSL_FLAT_HASH_MAP
     if (FLAGS_test_absl_flat_hash_map) {
-        measure_hashmap<absl::flat_hash_map<HashObj,   Value, HashFn<Value, HashObj::cSize, HashObj::cHashSize, true>>,
-                        absl::flat_hash_map<HashObj *, Value, HashFn<Value, HashObj::cSize, HashObj::cHashSize, true>>
-                        >(
-            "absl::flat_hash_map<K, V>", obj_size, iters, has_stress_hash_function);
+        measure_hashmap<absl::flat_hash_map<Key,   Value, HASH_MAP_FUNCTION<Key>>,
+                        absl::flat_hash_map<Key *, Value, HASH_MAP_FUNCTION<Key *>>>
+            ("absl::flat_hash_map<K, V>", obj_size, iters, has_stress_hash_function);
     }
 #endif
 
 #if USE_ABSL_NODE_HASH_MAP
     if (FLAGS_test_absl_node_hash_map) {
-        measure_hashmap<absl::node_hash_map<HashObj,   Value, HashFn<Value, HashObj::cSize, HashObj::cHashSize>>,
-                        absl::node_hash_map<HashObj *, Value, HashFn<Value, HashObj::cSize, HashObj::cHashSize>>
-                        >(
-            "absl::node_hash_map<K, V>", obj_size, iters, has_stress_hash_function);
+        measure_hashmap<absl::node_hash_map<Key,   Value, HASH_MAP_FUNCTION<Key>>,
+                        absl::node_hash_map<Key *, Value, HASH_MAP_FUNCTION<Key *>>>
+            ("absl::node_hash_map<K, V>", obj_size, iters, has_stress_hash_function);
     }
 #endif
+}
+
+template <typename Key, typename Value>
+void test_all_hashmaps_for_string(std::size_t obj_size, std::size_t iters)
+{
+#if USE_STD_HASH_MAP
+    if (FLAGS_test_std_hash_map) {
+        measure_string_hashmap<StdHashMap<Key, Value>>
+            ("stdext::hash_map<K, V>", obj_size, iters);
+    }
+#endif
+
+#if USE_STD_UNORDERED_MAP
+    if (FLAGS_test_std_unordered_map) {
+        measure_string_hashmap<std::unordered_map<Key, Value>>
+            ("std::unordered_map<K, V>", obj_size, iters);
+    }
+#endif
+
+#if USE_JSTD_FLAT16_HASH_MAP
+    if (FLAGS_test_jstd_flat16_hash_map) {
+        measure_string_hashmap<jstd::flat16_hash_map<Key, Value>>
+            ("jstd::flat16_hash_map<K, V>", obj_size, iters);
+    }
+#endif
+
+#if USE_JSTD_ROBIN16_HASH_MAP
+    if (FLAGS_test_jstd_robin16_hash_map) {
+        measure_string_hashmap<jstd::robin16_hash_map<Key, Value>>
+            ("jstd::robin16_hash_map<K, V>", obj_size, iters);
+    }
+#endif
+
+#if USE_JSTD_ROBIN_HASH_MAP
+    if (FLAGS_test_jstd_robin_hash_map) {
+        measure_string_hashmap<jstd::robin_hash_map<Key, Value>>
+            ("jstd::robin_hash_map<K, V>", obj_size, iters);
+    }
+#endif
+
+#if USE_SKA_FLAT_HASH_MAP
+    if (FLAGS_test_ska_flat_hash_map) {
+        measure_string_hashmap<ska::flat_hash_map<Key, Value>>
+            ("ska::flat_hash_map<K, V>", obj_size, iters);
+    }
+#endif
+
+#if USE_SKA_BYTELL_HASH_MAP
+    if (FLAGS_test_ska_bytell_hash_map) {
+        measure_string_hashmap<ska::bytell_hash_map<Key, Value>>
+            ("ska::bytell_hash_map<K, V>", obj_size, iters);
+    }
+#endif
+
+#if USE_EMHASH5_HASH_MAP
+    if (FLAGS_test_emhash5_flat_hash_map) {
+        measure_string_hashmap<emhash5::HashMap<Key, Value>>
+            ("emhash5::HashMap<K, V>", obj_size, iters);
+    }
+#endif
+
+#if USE_EMHASH7_HASH_MAP
+    if (FLAGS_test_emhash7_flat_hash_map) {
+        measure_string_hashmap<emhash7::HashMap<Key, Value>>
+            ("emhash7::HashMap<K, V>", obj_size, iters);
+    }
+#endif
+
+#if USE_ABSL_FLAT_HASH_MAP
+    if (FLAGS_test_absl_flat_hash_map) {
+        measure_string_hashmap<absl::flat_hash_map<Key, Value>>
+            ("absl::flat_hash_map<K, V>", obj_size, iters);
+    }
+#endif
+
+#if USE_ABSL_NODE_HASH_MAP
+    if (FLAGS_test_absl_node_hash_map) {
+        measure_hashmap<absl::node_hash_map<Key, Value>>
+            ("absl::node_hash_map<K, V>", obj_size, iters);
+    }
+#endif
+}
+
+template <typename Key, typename Value>
+void test_all_hashmaps_for_string_view(std::size_t obj_size, std::size_t iters)
+{
+
 }
 
 void benchmark_all_hashmaps(std::size_t iters)
@@ -1317,20 +1516,24 @@ void benchmark_all_hashmaps(std::size_t iters)
     // a HashObject as it would be to use just a straight int/char
     // buffer.  To keep memory use similar, we normalize the number of
     // iterations based on size.
+#ifndef _DEBUG
     if (FLAGS_test_4_bytes) {
-        test_all_hashmaps<HashObject<std::uint32_t, 4, 4>, std::uint32_t>(4, iters / 1);
+        test_all_hashmaps<std::uint32_t, std::uint32_t>(4, iters / 1);
     }
 
     if (FLAGS_test_8_bytes) {
-        test_all_hashmaps<HashObject<std::uint64_t, 8, 8>, std::uint64_t>(8, iters / 2);
+        test_all_hashmaps<std::uint64_t, std::uint64_t>(8, iters / 2);
+    }
+#endif
+
+    if (FLAGS_test_32_bytes) {
+        test_all_hashmaps_for_string<std::string, std::string>
+            (sizeof(std::string), iters / 16);
     }
 
     if (FLAGS_test_16_bytes) {
-        test_all_hashmaps<HashObject<std::size_t, 16, 16>, std::size_t>(16, iters / 4);
-    }
-
-    if (FLAGS_test_256_bytes) {
-        test_all_hashmaps<HashObject<std::size_t, 256, 64>, std::size_t>(256, iters / 32);
+        test_all_hashmaps_for_string_view<jstd::string_view, jstd::string_view>
+            (sizeof(jstd::string_view), iters / 8);
     }
 }
 
@@ -1401,14 +1604,88 @@ void print_need_store_hash(const std::string & key, const std::string & value)
 
 void need_store_hash_test()
 {
-    print_need_store_hash<HashObject<std::uint32_t, 4, 4>,  std::uint32_t>(
-        "HashObject<std::uint32_t, 4, 4>",  "std::uint32_t");
-    print_need_store_hash<HashObject<std::uint64_t, 8, 8>,  std::uint64_t>(
-        "HashObject<std::uint64_t, 8, 8>",  "std::uint64_t");
-    print_need_store_hash<HashObject<std::size_t, 16, 16>,  std::size_t>(
-        "HashObject<std::size_t, 16, 16>",  "std::size_t");
-    print_need_store_hash<HashObject<std::size_t, 256, 64>, std::size_t>(
-        "HashObject<std::size_t, 256, 64>", "std::size_t");
+    print_need_store_hash<std::uint32_t, std::uint32_t>("std::uint32_t", "std::uint32_t");
+    print_need_store_hash<std::uint64_t, std::uint64_t>("std::uint64_t", "std::uint64_t");
+    print_need_store_hash<std::string, std::string>("std::string", "std::string");
+    print_need_store_hash<jstd::string_view, jstd::string_view>("jstd::string_view", "jstd::string_view");
+}
+
+template <typename Key, typename Value>
+bool is_compatible_layout_pair()
+{
+    static constexpr bool isCompatibleLayout =
+        jstd::is_compatible_pair_layout<std::pair<const Key, Value>, std::pair<Key, Value>>::value;
+    return isCompatibleLayout;
+}
+
+template <typename Key, typename Value>
+void is_compatible_layout_ex_test(const std::string & key, const std::string & value)
+{
+    static constexpr bool isStandardLayoutKey = std::is_standard_layout<Key>::value;
+    static constexpr bool isStandardLayoutPair = std::is_standard_layout<std::pair<Key, Value>>::value;
+    static constexpr bool isStandardLayoutConstPair = std::is_standard_layout<std::pair<const Key, Value>>::value;
+
+    static constexpr bool isCompatiblePairLayout =
+        jstd::is_compatible_kv_layout<Key, Value>::template isCompatiblePairLayout<std::pair<Key, Value>>();
+    static constexpr bool isCompatibleConstPairLayout =
+        jstd::is_compatible_kv_layout<Key, Value>::template isCompatiblePairLayout<std::pair<const Key, Value>>();
+
+    static constexpr bool isCompatibleKVLayoutKey = jstd::is_compatible_kv_layout<Key, Value>::value;
+
+    printf("\n");
+    printf("jstd::is_standard_layout<%s>::value = %s\n",
+           key.c_str(), (isStandardLayoutKey ? "True" : "False"));
+    printf("jstd::is_standard_layout<std::pair<%s, %s>>::value = %s\n",
+           key.c_str(), value.c_str(), (isStandardLayoutPair ? "True" : "False"));
+    printf("jstd::is_standard_layout<std::pair<const %s, %s>>::value = %s\n",
+           key.c_str(), value.c_str(), (isStandardLayoutConstPair ? "True" : "False"));
+
+    printf("jstd::is_compatible_kv_layout::isCompatiblePairLayout<std::pair<%s, %s>>() = %s\n",
+           key.c_str(), value.c_str(), (isCompatiblePairLayout ? "True" : "False"));
+    printf("jstd::is_compatible_kv_layout::isCompatiblePairLayout<std::pair<const %s, %s>>() = %s\n",
+           key.c_str(), value.c_str(), (isCompatibleConstPairLayout ? "True" : "False"));
+
+    printf("jstd::is_compatible_kv_layout<%s, %s>::value = %s\n",
+           key.c_str(), value.c_str(), (isCompatibleKVLayoutKey ? "True" : "False"));
+    printf("\n");
+}
+
+void is_compatible_layout_test()
+{
+    bool isCompatibleKVLayout, isCompatiblePairLayout;
+
+    isCompatibleKVLayout = jstd::is_compatible_kv_layout<int, int>::value;
+    isCompatiblePairLayout = is_compatible_layout_pair<int, int>();
+    printf("jstd::is_compatible_kv_layout<int, int> = %s\n",
+            (isCompatibleKVLayout ? "True" : "False"));
+    printf("jstd::is_compatible_pair_layout<int, int> = %s\n",
+            (isCompatiblePairLayout ? "True" : "False"));
+
+    isCompatibleKVLayout = jstd::is_compatible_kv_layout<size_t, size_t>::value;
+    isCompatiblePairLayout = is_compatible_layout_pair<size_t, size_t>();
+    printf("jstd::is_compatible_kv_layout<size_t, size_t> = %s\n",
+            (isCompatibleKVLayout ? "True" : "False"));
+    printf("jstd::is_compatible_pair_layout<size_t, size_t> = %s\n",
+            (isCompatiblePairLayout ? "True" : "False"));
+
+    isCompatibleKVLayout = jstd::is_compatible_kv_layout<std::string, std::string>::value;
+    isCompatiblePairLayout = is_compatible_layout_pair<std::string, std::string>();
+    printf("jstd::is_compatible_kv_layout<std::string, std::string> = %s\n",
+            (isCompatibleKVLayout ? "True" : "False"));
+    printf("jstd::is_compatible_pair_layout<std::string, std::string> = %s\n",
+            (isCompatiblePairLayout ? "True" : "False"));
+    if (!isCompatibleKVLayout || !isCompatiblePairLayout) {
+        is_compatible_layout_ex_test<std::string, std::string>("std::string", "std::string");
+    }
+
+    isCompatibleKVLayout = jstd::is_compatible_kv_layout<jstd::string_view, jstd::string_view>::value;
+    isCompatiblePairLayout = is_compatible_layout_pair<jstd::string_view, jstd::string_view>();
+    printf("jstd::is_compatible_kv_layout<jstd::string_view, jstd::string_view> = %s\n",
+            (isCompatibleKVLayout ? "True" : "False"));
+    printf("jstd::is_compatible_pair_layout<jstd::string_view, jstd::string_view> = %s\n",
+            (isCompatiblePairLayout ? "True" : "False"));
+
+    printf("\n");
 }
 
 int main(int argc, char * argv[])
@@ -1426,6 +1703,7 @@ int main(int argc, char * argv[])
 
     if (1) { std_hash_test(); }
     if (1) { need_store_hash_test(); }
+    if (1) { is_compatible_layout_test(); }
 
     if (1)
     {
