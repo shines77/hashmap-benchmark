@@ -1407,7 +1407,7 @@ void test_all_hashmaps(std::size_t obj_size, std::size_t iters)
 
 #if USE_ABSL_FLAT_HASH_MAP
     if (FLAGS_test_absl_flat_hash_map) {
-        measure_hashmap<absl::flat_hash_map<Key,   Value, HASH_MAP_FUNCTION<Key>>,
+        measure_hashmap<absl::flat_hash_map<Key,   Value, test::MumHash<Key>>,
                         absl::flat_hash_map<Key *, Value, HASH_MAP_FUNCTION<Key *>>>
             ("absl::flat_hash_map<K, V>", obj_size, iters, has_stress_hash_function);
     }
