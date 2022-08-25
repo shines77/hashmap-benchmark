@@ -22,19 +22,19 @@ The following `C++` open source libraries were benchmade:
 
 * [ktprime](#)'s `emhash`:
 
-    [https://github.com/ktprime/emhash.git](https://github.com/ktprime/emhash.git)
+    [https://github.com/ktprime/emhash](https://github.com/ktprime/emhash)
 
 * [Tessil](#)'s `tsl::robin_map`:
 
-    [https://github.com/Tessil/robin-map.git](https://github.com/Tessil/robin-map.git)
+    [https://github.com/Tessil/robin-map](https://github.com/Tessil/robin-map)
 
 * [martinus](#)'s `robin_hood::unordered_flat_map`:
 
-    [https://github.com/martinus/robin-hood-hashing.git](https://github.com/martinus/robin-hood-hashing.git)
+    [https://github.com/martinus/robin-hood-hashing](https://github.com/martinus/robin-hood-hashing)
 
 * [martinus](#)'s `ankerl::unordered_dense::map`:
 
-    [https://github.com/martinus/unordered_dense.git](https://github.com/martinus/unordered_dense.git)
+    [https://github.com/martinus/unordered_dense](https://github.com/martinus/unordered_dense)
 
 ### Mirror and fixed
 

@@ -22,19 +22,19 @@
 
 * [ktprime](#) 的 `emhash`：
 
-    [https://github.com/ktprime/emhash.git](https://github.com/ktprime/emhash.git)
+    [https://github.com/ktprime/emhash](https://github.com/ktprime/emhash)
 
 * [Tessil](#) 的 `tsl::robin_map`：
 
-    [https://github.com/Tessil/robin-map.git](https://github.com/Tessil/robin-map.git)
+    [https://github.com/Tessil/robin-map](https://github.com/Tessil/robin-map)
 
 * [martinus](#) 的 `robin_hood::unordered_flat_map`：
 
-    [https://github.com/martinus/robin-hood-hashing.git](https://github.com/martinus/robin-hood-hashing.git)
+    [https://github.com/martinus/robin-hood-hashing](https://github.com/martinus/robin-hood-hashing)
 
 * [martinus](#) 的 `ankerl::unordered_dense::map`：
 
-    [https://github.com/martinus/unordered_dense.git](https://github.com/martinus/unordered_dense.git)
+    [https://github.com/martinus/unordered_dense](https://github.com/martinus/unordered_dense)
 
 ### 镜像与修复
 

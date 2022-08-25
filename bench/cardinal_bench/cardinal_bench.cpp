@@ -77,24 +77,33 @@
 #include <algorithm>
 #include <cassert>
 
-#define USE_JSTD_HASH_TABLE         0
-#define USE_JSTD_DICTIONARY         0
+#define USE_JSTD_HASH_TABLE             0
+#define USE_JSTD_DICTIONARY             0
 
-#define USE_STD_UNORDERED_MAP       1
-#define USE_JSTD_FLAT16_HASH_MAP    1
-#define USE_JSTD_ROBIN16_HASH_MAP   1
-#define USE_JSTD_ROBIN_HASH_MAP     1
-#define USE_SKA_FLAT_HASH_MAP       1
-#define USE_SKA_BYTELL_HASH_MAP     0
-#define USE_EMHASH5_HASH_MAP        1
-#define USE_EMHASH7_HASH_MAP        1
-#define USE_ABSL_FLAT_HASH_MAP      1
-#define USE_ABSL_NODE_HASH_MAP      0
+#define USE_STD_UNORDERED_MAP           1
+#define USE_JSTD_FLAT16_HASH_MAP        1
+#define USE_JSTD_ROBIN16_HASH_MAP       1
+#define USE_JSTD_ROBIN_HASH_MAP         1
+#define USE_SKA_FLAT_HASH_MAP           1
+#define USE_SKA_BYTELL_HASH_MAP         0
+#define USE_EMHASH5_HASH_MAP            1
+#define USE_EMHASH7_HASH_MAP            1
+#define USE_EMHASH8_HASH_MAP            0
+#define USE_ABSL_FLAT_HASH_MAP          1
+#define USE_ABSL_NODE_HASH_MAP          0
+
+#define USE_TSL_ROBIN_HOOD              1
+#define USE_ROBIN_HOOD_FLAT_MAP         1
+#define USE_ANKERL_UNORDERED_DENSE      1
 
 #ifdef _MSC_VER
 #undef USE_ABSL_FLAT_HASH_MAP
 #undef USE_ABSL_NODE_HASH_MAP
 #undef USE_EMHASH7_HASH_MAP
+
+#undef USE_TSL_ROBIN_HOOD
+#undef USE_ROBIN_HOOD_FLAT_MAP
+#undef USE_ANKERL_UNORDERED_DENSE
 #endif
 
 #ifdef __SSE4_2__
@@ -143,11 +152,23 @@
 #if USE_EMHASH7_HASH_MAP
 #include <emhash/hash_table7.hpp>
 #endif
+#if USE_EMHASH8_HASH_MAP
+#include <emhash/hash_table8.hpp>
+#endif
 #if USE_ABSL_FLAT_HASH_MAP
 #include <absl/container/flat_hash_map.h>
 #endif
 #if USE_ABSL_NODE_HASH_MAP
 #include <absl/container/node_hash_map.h>
+#endif
+#if USE_TSL_ROBIN_HOOD
+#include <tsl/robin_map.h>
+#endif
+#if USE_ROBIN_HOOD_FLAT_MAP
+#include <robin_hood.h>
+#endif
+#if USE_ANKERL_UNORDERED_DENSE
+#include <ankerl/unordered_dense.h>
 #endif
 #include <jstd/hashmap/hashmap_analyzer.h>
 #include <jstd/hasher/hashes.h>
@@ -421,7 +442,11 @@ void generate_random_keys(std::vector<Key> & keys, std::size_t data_size)
 template <typename HashMap, typename Key = typename HashMap::key_type>
 void run_insert_random(const std::string & name, std::vector<Key> & keys, std::size_t cardinal)
 {
-    typedef typename HashMap::mapped_type mapped_type;
+    typedef typename HashMap::key_type      key_type;
+    typedef typename HashMap::mapped_type   mapped_type;
+
+    std::string name_fmt = name + "<%s, %s>";
+    std::string full_name = format_hashmap_name<key_type, mapped_type>(name_fmt.c_str());
 
     jtest::StopWatch sw;
     HashMap hashmap;
@@ -435,7 +460,7 @@ void run_insert_random(const std::string & name, std::vector<Key> & keys, std::s
 
         double elapsed_time = sw.getElapsedMillisec();
 
-        printf("%s: %s\n", __func__, name.c_str());
+        printf("%s: %s\n", __func__, full_name.c_str());
         printf("hashmap.size() = %u, cardinal = %u, load_factor = %0.3f, time: %0.2f ms\n",
                (uint32_t)hashmap.size(), (uint32_t)cardinal,
                (double)hashmap.load_factor(), elapsed_time);
@@ -461,50 +486,60 @@ void run_insert_random(const std::string & name, std::vector<Key> & keys, std::s
 template <typename Key, typename Value, std::size_t DataSize, std::size_t Cardinal>
 void benchmark_insert_random_impl()
 {
-    std::string name0, name1, name2, name3, name4, name5, name6, name7, name8, name9;
-    name0 = format_hashmap_name<Key, Value>("std::unordered_map<%s, %s>");
-    name1 = format_hashmap_name<Key, Value>("jstd::flat16_hash_map<%s, %s>");
-    name2 = format_hashmap_name<Key, Value>("jstd::robin16_hash_map<%s, %s>");
-    name3 = format_hashmap_name<Key, Value>("jstd::robin_hash_map<%s, %s>");
-    name4 = format_hashmap_name<Key, Value>("ska::flat_hash_map<%s, %s>");
-    name5 = format_hashmap_name<Key, Value>("ska::bytell_hash_map<%s, %s>");
-    name6 = format_hashmap_name<Key, Value>("emhash5::HashMap<%s, %s>");
-    name7 = format_hashmap_name<Key, Value>("emhash7::HashMap<%s, %s>");
-    name8 = format_hashmap_name<Key, Value>("absl::flat_hash_map<%s, %s>");
-    name9 = format_hashmap_name<Key, Value>("absl::node_hash_map<%s, %s>");
-
     std::vector<Key> keys;
     generate_random_keys<Key, Cardinal>(keys, DataSize);
 
 #if USE_STD_UNORDERED_MAP
-    run_insert_random<std::unordered_map<Key, Value>>    (name0, keys, Cardinal);
+    run_insert_random<std::unordered_map<Key, Value>>
+        ("std::unordered_map", keys, Cardinal);
 #endif
 #if USE_JSTD_FLAT16_HASH_MAP
-    run_insert_random<jstd::flat16_hash_map<Key, Value>> (name1, keys, Cardinal);
+    run_insert_random<jstd::flat16_hash_map<Key, Value>>
+        ("jstd::flat16_hash_map", keys, Cardinal);
 #endif
 #if USE_JSTD_ROBIN16_HASH_MAP
-    run_insert_random<jstd::robin16_hash_map<Key, Value>>(name2, keys, Cardinal);
+    run_insert_random<jstd::robin16_hash_map<Key, Value>>
+        ("jstd::robin16_hash_map", keys, Cardinal);
 #endif
 #if USE_JSTD_ROBIN_HASH_MAP
-    run_insert_random<jstd::robin_hash_map<Key, Value>>  (name3, keys, Cardinal);
+    run_insert_random<jstd::robin_hash_map<Key, Value>>
+        ("jstd::robin_hash_map", keys, Cardinal);
 #endif
 #if USE_SKA_FLAT_HASH_MAP
-    run_insert_random<ska::flat_hash_map<Key, Value>>    (name4, keys, Cardinal);
+    run_insert_random<ska::flat_hash_map<Key, Value>>
+        ("ska::flat_hash_map", keys, Cardinal);
 #endif
 #if USE_SKA_BYTELL_HASH_MAP
-    run_insert_random<ska::bytell_hash_map<Key, Value>>  (name5, keys, Cardinal);
+    run_insert_random<ska::bytell_hash_map<Key, Value>>
+        ("ska::bytell_hash_map", keys, Cardinal);
 #endif
 #if USE_EMHASH5_HASH_MAP
-    run_insert_random<emhash5::HashMap<Key, Value>>      (name6, keys, Cardinal);
+    run_insert_random<emhash5::HashMap<Key, Value>>
+        ("emhash5::HashMap", keys, Cardinal);
 #endif
 #if USE_EMHASH7_HASH_MAP
-    run_insert_random<emhash7::HashMap<Key, Value>>      (name7, keys, Cardinal);
+    run_insert_random<emhash7::HashMap<Key, Value>>
+        ("emhash7::HashMap", keys, Cardinal);
 #endif
 #if USE_ABSL_FLAT_HASH_MAP
-    run_insert_random<absl::flat_hash_map<Key, Value>>   (name8, keys, Cardinal);
+    run_insert_random<absl::flat_hash_map<Key, Value>>
+        ("absl::flat_hash_map", keys, Cardinal);
 #endif
 #if USE_ABSL_NODE_HASH_MAP
-    run_insert_random<absl::node_hash_map<Key, Value>>   (name9, keys, Cardinal);
+    run_insert_random<absl::node_hash_map<Key, Value>>
+        ("absl::node_hash_map", keys, Cardinal);
+#endif
+#if USE_TSL_ROBIN_HOOD
+    run_insert_random<tsl::robin_map<Key, Value>>
+        ("tsl::robin_map", keys, Cardinal);
+#endif
+#if USE_ROBIN_HOOD_FLAT_MAP
+    run_insert_random<robin_hood::unordered_flat_map<Key, Value>>
+        ("robin_hood::unordered_flat_map", keys, Cardinal);
+#endif
+#if USE_ANKERL_UNORDERED_DENSE
+    run_insert_random<ankerl::unordered_dense::map<Key, Value>>
+        ("ankerl::unordered_dense::map", keys, Cardinal);
 #endif
 }
 
@@ -554,50 +589,64 @@ void benchmark_insert_random(std::size_t iters)
 template <typename Key, typename Value, std::size_t DataSize, std::size_t Cardinal>
 void benchmark_MumHash_insert_random_impl()
 {
-    std::string name0, name1, name2, name3, name4, name5, name6, name7, name8, name9;
-    name0 = format_hashmap_name<Key, Value>("std::unordered_map<%s, %s>");
-    name1 = format_hashmap_name<Key, Value>("jstd::flat16_hash_map<%s, %s>");
-    name2 = format_hashmap_name<Key, Value>("jstd::robin16_hash_map<%s, %s>");
-    name3 = format_hashmap_name<Key, Value>("jstd::robin_hash_map<%s, %s>");
-    name4 = format_hashmap_name<Key, Value>("ska::flat_hash_map<%s, %s>");
-    name5 = format_hashmap_name<Key, Value>("ska::bytell_hash_map<%s, %s>");
-    name6 = format_hashmap_name<Key, Value>("emhash5::HashMap<%s, %s>");
-    name7 = format_hashmap_name<Key, Value>("emhash7::HashMap<%s, %s>");
-    name8 = format_hashmap_name<Key, Value>("absl::flat_hash_map<%s, %s>");
-    name9 = format_hashmap_name<Key, Value>("absl::node_hash_map<%s, %s>");
-
     std::vector<Key> keys;
     generate_random_keys<Key, Cardinal>(keys, DataSize);
 
 #if USE_STD_UNORDERED_MAP
-    run_insert_random<std::unordered_map<Key, Value, test::MumHash<Key>>>    (name0, keys, Cardinal);
+    run_insert_random<std::unordered_map<Key, Value, test::MumHash<Key>>>
+        ("std::unordered_map", keys, Cardinal);
 #endif
 #if USE_JSTD_FLAT16_HASH_MAP
-    run_insert_random<jstd::flat16_hash_map<Key, Value, test::MumHash<Key>>> (name1, keys, Cardinal);
+    run_insert_random<jstd::flat16_hash_map<Key, Value, test::MumHash<Key>>>
+        ("jstd::flat16_hash_map", keys, Cardinal);
 #endif
 #if USE_JSTD_ROBIN16_HASH_MAP
-    run_insert_random<jstd::robin16_hash_map<Key, Value, test::MumHash<Key>>>(name2, keys, Cardinal);
+    run_insert_random<jstd::robin16_hash_map<Key, Value, test::MumHash<Key>>>
+        ("jstd::robin16_hash_map", keys, Cardinal);
 #endif
 #if USE_JSTD_ROBIN_HASH_MAP
-    run_insert_random<jstd::robin_hash_map<Key, Value, test::MumHash<Key>>>  (name3, keys, Cardinal);
+    run_insert_random<jstd::robin_hash_map<Key, Value, test::MumHash<Key>>>
+        ("jstd::robin_hash_map", keys, Cardinal);
 #endif
 #if USE_SKA_FLAT_HASH_MAP
-    run_insert_random<ska::flat_hash_map<Key, Value, test::MumHash<Key>>>    (name4, keys, Cardinal);
+    run_insert_random<ska::flat_hash_map<Key, Value, test::MumHash<Key>>>
+        ("ska::flat_hash_map", keys, Cardinal);
 #endif
 #if USE_SKA_BYTELL_HASH_MAP
-    run_insert_random<ska::bytell_hash_map<Key, Value, test::MumHash<Key>>>  (name5, keys, Cardinal);
+    run_insert_random<ska::bytell_hash_map<Key, Value, test::MumHash<Key>>>
+        ("ska::bytell_hash_map", keys, Cardinal);
 #endif
 #if USE_EMHASH5_HASH_MAP
-    run_insert_random<emhash5::HashMap<Key, Value, test::MumHash<Key>>>      (name6, keys, Cardinal);
+    run_insert_random<emhash5::HashMap<Key, Value, test::MumHash<Key>>>
+        ("emhash5::HashMap", keys, Cardinal);
 #endif
 #if USE_EMHASH7_HASH_MAP
-    run_insert_random<emhash7::HashMap<Key, Value, test::MumHash<Key>>>      (name7, keys, Cardinal);
+    run_insert_random<emhash7::HashMap<Key, Value, test::MumHash<Key>>>
+        ("emhash7::HashMap", keys, Cardinal);
+#endif
+#if USE_EMHASH8_HASH_MAP
+    run_insert_random<emhash8::HashMap<Key, Value, test::MumHash<Key>>>
+        ("emhash8::HashMap", keys, Cardinal);
 #endif
 #if USE_ABSL_FLAT_HASH_MAP
-    run_insert_random<absl::flat_hash_map<Key, Value, test::MumHash<Key>>>   (name8, keys, Cardinal);
+    run_insert_random<absl::flat_hash_map<Key, Value, test::MumHash<Key>>>
+        ("absl::flat_hash_map", keys, Cardinal);
 #endif
 #if USE_ABSL_NODE_HASH_MAP
-    run_insert_random<absl::node_hash_map<Key, Value, test::MumHash<Key>>>   (name9, keys, Cardinal);
+    run_insert_random<absl::node_hash_map<Key, Value, test::MumHash<Key>>>
+        ("absl::node_hash_map", keys, Cardinal);
+#endif
+#if USE_TSL_ROBIN_HOOD
+    run_insert_random<tsl::robin_map<Key, Value, test::MumHash<Key>>>
+        ("tsl::robin_map", keys, Cardinal);
+#endif
+#if USE_ROBIN_HOOD_FLAT_MAP
+    run_insert_random<robin_hood::unordered_flat_map<Key, Value, test::MumHash<Key>>>
+        ("robin_hood::unordered_flat_map", keys, Cardinal);
+#endif
+#if USE_ANKERL_UNORDERED_DENSE
+    run_insert_random<ankerl::unordered_dense::map<Key, Value, test::MumHash<Key>>>
+        ("ankerl::unordered_dense::map", keys, Cardinal);
 #endif
 }
 
