@@ -1760,6 +1760,11 @@ void is_compatible_layout_test()
     printf("\n");
 }
 
+void strtolower(char * s) {
+    for (int i = 0; s[i]; i++)
+        s[i] = tolower(s[i]);
+}
+
 int main(int argc, char * argv[])
 {
     jstd::RandomGen   RandomGen(20200831);
@@ -1767,14 +1772,21 @@ int main(int argc, char * argv[])
 
     std::size_t iters = kDefaultIters;
     if (argc > 1) {
+        char arg[256] = { 0 };
+        strcpy(arg, argv[1]);
+        strtolower(arg);
+
         if (0) {
             // Dummy header
-        } else if (stricmp(argv[1], "string") == 0) {
+        } else if (strcmp(arg, "string") == 0) {
             FLAGS_test_string_only = true;
         } else {
             // first arg is # of iterations
-            iters = ::atoi(argv[1]);
+            iters = ::atoi(arg);
         }
+
+        if (low_arg != NULL)
+            free(low_arg);
     }
 
     jtest::CPU::warm_up(1000);
