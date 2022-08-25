@@ -10,13 +10,13 @@
 
 依赖以下开源库:
 
-* 我自己写的 `jstd_hashmap`：[https://gitee.com/shines77/jstd_hashmap](https://gitee.com/shines77/jstd_hashmap)
-* `skarupke` 的 `aka::flat_hash_map`：[https://github.com/skarupke/flat_hash_map](https://github.com/skarupke/flat_hash_map)
-* `Google` 的 `abseil-cpp` 库：[https://github.com/abseil/abseil-cpp](https://github.com/abseil/abseil-cpp)
-* `ktprime` 的 `emhash`: [https://github.com/ktprime/emhash.git](https://github.com/ktprime/emhash.git)
-* `Tessil` 的 `tsl::robin_map`: [https://github.com/Tessil/robin-map.git](https://github.com/Tessil/robin-map.git)
-* `martinus` 的 `robin_hood::unordered_flat_map`: [https://github.com/martinus/robin-hood-hashing.git](https://github.com/martinus/robin-hood-hashing.git)
-* `martinus` 的 `ankerl::unordered_dense::map`: [https://github.com/martinus/unordered_dense.git](https://github.com/martinus/unordered_dense.git)
+* 我自己写的 [jstd_hashmap](#)：- [https://gitee.com/shines77/jstd_hashmap](https://gitee.com/shines77/jstd_hashmap)
+* `skarupke` 的 [aka::flat_hash_map](#)：- [https://github.com/skarupke/flat_hash_map](https://github.com/skarupke/flat_hash_map)
+* `Google` 的 [abseil-cpp](#) 库：- [https://github.com/abseil/abseil-cpp](https://github.com/abseil/abseil-cpp)
+* `ktprime` 的 [emhash](#): - [https://github.com/ktprime/emhash.git](https://github.com/ktprime/emhash.git)
+* `Tessil` 的 [tsl::robin_map](#): - [https://github.com/Tessil/robin-map.git](https://github.com/Tessil/robin-map.git)
+* `martinus` 的 [robin_hood::unordered_flat_map](#): - [https://github.com/martinus/robin-hood-hashing.git](https://github.com/martinus/robin-hood-hashing.git)
+* `martinus` 的 [ankerl::unordered_dense::map](#): - [https://github.com/martinus/unordered_dense.git](https://github.com/martinus/unordered_dense.git)
 
 由于 `github` 访问比较困难，使用的是 `gitee` 的镜像。
 
@@ -93,10 +93,13 @@ make
 ### 5. 运行 benchmark
 
 ```bash
-# 跟 Google sprasehash 开源库类似的测试
+# 跟 Google sprasehash 开源库类似的测试（新版，推荐）
 ./bin/time_hash_map_new
+
+# 只测试 <std::string, std::string>，节约时间
 ./bin/time_hash_map_new string
 
+# 跟 Google sprasehash 开源库类似的测试(旧版)
 ./bin/time_hash_map
 
 # 低、中、高、超高 - 基数测试
