@@ -80,25 +80,34 @@
 #include <vector>
 #include <algorithm>
 
-#define USE_JSTD_HASH_TABLE         0
-#define USE_JSTD_DICTIONARY         0
+#define USE_JSTD_HASH_TABLE             0
+#define USE_JSTD_DICTIONARY             0
 
-#define USE_STD_HASH_MAP            0
-#define USE_STD_UNORDERED_MAP       1
-#define USE_JSTD_FLAT16_HASH_MAP    1
-#define USE_JSTD_ROBIN16_HASH_MAP   1
-#define USE_JSTD_ROBIN_HASH_MAP     1
-#define USE_SKA_FLAT_HASH_MAP       1
-#define USE_SKA_BYTELL_HASH_MAP     0
-#define USE_EMHASH5_HASH_MAP        1
-#define USE_EMHASH7_HASH_MAP        0
-#define USE_ABSL_FLAT_HASH_MAP      1
-#define USE_ABSL_NODE_HASH_MAP      0
+#define USE_STD_HASH_MAP                0
+#define USE_STD_UNORDERED_MAP           1
+#define USE_JSTD_FLAT16_HASH_MAP        1
+#define USE_JSTD_ROBIN16_HASH_MAP       1
+#define USE_JSTD_ROBIN_HASH_MAP         1
+#define USE_SKA_FLAT_HASH_MAP           1
+#define USE_SKA_BYTELL_HASH_MAP         0
+#define USE_EMHASH5_HASH_MAP            1
+#define USE_EMHASH7_HASH_MAP            0
+#define USE_EMHASH8_HASH_MAP            0
+#define USE_ABSL_FLAT_HASH_MAP          1
+#define USE_ABSL_NODE_HASH_MAP          0
+
+#define USE_TSL_ROBIN_HOOD              1
+#define USE_ROBIN_HOOD_FLAT_MAP         1
+#define USE_ANKERL_UNORDERED_DENSE      1
 
 #ifdef _MSC_VER
 #undef USE_ABSL_FLAT_HASH_MAP
 #undef USE_ABSL_NODE_HASH_MAP
 #undef USE_EMHASH7_HASH_MAP
+
+#undef USE_TSL_ROBIN_HOOD
+#undef USE_ROBIN_HOOD_FLAT_MAP
+#undef USE_ANKERL_UNORDERED_DENSE
 #endif
 
 #ifdef __SSE4_2__
@@ -159,11 +168,23 @@
 #if USE_EMHASH7_HASH_MAP
 #include <emhash/hash_table7.hpp>
 #endif
+#if USE_EMHASH8_HASH_MAP
+#include <emhash/hash_table8.hpp>
+#endif
 #if USE_ABSL_FLAT_HASH_MAP
 #include <absl/container/flat_hash_map.h>
 #endif
 #if USE_ABSL_NODE_HASH_MAP
 #include <absl/container/node_hash_map.h>
+#endif
+#if USE_TSL_ROBIN_HOOD
+#include <tsl/robin_map.h>
+#endif
+#if USE_ROBIN_HOOD_FLAT_MAP
+#include <robin_hood.h>
+#endif
+#if USE_ANKERL_UNORDERED_DENSE
+#include <ankerl/unordered_dense.h>
 #endif
 #include <jstd/hashmap/hashmap_analyzer.h>
 #include <jstd/hasher/hashes.h>

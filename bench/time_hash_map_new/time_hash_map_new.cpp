@@ -1438,9 +1438,9 @@ void test_all_hashmaps(std::size_t obj_size, std::size_t iters)
 
 #if USE_TSL_ROBIN_HOOD
     if (1) {
-        measure_hashmap<tsl::robin_hood<Key,   Value, HASH_MAP_FUNCTION<Key>>,
-                        tsl::robin_hood<Key *, Value, HASH_MAP_FUNCTION<Key *>>>
-            ("tsl::robin_hood<K, V>", obj_size, iters);
+        measure_hashmap<tsl::robin_map<Key,   Value, HASH_MAP_FUNCTION<Key>>,
+                        tsl::robin_map<Key *, Value, HASH_MAP_FUNCTION<Key *>>>
+            ("tsl::robin_map<K, V>", obj_size, iters);
     }
 #endif
 
@@ -1550,8 +1550,8 @@ void test_all_hashmaps_for_string(std::size_t obj_size, std::size_t iters)
 
 #if USE_TSL_ROBIN_HOOD
     if (1) {
-        measure_string_hashmap<tsl::robin_hood<Key, Value>>
-            ("tsl::robin_hood<K, V>", obj_size, iters);
+        measure_string_hashmap<tsl::robin_map<Key, Value>>
+            ("tsl::robin_map<K, V>", obj_size, iters);
     }
 #endif
 
