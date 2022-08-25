@@ -22,3 +22,7 @@
 	path = 3rd_party/robin-hood-hashing
 	url = https://gitee.com/shines77/robin-hood-hashing.git
 	branch = master
+[submodule "3rd_party/robin-map"]
+	path = 3rd_party/robin-map
+	url = https://gitee.com/shines77/robin-map.git
+	branch = master
