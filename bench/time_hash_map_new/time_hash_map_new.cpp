@@ -1784,9 +1784,6 @@ int main(int argc, char * argv[])
             // first arg is # of iterations
             iters = ::atoi(arg);
         }
-
-        if (low_arg != NULL)
-            free(low_arg);
     }
 
     jtest::CPU::warm_up(1000);
