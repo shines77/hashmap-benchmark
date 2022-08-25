@@ -1440,7 +1440,7 @@ void test_all_hashmaps(std::size_t obj_size, std::size_t iters)
     if (1) {
         measure_hashmap<tsl::robin_map<Key,   Value, HASH_MAP_FUNCTION<Key>>,
                         tsl::robin_map<Key *, Value, HASH_MAP_FUNCTION<Key *>>>
-            ("tsl::robin_map<K, V>", obj_size, iters);
+            ("tsl::robin_map<K, V>", obj_size, iters, has_stress_hash_function);
     }
 #endif
 
@@ -1448,7 +1448,7 @@ void test_all_hashmaps(std::size_t obj_size, std::size_t iters)
     if (1) {
         measure_hashmap<robin_hood::unordered_flat_map<Key,   Value, HASH_MAP_FUNCTION<Key>>,
                         robin_hood::unordered_flat_map<Key *, Value, HASH_MAP_FUNCTION<Key *>>>
-            ("robin_hood::unordered_flat_map<K, V>", obj_size, iters);
+            ("robin_hood::unordered_flat_map<K, V>", obj_size, iters, has_stress_hash_function);
     }
 #endif
 
@@ -1456,7 +1456,7 @@ void test_all_hashmaps(std::size_t obj_size, std::size_t iters)
     if (1) {
         measure_hashmap<ankerl::unordered_dense::map<Key,   Value, HASH_MAP_FUNCTION<Key>>,
                         ankerl::unordered_dense::map<Key *, Value, HASH_MAP_FUNCTION<Key *>>>
-            ("ankerl::unordered_dense::map<K, V>", obj_size, iters);
+            ("ankerl::unordered_dense::map<K, V>", obj_size, iters, has_stress_hash_function);
     }
 #endif
 }
