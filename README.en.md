@@ -6,9 +6,9 @@
 
 Several benchmark of `C++` high performance hashmap, even include Java, C#, golang hashmap benchmark.
 
-## Compile and usage
+### Overview
 
-The following open source libraries were benchmade:
+The following `C++` open source libraries were benchmade:
 
 * (Myself) [shines77](#)'s `jstd_hashmap`:
 
@@ -38,6 +38,8 @@ The following open source libraries were benchmade:
 
     [https://github.com/martinus/unordered_dense.git](https://github.com/martinus/unordered_dense.git)
 
+### Mirror and fixed
+
 Because `github` is difficult to access in China, so I use a mirror repository of `gitee.com`.
 
 `flat_hash_map` China mirror and modified version: [https://gitee.com/shines77/flat_hash_map](https://gitee.com/shines77/flat_hash_map)
@@ -52,6 +54,8 @@ ChangeLog:
 * Fixed some bugs about ska::bytell_hash_map<K,V> some dead cycle codes;
 * Added missing header file "#include \<limits\>" in bytell_hash_map.hpp;
 * Added static name() member method for ska::flat_hash_map<K,V> and ska::bytell_hash_map<K,V>;
+
+## Compile and usage
 
 ### 1. Clone git repository
 

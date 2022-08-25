@@ -6,9 +6,9 @@
 
 几个 `C++` 高性能哈希表的 `benchmark`，还包括 `Java`, `C#`, `golang` 等哈希表的 `benchmark`.
 
-## 编译和使用方法
+### 概述 / Overview
 
-对以下开源库做了基准测试:
+对以下 `C++` 开源库做了基准测试：
 
 * 我自己写的 `jstd_hashmap`：
 
@@ -38,6 +38,8 @@
 
     [https://github.com/martinus/unordered_dense.git](https://github.com/martinus/unordered_dense.git)
 
+### 镜像与修复
+
 由于 `github` 访问比较困难，使用的是 `gitee` 的镜像。
 
 `flat_hash_map` 国内的镜像修改版：[https://gitee.com/shines77/flat_hash_map](https://gitee.com/shines77/flat_hash_map)
@@ -52,6 +54,8 @@
 * 修复了 `ska::bytell_hash_map<K,V>` 几个会导致死循环的 `bug`;
 * 添加了 `bytell_hash_map.hpp` 中缺失的头文件 "#include \<limits\>";
 * 为 `ska::flat_hash_map<K,V>` 和 `ska::bytell_hash_map<K,V>` 添加了静态成员函数 `name()`;
+
+## 编译和使用方法
 
 ### 1. 克隆 Git 仓库
 
