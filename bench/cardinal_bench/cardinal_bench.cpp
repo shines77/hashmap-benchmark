@@ -93,7 +93,7 @@
 #define USE_ABSL_NODE_HASH_MAP          0
 
 #define USE_TSL_ROBIN_HOOD              1
-#define USE_ROBIN_HOOD_FLAT_MAP         1
+#define USE_ROBIN_HOOD_FLAT_MAP         0
 #define USE_ANKERL_UNORDERED_DENSE      1
 
 #ifdef _MSC_VER
