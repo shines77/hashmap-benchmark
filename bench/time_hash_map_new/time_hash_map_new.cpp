@@ -1454,9 +1454,9 @@ void test_all_hashmaps(std::size_t obj_size, std::size_t iters)
 
 #if USE_ANKERL_UNORDERED_DENSE
     if (1) {
-        measure_hashmap<ankerl::unordered_dense::table<Key,   Value, HASH_MAP_FUNCTION<Key>>,
-                        ankerl::unordered_dense::table<Key *, Value, HASH_MAP_FUNCTION<Key *>>>
-            ("ankerl::unordered_dense::table<K, V>", obj_size, iters);
+        measure_hashmap<ankerl::unordered_dense::map<Key,   Value, HASH_MAP_FUNCTION<Key>>,
+                        ankerl::unordered_dense::map<Key *, Value, HASH_MAP_FUNCTION<Key *>>>
+            ("ankerl::unordered_dense::map<K, V>", obj_size, iters);
     }
 #endif
 }
@@ -1564,8 +1564,8 @@ void test_all_hashmaps_for_string(std::size_t obj_size, std::size_t iters)
 
 #if USE_ANKERL_UNORDERED_DENSE
     if (1) {
-        measure_string_hashmap<ankerl::unordered_dense::table<Key, Value>>
-            ("ankerl::unordered_dense::table<K, V>", obj_size, iters);
+        measure_string_hashmap<ankerl::unordered_dense::map<Key, Value>>
+            ("ankerl::unordered_dense::map<K, V>", obj_size, iters);
     }
 #endif
 }
