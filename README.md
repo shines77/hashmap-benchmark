@@ -8,15 +8,35 @@
 
 ## 编译和使用方法
 
-测试了以下开源库:
+对以下开源库做了基准测试:
 
-* 我自己写的 `jstd_hashmap`：- [https://gitee.com/shines77/jstd_hashmap](https://gitee.com/shines77/jstd_hashmap)
-* [skarupke](#) 的 `aka::flat_hash_map`：- [https://github.com/skarupke/flat_hash_map](https://github.com/skarupke/flat_hash_map)
-* [Google](#) 的 `abseil-cpp` 库：- [https://github.com/abseil/abseil-cpp](https://github.com/abseil/abseil-cpp)
-* [ktprime](#) 的 `emhash`: - [https://github.com/ktprime/emhash.git](https://github.com/ktprime/emhash.git)
-* [Tessil](#) 的 `tsl::robin_map`: - [https://github.com/Tessil/robin-map.git](https://github.com/Tessil/robin-map.git)
-* [martinus](#) 的 `robin_hood::unordered_flat_map` - [https://github.com/martinus/robin-hood-hashing.git](https://github.com/martinus/robin-hood-hashing.git)
-* [martinus](#) 的 `ankerl::unordered_dense::map`: - [https://github.com/martinus/unordered_dense.git](https://github.com/martinus/unordered_dense.git)
+* 我自己写的 `jstd_hashmap`：
+
+    [https://gitee.com/shines77/jstd_hashmap](https://gitee.com/shines77/jstd_hashmap)
+
+* [skarupke](#) 的 `aka::flat_hash_map`：
+
+    [https://github.com/skarupke/flat_hash_map](https://github.com/skarupke/flat_hash_map)
+
+* [Google](#) 的 `abseil-cpp` 库：
+
+    [https://github.com/abseil/abseil-cpp](https://github.com/abseil/abseil-cpp)
+
+* [ktprime](#) 的 `emhash`：
+
+    [https://github.com/ktprime/emhash.git](https://github.com/ktprime/emhash.git)
+
+* [Tessil](#) 的 `tsl::robin_map`：
+
+    [https://github.com/Tessil/robin-map.git](https://github.com/Tessil/robin-map.git)
+
+* [martinus](#) 的 `robin_hood::unordered_flat_map`：
+
+    [https://github.com/martinus/robin-hood-hashing.git](https://github.com/martinus/robin-hood-hashing.git)
+
+* [martinus](#) 的 `ankerl::unordered_dense::map`：
+
+    [https://github.com/martinus/unordered_dense.git](https://github.com/martinus/unordered_dense.git)
 
 由于 `github` 访问比较困难，使用的是 `gitee` 的镜像。
 
