@@ -8,7 +8,7 @@
 
 ## 编译和使用方法
 
-依赖以下开源库:
+测试了以下开源库:
 
 * 我自己写的 `jstd_hashmap`：- [https://gitee.com/shines77/jstd_hashmap](https://gitee.com/shines77/jstd_hashmap)
 * [skarupke](#) 的 `aka::flat_hash_map`：- [https://github.com/skarupke/flat_hash_map](https://github.com/skarupke/flat_hash_map)

@@ -8,7 +8,7 @@ Several benchmark of `C++` high performance hashmap, even include Java, C#, gola
 
 ## Compile and usage
 
-Dependent on:
+The following open source libraries were benchmade:
 
 * (Myself) [shines77](#)'s `jstd_hashmap`: - [https://gitee.com/shines77/jstd_hashmap](https://gitee.com/shines77/jstd_hashmap)
 * [skarupke](#)'s `aka::flat_hash_map`: - [https://github.com/skarupke/flat_hash_map](https://github.com/skarupke/flat_hash_map)
