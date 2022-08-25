@@ -8,31 +8,31 @@
 
 对以下 `C++` 开源库做了基准测试：
 
-* 我自己写的 `jstd_hashmap`：
+* [我自己](https://github.com/shines77) 写的 `jstd_hashmap`：
 
     [https://gitee.com/shines77/jstd_hashmap](https://gitee.com/shines77/jstd_hashmap)
 
-* [skarupke](#) 的 `aka::flat_hash_map`：
+* [skarupke](https://github.com/skarupke) 的 `aka::flat_hash_map`：
 
     [https://github.com/skarupke/flat_hash_map](https://github.com/skarupke/flat_hash_map)
 
-* [Google](#) 的 `abseil-cpp` 库：
+* [Google abseil-cpp](https://github.com/abseil) 的 `absl::flat_hash_map` ：
 
     [https://github.com/abseil/abseil-cpp](https://github.com/abseil/abseil-cpp)
 
-* [ktprime](#) 的 `emhash`：
+* [ktprime](https://github.com/ktprime) 的 `emhash`：
 
     [https://github.com/ktprime/emhash](https://github.com/ktprime/emhash)
 
-* [Tessil](#) 的 `tsl::robin_map`：
+* [Tessil](https://github.com/Tessil) 的 `tsl::robin_map`：
 
     [https://github.com/Tessil/robin-map](https://github.com/Tessil/robin-map)
 
-* [martinus](#) 的 `robin_hood::unordered_flat_map`：
+* [martinus](https://github.com/martinus) 的 `robin_hood::unordered_flat_map`：
 
     [https://github.com/martinus/robin-hood-hashing](https://github.com/martinus/robin-hood-hashing)
 
-* [martinus](#) 的 `ankerl::unordered_dense::map`：
+* [martinus](https://github.com/martinus) 的 `ankerl::unordered_dense::map`：
 
     [https://github.com/martinus/unordered_dense](https://github.com/martinus/unordered_dense)
 

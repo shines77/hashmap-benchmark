@@ -8,31 +8,31 @@ Several benchmark of `C++` high performance hashmap, even include Java, C#, gola
 
 The following `C++` open source libraries were benchmade:
 
-* (Myself) [shines77](#)'s `jstd_hashmap`:
+* (Myself) [shines77](https://github.com/shines77)'s `jstd_hashmap`:
 
     [https://gitee.com/shines77/jstd_hashmap](https://gitee.com/shines77/jstd_hashmap)
 
-* [skarupke](#)'s `aka::flat_hash_map`:
+* [skarupke](https://github.com/skarupke)'s `aka::flat_hash_map`:
 
     [https://github.com/skarupke/flat_hash_map](https://github.com/skarupke/flat_hash_map)
 
-* [Google](#)'s `abseil-cpp`:
+* [Google abseil-cpp](https://github.com/abseil)'s `absl::flat_hash_map`:
 
     [https://github.com/abseil/abseil-cpp](https://github.com/abseil/abseil-cpp)
 
-* [ktprime](#)'s `emhash`:
+* [ktprime](https://github.com/ktprime)'s `emhash`:
 
     [https://github.com/ktprime/emhash](https://github.com/ktprime/emhash)
 
-* [Tessil](#)'s `tsl::robin_map`:
+* [Tessil](https://github.com/Tessil)'s `tsl::robin_map`:
 
     [https://github.com/Tessil/robin-map](https://github.com/Tessil/robin-map)
 
-* [martinus](#)'s `robin_hood::unordered_flat_map`:
+* [martinus](https://github.com/martinus)'s `robin_hood::unordered_flat_map`:
 
     [https://github.com/martinus/robin-hood-hashing](https://github.com/martinus/robin-hood-hashing)
 
-* [martinus](#)'s `ankerl::unordered_dense::map`:
+* [martinus](https://github.com/martinus)'s `ankerl::unordered_dense::map`:
 
     [https://github.com/martinus/unordered_dense](https://github.com/martinus/unordered_dense)
 
