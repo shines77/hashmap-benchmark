@@ -8,7 +8,7 @@ Several benchmark of `C++` high performance hashmap, even include Java, C#, gola
 
 The following `C++` open source libraries were benchmade:
 
-* (Myself) [shines77](https://github.com/shines77)'s `jstd_hashmap`:
+* (Myself) [shines77](https://github.com/shines77)'s `jstd::robin_hash_map`:
 
     [https://gitee.com/shines77/jstd_hashmap](https://gitee.com/shines77/jstd_hashmap)
 
@@ -20,7 +20,7 @@ The following `C++` open source libraries were benchmade:
 
     [https://github.com/abseil/abseil-cpp](https://github.com/abseil/abseil-cpp)
 
-* [ktprime](https://github.com/ktprime)'s `emhash`:
+* [ktprime](https://github.com/ktprime)'s `emhash5`, `emhash7`, `emhash8`:
 
     [https://github.com/ktprime/emhash](https://github.com/ktprime/emhash)
 

@@ -8,7 +8,7 @@
 
 对以下 `C++` 开源库做了基准测试：
 
-* [我自己](https://github.com/shines77) 写的 `jstd_hashmap`：
+* [我自己](https://github.com/shines77) 写的 `jstd::robin_hash_map`：
 
     [https://gitee.com/shines77/jstd_hashmap](https://gitee.com/shines77/jstd_hashmap)
 
@@ -20,7 +20,7 @@
 
     [https://github.com/abseil/abseil-cpp](https://github.com/abseil/abseil-cpp)
 
-* [ktprime](https://github.com/ktprime) 的 `emhash`：
+* [ktprime](https://github.com/ktprime) 的 `emhash5`，`emhash7`，`emhash8`：
 
     [https://github.com/ktprime/emhash](https://github.com/ktprime/emhash)
 
