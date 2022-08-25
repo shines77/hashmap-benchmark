@@ -260,6 +260,8 @@ static bool FLAGS_test_absl_flat_hash_map = true;
 static bool FLAGS_test_absl_node_hash_map = true;
 static bool FLAGS_test_map = false;
 
+static bool FLAGS_test_string_only = false;
+
 static constexpr bool FLAGS_test_4_bytes = true;
 static constexpr bool FLAGS_test_8_bytes = true;
 static constexpr bool FLAGS_test_16_bytes = true;
@@ -1586,11 +1588,11 @@ void benchmark_all_hashmaps(std::size_t iters)
     // buffer.  To keep memory use similar, we normalize the number of
     // iterations based on size.
 #ifndef _DEBUG
-    if (FLAGS_test_4_bytes) {
+    if (FLAGS_test_4_bytes && !FLAGS_test_string_only) {
         test_all_hashmaps<std::uint32_t, std::uint32_t>(4, iters / 1);
     }
 
-    if (FLAGS_test_8_bytes) {
+    if (FLAGS_test_8_bytes && !FLAGS_test_string_only) {
         test_all_hashmaps<std::uint64_t, std::uint64_t>(8, iters / 2);
     }
 #endif
@@ -1765,8 +1767,14 @@ int main(int argc, char * argv[])
 
     std::size_t iters = kDefaultIters;
     if (argc > 1) {
-        // first arg is # of iterations
-        iters = ::atoi(argv[1]);
+        if (0) {
+            // Dummy header
+        } else if (stricmp(argv[1], "string") == 0) {
+            FLAGS_test_string_only = true;
+        } else {
+            // first arg is # of iterations
+            iters = ::atoi(argv[1]);
+        }
     }
 
     jtest::CPU::warm_up(1000);
