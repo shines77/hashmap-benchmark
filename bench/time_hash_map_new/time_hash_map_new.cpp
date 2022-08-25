@@ -83,11 +83,11 @@
 #define USE_STD_HASH_MAP                0
 #define USE_STD_UNORDERED_MAP           1
 #define USE_JSTD_FLAT16_HASH_MAP        0
-#define USE_JSTD_ROBIN16_HASH_MAP       1
+#define USE_JSTD_ROBIN16_HASH_MAP       0
 #define USE_JSTD_ROBIN_HASH_MAP         1
 #define USE_SKA_FLAT_HASH_MAP           1
 #define USE_SKA_BYTELL_HASH_MAP         0
-#define USE_EMHASH5_HASH_MAP            1
+#define USE_EMHASH5_HASH_MAP            0
 #define USE_EMHASH7_HASH_MAP            0
 #define USE_EMHASH8_HASH_MAP            1
 #define USE_ABSL_FLAT_HASH_MAP          1
