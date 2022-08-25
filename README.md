@@ -2,11 +2,9 @@
 
 | [中文版](./README.md) | [English Version](./README.en.md) |
 
-## Chinese / 中文版
-
 几个 `C++` 高性能哈希表的 `benchmark`，还包括 `Java`, `C#`, `golang` 等哈希表的 `benchmark`.
 
-### 概述
+## 概述
 
 对以下 `C++` 开源库做了基准测试：
 

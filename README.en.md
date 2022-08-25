@@ -2,11 +2,9 @@
 
 | [中文版](./README.md) | [English Version](./README.en.md) |
 
-## English / 英文版
-
 Several benchmark of `C++` high performance hashmap, even include Java, C#, golang hashmap benchmark.
 
-### Overview
+## Overview
 
 The following `C++` open source libraries were benchmade:
 
