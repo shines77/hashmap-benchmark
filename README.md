@@ -74,7 +74,7 @@ git submodule update --init --recursive
 
 `git submodule update --init --recursive` 是更新到本仓库指定的 `子仓库` 的版本，推荐使用这个命令。
 
-如果想更新到子仓库最新的版本，可以使用下面的命令：
+如果有需要，想更新到子仓库最新的版本（不推荐！正常更新请使用上面的命令），可以使用下面的命令：
 
 ```shell
 # 更新全部 submodule
