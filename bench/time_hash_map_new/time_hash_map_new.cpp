@@ -1382,7 +1382,7 @@ void test_all_hashmaps(std::size_t obj_size, std::size_t iters)
 #endif
 
 #if USE_ROBIN_HOOD_UNORDERED_MAP
-#if 1
+#if 0
     if (1) {
         measure_hashmap<robin_hood::unordered_map<Key,   Value, HASH_MAP_FUNCTION<Key>>,
                         robin_hood::unordered_map<Key *, Value, HASH_MAP_FUNCTION<Key *>>>
