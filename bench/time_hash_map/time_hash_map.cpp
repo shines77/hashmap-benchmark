@@ -816,89 +816,89 @@ struct HashEqualTo {
     constexpr result_type operator () (const argument_type & left,
                                        const argument_type & right) const {
 
-		return (left == right);
+        return (left == right);
     }
 
     constexpr result_type operator () (const argument_type & left,
                                        const key_type & right) const {
 
-		return (left.key() == right);
+        return (left.key() == right);
     }
 
     constexpr result_type operator () (const key_type & left,
                                        const argument_type & right) const {
 
-		return (left == right.key());
+        return (left == right.key());
     }
 
     constexpr result_type operator () (const key_type & left,
                                        const key_type & right) const {
 
-		return (left == right);
+        return (left == right);
     }
 
     constexpr result_type operator () (const argument_type & left,
                                        const pair_type & right) const {
 
-		return (left.key() == right.first.key());
+        return (left.key() == right.first.key());
     }
 
     constexpr result_type operator () (const pair_type & left,
                                        const argument_type & right) const {
 
-		return (left.first.key() == right.key());
+        return (left.first.key() == right.key());
     }
 
     constexpr result_type operator () (const key_type & left,
                                        const pair_type & right) const {
 
-		return (left == right.first);
+        return (left == right.first);
     }
 
     constexpr result_type operator () (const pair_type & left,
                                        const key_type & right) const {
 
-		return (left.first == right);
+        return (left.first == right);
     }
 
     constexpr result_type operator () (const pair_type & left,
                                        const pair_type & right) const {
 
-		return (left.first == right.first);
+        return (left.first == right.first);
     }
 
     template <typename K, typename V>
     constexpr result_type operator () (const std::pair<K, V> & left,
                                        const argument_type & right) const {
 
-		return (left.first.key() == right.key());
+        return (left.first.key() == right.key());
     }
 
     template <typename K, typename V>
     constexpr result_type operator () (const argument_type & left,
                                        const std::pair<K, V> & right) const {
 
-		return (left.key() == right.first.key());
+        return (left.key() == right.first.key());
     }
 
     template <typename K, typename V>
     constexpr result_type operator () (const std::pair<K, V> & left,
                                        const key_type & right) const {
 
-		return (left.first.key() == right);
+        return (left.first.key() == right);
     }
 
     template <typename K, typename V>
     constexpr result_type operator () (const key_type & left,
                                        const std::pair<K, V> & right) const {
 
-		return (left == right.first.key());
+        return (left == right.first.key());
     }
 
     template <typename L, typename R>
     constexpr result_type operator () (const L & left, const R & right) const {
 
-		return (left == right);
+        return (left == right);
     }
 };
 
@@ -1020,55 +1020,55 @@ struct equal_to<HashObject<Key, Size, HashSize>> {
     constexpr result_type operator () (const argument_type & left,
                                        const argument_type & right) const {
 
-		return (left == right);
+        return (left == right);
     }
 
     constexpr result_type operator () (const argument_type & left,
                                        const key_type & right) const {
 
-		return (left.key() == right);
+        return (left.key() == right);
     }
 
     constexpr result_type operator () (const key_type & left,
                                        const argument_type & right) const {
 
-		return (left == right.key());
+        return (left == right.key());
     }
 
     constexpr result_type operator () (const key_type & left,
                                        const key_type & right) const {
 
-		return (left == right);
+        return (left == right);
     }
 
     constexpr result_type operator () (const argument_type & left,
                                        const pair_type & right) const {
 
-		return (left.key() == right.first.key());
+        return (left.key() == right.first.key());
     }
 
     constexpr result_type operator () (const pair_type & left,
                                        const argument_type & right) const {
 
-		return (left.first.key() == right.key());
+        return (left.first.key() == right.key());
     }
 
     constexpr result_type operator () (const key_type & left,
                                        const pair_type & right) const {
 
-		return (left == right.first.key());
+        return (left == right.first.key());
     }
 
     constexpr result_type operator () (const pair_type & left,
                                        const key_type & right) const {
 
-		return (left.first.key() == right);
+        return (left.first.key() == right);
     }
 
     template <typename L, typename R>
     constexpr result_type operator () (const L & left, const R & right) const {
 
-		return (left == right);
+        return (left == right);
     }
 };
 
