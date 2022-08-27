@@ -97,7 +97,7 @@
 #define USE_ABSL_NODE_HASH_MAP          0
 
 #define USE_TSL_ROBIN_HOOD              1
-#define USE_ROBIN_HOOD_FLAT_MAP         0
+#define USE_ROBIN_HOOD_UNORDERED_MAP    0
 #define USE_ANKERL_UNORDERED_DENSE      1
 
 #ifdef _MSC_VER
@@ -106,7 +106,7 @@
 #undef USE_EMHASH7_HASH_MAP
 
 #undef USE_TSL_ROBIN_HOOD
-#undef USE_ROBIN_HOOD_FLAT_MAP
+#undef USE_ROBIN_HOOD_UNORDERED_MAP
 #undef USE_ANKERL_UNORDERED_DENSE
 #endif
 
@@ -180,7 +180,7 @@
 #if USE_TSL_ROBIN_HOOD
 #include <tsl/robin_map.h>
 #endif
-#if USE_ROBIN_HOOD_FLAT_MAP
+#if USE_ROBIN_HOOD_UNORDERED_MAP
 #include <robin_hood.h>
 #endif
 #if USE_ANKERL_UNORDERED_DENSE
@@ -1572,16 +1572,16 @@ static void test_all_hashmaps(std::size_t obj_size, std::size_t iters) {
     }
 #endif
 
-#if USE_ROBIN_HOOD_FLAT_MAP
+#if USE_ROBIN_HOOD_UNORDERED_MAP
 #if 0
-    if (0) {
-        measure_hashmap<robin_hood::unordered_flat_map<HashObj, Value,
+    if (1) {
+        measure_hashmap<robin_hood::unordered_map<HashObj, Value,
                         HashFn<Value, false, HashObj::cSize, HashObj::cHashSize>,
                         HashEqualTo<Value, HashObj::cSize, HashObj::cHashSize>>,
-                        robin_hood::unordered_flat_map<HashObj *, Value,
+                        robin_hood::unordered_map<HashObj *, Value,
                         HashFn<Value, false, HashObj::cSize, HashObj::cHashSize>>
                         >(
-            "robin_hood::unordered_flat_map<K, V>", obj_size, iters, has_stress_hash_function);
+            "robin_hood::unordered_map<K, V>", obj_size, iters, has_stress_hash_function);
     }
 #endif
 #endif
