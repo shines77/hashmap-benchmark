@@ -85,7 +85,7 @@
 
 #define USE_STD_HASH_MAP                0
 #define USE_STD_UNORDERED_MAP           1
-#define USE_JSTD_FLAT16_HASH_MAP        1
+#define USE_JSTD_FLAT16_HASH_MAP        0
 #define USE_JSTD_ROBIN16_HASH_MAP       1
 #define USE_JSTD_ROBIN_HASH_MAP         1
 #define USE_SKA_FLAT_HASH_MAP           1
@@ -97,7 +97,7 @@
 #define USE_ABSL_NODE_HASH_MAP          0
 
 #define USE_TSL_ROBIN_HOOD              1
-#define USE_ROBIN_HOOD_FLAT_MAP         1
+#define USE_ROBIN_HOOD_FLAT_MAP         0
 #define USE_ANKERL_UNORDERED_DENSE      1
 
 #ifdef _MSC_VER
@@ -668,11 +668,10 @@ public:
     }
 };
 
-template <typename Key, std::size_t Size = sizeof(Key),
-                        std::size_t HashSize = sizeof(Key),
-                        bool is_special = false>
-class HashFn {
-public:
+template <typename Key, bool isSpecial,
+                        std::size_t Size = sizeof(Key),
+                        std::size_t HashSize = sizeof(Key)>
+struct HashFn {
     typedef Key                             key_type;
     typedef HashObject<Key, Size, HashSize> argument_type;
     typedef std::size_t                     result_type;
@@ -680,19 +679,21 @@ public:
     typedef std::pair<argument_type, Key>   pair_type;
     typedef std::pair<argument_type *, Key> pair_type_2nd;
 
+    using is_transparent = void;
+
     // These two public members are required by msvc.  4 and 8 are defaults.
     static const std::size_t bucket_size = 4;
     static const std::size_t min_buckets = 8;
 
-    result_type operator () (const key_type & key) {
-        if (is_special)
+    result_type operator () (const key_type & key) noexcept {
+        if (isSpecial)
             return static_cast<result_type>(test::MumHash<key_type>()(key));
         else
             return static_cast<result_type>(HASH_MAP_FUNCTION<key_type>()(key));
     }
 
-    result_type operator () (const key_type & key) const {
-        if (is_special)
+    result_type operator () (const key_type & key) const noexcept {
+        if (isSpecial)
             return static_cast<result_type>(test::MumHash<key_type>()(key));
         else
             return static_cast<result_type>(HASH_MAP_FUNCTION<key_type>()(key));
@@ -714,39 +715,27 @@ public:
         return static_cast<result_type>(pair.first->Hash());
     }
 
-    result_type operator () (const argument_type & obj) {
-        if (is_special)
+    result_type operator () (const argument_type & obj) noexcept {
+        if (isSpecial)
             return static_cast<result_type>(test::MumHash<key_type>()(obj.Hash()));
         else
             return static_cast<result_type>(obj.Hash());
     }
 
     result_type operator () (const argument_type & obj) const noexcept {
-        if (is_special)
+        if (isSpecial)
             return static_cast<result_type>(test::MumHash<key_type>()(obj.Hash()));
         else
             return static_cast<result_type>(obj.Hash());
     }
 
-#if 1
-    result_type operator () (const argument_type * obj) {
+    result_type operator () (const argument_type * obj) noexcept {
         return reinterpret_cast<result_type>(obj);
     }
 
     // Do the identity hash for pointers.
     result_type operator () (const argument_type * obj) const noexcept {
         return reinterpret_cast<result_type>(obj);
-    }
-#endif
-
-    template <typename UKey, std::size_t nSize, std::size_t nHashSize>
-    result_type operator () (const std::pair<HashObject<UKey, nSize, nHashSize>, key_type> & pair) {
-        return static_cast<result_type>(pair.first.Hash());
-    }
-
-    template <typename UKey, std::size_t nSize, std::size_t nHashSize>
-    result_type operator () (const std::pair<HashObject<UKey, nSize, nHashSize>, key_type> & pair) const {
-        return static_cast<result_type>(pair.first.Hash());
     }
 
     // Less operator for MSVC's hash containers.
@@ -758,9 +747,20 @@ public:
         return (a < b);
     }
 
+#if 0
     template <typename UKey, std::size_t nSize, std::size_t nHashSize>
-    result_type operator () (const HashObject<UKey, nSize, nHashSize> & obj) {
-        if (is_special)
+    result_type operator () (const std::pair<HashObject<UKey, nSize, nHashSize>, key_type> & pair) {
+        return static_cast<result_type>(pair.first.Hash());
+    }
+
+    template <typename UKey, std::size_t nSize, std::size_t nHashSize>
+    result_type operator () (const std::pair<HashObject<UKey, nSize, nHashSize>, key_type> & pair) const {
+        return static_cast<result_type>(pair.first.Hash());
+    }
+
+    template <typename UKey, std::size_t nSize, std::size_t nHashSize>
+    result_type operator () (const HashObject<UKey, nSize, nHashSize> & obj) noexcept {
+        if (isSpecial)
             return static_cast<result_type>(test::MumHash<key_type>()(obj.Hash()));
         else
             return static_cast<result_type>(obj.Hash());
@@ -768,15 +768,14 @@ public:
 
     template <typename UKey, std::size_t nSize, std::size_t nHashSize>
     result_type operator () (const HashObject<UKey, nSize, nHashSize> & obj) const noexcept {
-        if (is_special)
+        if (isSpecial)
             return static_cast<result_type>(test::MumHash<key_type>()(obj.Hash()));
         else
             return static_cast<result_type>(obj.Hash());
     }
 
-#if 1
     template <typename UKey, std::size_t nSize, std::size_t nHashSize>
-    result_type operator () (const HashObject<UKey, nSize, nHashSize> * obj) {
+    result_type operator () (const HashObject<UKey, nSize, nHashSize> * obj) noexcept {
         return reinterpret_cast<result_type>(obj);
     }
 
@@ -785,7 +784,6 @@ public:
     result_type operator () (const HashObject<UKey, nSize, nHashSize> * obj) const noexcept {
         return reinterpret_cast<result_type>(obj);
     }
-#endif
 
     // Less operator for MSVC's hash containers.
     template <typename UKey, std::size_t nSize, std::size_t nHashSize>
@@ -799,6 +797,109 @@ public:
                       const HashObject<UKey, nSize, nHashSize> * b) const noexcept {
         return (a < b);
     }
+#endif
+};
+
+template <typename Key, std::size_t Size, std::size_t HashSize>
+struct HashEqualTo {
+    typedef Key                             key_type;
+    typedef HashObject<Key, Size, HashSize> argument_type;
+    typedef argument_type                   first_argument_type;
+    typedef argument_type                   second_argument_type;
+    typedef bool                            result_type;
+
+    typedef std::pair<argument_type, Key>   pair_type;
+    typedef std::pair<argument_type *, Key> pair_type_2nd;
+
+    typedef void is_transparent;
+
+    constexpr result_type operator () (const argument_type & left,
+                                       const argument_type & right) const {
+
+		return (left == right);
+    }
+
+    constexpr result_type operator () (const argument_type & left,
+                                       const key_type & right) const {
+
+		return (left.key() == right);
+    }
+
+    constexpr result_type operator () (const key_type & left,
+                                       const argument_type & right) const {
+
+		return (left == right.key());
+    }
+
+    constexpr result_type operator () (const key_type & left,
+                                       const key_type & right) const {
+
+		return (left == right);
+    }
+
+    constexpr result_type operator () (const argument_type & left,
+                                       const pair_type & right) const {
+
+		return (left.key() == right.first.key());
+    }
+
+    constexpr result_type operator () (const pair_type & left,
+                                       const argument_type & right) const {
+
+		return (left.first.key() == right.key());
+    }
+
+    constexpr result_type operator () (const key_type & left,
+                                       const pair_type & right) const {
+
+		return (left == right.first);
+    }
+
+    constexpr result_type operator () (const pair_type & left,
+                                       const key_type & right) const {
+
+		return (left.first == right);
+    }
+
+    constexpr result_type operator () (const pair_type & left,
+                                       const pair_type & right) const {
+
+		return (left.first == right.first);
+    }
+
+    template <typename K, typename V>
+    constexpr result_type operator () (const std::pair<K, V> & left,
+                                       const argument_type & right) const {
+
+		return (left.first.key() == right.key());
+    }
+
+    template <typename K, typename V>
+    constexpr result_type operator () (const argument_type & left,
+                                       const std::pair<K, V> & right) const {
+
+		return (left.key() == right.first.key());
+    }
+
+    template <typename K, typename V>
+    constexpr result_type operator () (const std::pair<K, V> & left,
+                                       const key_type & right) const {
+
+		return (left.first.key() == right);
+    }
+
+    template <typename K, typename V>
+    constexpr result_type operator () (const key_type & left,
+                                       const std::pair<K, V> & right) const {
+
+		return (left == right.first.key());
+    }
+
+    template <typename L, typename R>
+    constexpr result_type operator () (const L & left, const R & right) const {
+
+		return (left == right);
+    }
 };
 
 #if 1
@@ -811,16 +912,56 @@ struct hash<HashObject<Key, Size, HashSize>> {
     typedef HashObject<Key, Size, HashSize> argument_type;
     typedef std::size_t                     result_type;
 
+    using is_transparent = void;
+
     // These two public members are required by msvc.  4 and 8 are defaults.
     static const std::size_t bucket_size = 4;
     static const std::size_t min_buckets = 8;
 
-    result_type operator () (const argument_type & obj) const {
+    template <typename ArgumentT, typename std::enable_if<
+                                  jstd::is_same_ex<ArgumentT, argument_type>::value, int>::type = 0>
+    result_type operator () (const ArgumentT & obj) const noexcept {
         return static_cast<result_type>(obj.Hash());
     }
 
     // Do the identity hash for pointers.
-    result_type operator () (const argument_type * obj) const {
+    result_type operator () (const argument_type * obj) const noexcept {
+        return reinterpret_cast<result_type>(obj);
+    }
+
+    template <typename KeyT, typename std::enable_if<
+                             !jstd::is_same_ex<KeyT, argument_type>::value &&
+                             (Size <= sizeof(KeyT))>::type * = nullptr>
+    result_type operator () (const KeyT & key) const noexcept {
+        return static_cast<result_type>(HASH_MAP_FUNCTION<KeyT>()(key));
+    }
+
+    // Less operator for MSVC's hash containers.
+    bool operator () (const argument_type & a, argument_type & b) const {
+        return (a < b);
+    }
+
+    bool operator () (const argument_type * a, const argument_type * b) const {
+        return (a < b);
+    }
+};
+
+template <typename Key>
+struct hash<HashObject<Key, 16, 16>> {
+    typedef Key                             key_type;
+    typedef HashObject<Key, 16, 16>         argument_type;
+    typedef std::size_t                     result_type;
+
+    // These two public members are required by msvc.  4 and 8 are defaults.
+    static const std::size_t bucket_size = 4;
+    static const std::size_t min_buckets = 8;
+
+    result_type operator () (const argument_type & obj) const noexcept {
+        return static_cast<result_type>(obj.Hash());
+    }
+
+    // Do the identity hash for pointers.
+    result_type operator () (const argument_type * obj) const noexcept {
         return reinterpret_cast<result_type>(obj);
     }
 
@@ -832,29 +973,102 @@ struct hash<HashObject<Key, Size, HashSize>> {
     bool operator () (const argument_type * a, const argument_type * b) const {
         return (a < b);
     }
+};
 
-    template <std::size_t nSize, std::size_t nHashSize>
-    result_type operator () (const HashObject<key_type, nSize, nHashSize> & obj) const {
+template <typename Key>
+struct hash<HashObject<Key, 256, 64>> {
+    typedef Key                             key_type;
+    typedef HashObject<Key, 256, 64>        argument_type;
+    typedef std::size_t                     result_type;
+
+    // These two public members are required by msvc.  4 and 8 are defaults.
+    static const std::size_t bucket_size = 4;
+    static const std::size_t min_buckets = 8;
+
+    result_type operator () (const argument_type & obj) const noexcept {
         return static_cast<result_type>(obj.Hash());
     }
 
     // Do the identity hash for pointers.
-    template <std::size_t nSize, std::size_t nHashSize>
-    result_type operator () (const HashObject<key_type, nSize, nHashSize> * obj) const {
+    result_type operator () (const argument_type * obj) const noexcept {
         return reinterpret_cast<result_type>(obj);
     }
 
     // Less operator for MSVC's hash containers.
-    template <std::size_t nSize, std::size_t nHashSize>
-    bool operator () (const HashObject<key_type, nSize, nHashSize> & a,
-                      const HashObject<key_type, nSize, nHashSize> & b) const {
+    bool operator () (const argument_type & a, argument_type & b) const {
         return (a < b);
     }
 
-    template <std::size_t nSize, std::size_t nHashSize>
-    bool operator () (const HashObject<key_type, nSize, nHashSize> * a,
-                      const HashObject<key_type, nSize, nHashSize> * b) const {
+    bool operator () (const argument_type * a, const argument_type * b) const {
         return (a < b);
+    }
+};
+
+template <typename Key, std::size_t Size, std::size_t HashSize>
+struct equal_to<HashObject<Key, Size, HashSize>> {
+    typedef Key                                 key_type;
+    typedef HashObject<Key, Size, HashSize>     argument_type;
+    typedef argument_type                       first_argument_type;
+    typedef argument_type                       second_argument_type;
+    typedef bool                                result_type;
+
+    typedef std::pair<argument_type, key_type>   pair_type;
+    typedef std::pair<argument_type *, key_type> pair_type_2nd;
+
+    typedef void is_transparent;
+
+    constexpr result_type operator () (const argument_type & left,
+                                       const argument_type & right) const {
+
+		return (left == right);
+    }
+
+    constexpr result_type operator () (const argument_type & left,
+                                       const key_type & right) const {
+
+		return (left.key() == right);
+    }
+
+    constexpr result_type operator () (const key_type & left,
+                                       const argument_type & right) const {
+
+		return (left == right.key());
+    }
+
+    constexpr result_type operator () (const key_type & left,
+                                       const key_type & right) const {
+
+		return (left == right);
+    }
+
+    constexpr result_type operator () (const argument_type & left,
+                                       const pair_type & right) const {
+
+		return (left.key() == right.first.key());
+    }
+
+    constexpr result_type operator () (const pair_type & left,
+                                       const argument_type & right) const {
+
+		return (left.first.key() == right.key());
+    }
+
+    constexpr result_type operator () (const key_type & left,
+                                       const pair_type & right) const {
+
+		return (left == right.first.key());
+    }
+
+    constexpr result_type operator () (const pair_type & left,
+                                       const key_type & right) const {
+
+		return (left.first.key() == right);
+    }
+
+    template <typename L, typename R>
+    constexpr result_type operator () (const L & left, const R & right) const {
+
+		return (left == right);
     }
 };
 
@@ -1232,101 +1446,172 @@ static void test_all_hashmaps(std::size_t obj_size, std::size_t iters) {
     const bool has_stress_hash_function = (obj_size <= 8);
 
 #if USE_STD_HASH_MAP
-    if (FLAGS_test_std_hash_map) {
-        measure_hashmap<StdHashMap<HashObj,   Value, HashFn<Value, HashObj::cSize, HashObj::cHashSize>>,
-                        StdHashMap<HashObj *, Value, HashFn<Value, HashObj::cSize, HashObj::cHashSize>>
+    if (0) {
+        measure_hashmap<StdHashMap<HashObj, Value,
+                        HashFn<Value, false, HashObj::cSize, HashObj::cHashSize>,
+                        HashEqualTo<Value, HashObj::cSize, HashObj::cHashSize>>,
+                        StdHashMap<HashObj *, Value,
+                        HashFn<Value, false, HashObj::cSize, HashObj::cHashSize>>
                         >(
             "stdext::hash_map<K, V>", obj_size, iters, has_stress_hash_function);
     }
 #endif
 
 #if USE_STD_UNORDERED_MAP
-    if (FLAGS_test_std_unordered_map) {
-        measure_hashmap<std::unordered_map<HashObj,   Value, HashFn<Value, HashObj::cSize, HashObj::cHashSize>>,
-                        std::unordered_map<HashObj *, Value, HashFn<Value, HashObj::cSize, HashObj::cHashSize>>
+    if (1) {
+        measure_hashmap<std::unordered_map<HashObj, Value,
+                        HashFn<Value, false, HashObj::cSize, HashObj::cHashSize>,
+                        HashEqualTo<Value, HashObj::cSize, HashObj::cHashSize>>,
+                        std::unordered_map<HashObj *, Value,
+                        HashFn<Value, false, HashObj::cSize, HashObj::cHashSize>>
                         >(
             "std::unordered_map<K, V>", obj_size, iters, has_stress_hash_function);
     }
 #endif
 
 #if USE_JSTD_FLAT16_HASH_MAP
-    if (FLAGS_test_jstd_flat16_hash_map) {
-        measure_hashmap<jstd::flat16_hash_map<HashObj,   Value, HashFn<Value, HashObj::cSize, HashObj::cHashSize>>,
-                        jstd::flat16_hash_map<HashObj *, Value, HashFn<Value, HashObj::cSize, HashObj::cHashSize>>
+    if (1) {
+        measure_hashmap<jstd::flat16_hash_map<HashObj, Value,
+                        HashFn<Value, false, HashObj::cSize, HashObj::cHashSize>,
+                        HashEqualTo<Value, HashObj::cSize, HashObj::cHashSize>>,
+                        jstd::flat16_hash_map<HashObj *, Value,
+                        HashFn<Value, false, HashObj::cSize, HashObj::cHashSize>>
                         >(
             "jstd::flat16_hash_map<K, V>", obj_size, iters, has_stress_hash_function);
     }
 #endif
 
 #if USE_JSTD_ROBIN16_HASH_MAP
-    if (FLAGS_test_jstd_robin16_hash_map) {
-        measure_hashmap<jstd::robin16_hash_map<HashObj,   Value, HashFn<Value, HashObj::cSize, HashObj::cHashSize>>,
-                        jstd::robin16_hash_map<HashObj *, Value, HashFn<Value, HashObj::cSize, HashObj::cHashSize>>
+    if (1) {
+        measure_hashmap<jstd::robin16_hash_map<HashObj, Value,
+                        HashFn<Value, false, HashObj::cSize, HashObj::cHashSize>,
+                        HashEqualTo<Value, HashObj::cSize, HashObj::cHashSize>>,
+                        jstd::robin16_hash_map<HashObj *, Value,
+                        HashFn<HashObj *, false, HashObj::cSize, HashObj::cHashSize>>
                         >(
             "jstd::robin16_hash_map<K, V>", obj_size, iters, has_stress_hash_function);
     }
 #endif
 
 #if USE_JSTD_ROBIN_HASH_MAP
-    if (FLAGS_test_jstd_robin_hash_map) {
-        measure_hashmap<jstd::robin_hash_map<HashObj,   Value, HashFn<Value, HashObj::cSize, HashObj::cHashSize>>,
-                        jstd::robin_hash_map<HashObj *, Value, HashFn<Value, HashObj::cSize, HashObj::cHashSize>>
+    if (1) {
+        measure_hashmap<jstd::robin_hash_map<HashObj, Value,
+                        HashFn<Value, false, HashObj::cSize, HashObj::cHashSize>,
+                        HashEqualTo<Value, HashObj::cSize, HashObj::cHashSize>>,
+                        jstd::robin_hash_map<HashObj *, Value,
+                        HashFn<Value, false, HashObj::cSize, HashObj::cHashSize>>
                         >(
             "jstd::robin_hash_map<K, V>", obj_size, iters, has_stress_hash_function);
     }
 #endif
 
 #if USE_SKA_FLAT_HASH_MAP
-    if (FLAGS_test_ska_flat_hash_map) {
-        measure_hashmap<ska::flat_hash_map<HashObj,   Value, HashFn<Value, HashObj::cSize, HashObj::cHashSize>>,
-                        ska::flat_hash_map<HashObj *, Value, HashFn<Value, HashObj::cSize, HashObj::cHashSize>>
+    if (1) {
+        measure_hashmap<ska::flat_hash_map<HashObj, Value,
+                        HashFn<Value, false, HashObj::cSize, HashObj::cHashSize>,
+                        HashEqualTo<Value, HashObj::cSize, HashObj::cHashSize>>,
+                        ska::flat_hash_map<HashObj *, Value,
+                        HashFn<Value, false, HashObj::cSize, HashObj::cHashSize>>
                         >(
             "ska::flat_hash_map<K, V>", obj_size, iters, has_stress_hash_function);
     }
 #endif
 
 #if USE_SKA_BYTELL_HASH_MAP
-    if (FLAGS_test_ska_bytell_hash_map) {
-        measure_hashmap<ska::bytell_hash_map<HashObj,   Value, HashFn<Value, HashObj::cSize, HashObj::cHashSize>>,
-                        ska::bytell_hash_map<HashObj *, Value, HashFn<Value, HashObj::cSize, HashObj::cHashSize>>
+    if (1) {
+        measure_hashmap<ska::bytell_hash_map<HashObj, Value,
+                        HashFn<Value, false, HashObj::cSize, HashObj::cHashSize>,
+                        HashEqualTo<Value, HashObj::cSize, HashObj::cHashSize>>,
+                        ska::bytell_hash_map<HashObj *, Value,
+                        HashFn<Value, false, HashObj::cSize, HashObj::cHashSize>>
                         >(
             "ska::bytell_hash_map<K, V>", obj_size, iters, has_stress_hash_function);
     }
 #endif
 
 #if USE_EMHASH5_HASH_MAP
-    if (FLAGS_test_emhash5_flat_hash_map) {
-        measure_hashmap<emhash5::HashMap<HashObj,   Value, HashFn<Value, HashObj::cSize, HashObj::cHashSize>>,
-                        emhash5::HashMap<HashObj *, Value, HashFn<Value, HashObj::cSize, HashObj::cHashSize>>
+    if (1) {
+        measure_hashmap<emhash5::HashMap<HashObj, Value,
+                        HashFn<Value, false, HashObj::cSize, HashObj::cHashSize>,
+                        HashEqualTo<Value, HashObj::cSize, HashObj::cHashSize>>,
+                        emhash5::HashMap<HashObj *, Value,
+                        HashFn<Value, false, HashObj::cSize, HashObj::cHashSize>>
                         >(
             "emhash5::HashMap<K, V>", obj_size, iters, has_stress_hash_function);
     }
 #endif
 
 #if USE_EMHASH7_HASH_MAP
-    if (FLAGS_test_emhash7_flat_hash_map) {
-        measure_hashmap<emhash7::HashMap<HashObj,   Value, HashFn<Value, HashObj::cSize, HashObj::cHashSize>>,
-                        emhash7::HashMap<HashObj *, Value, HashFn<Value, HashObj::cSize, HashObj::cHashSize>>
+    if (1) {
+        measure_hashmap<emhash7::HashMap<HashObj, Value,
+                        HashFn<Value, false, HashObj::cSize, HashObj::cHashSize>,
+                        HashEqualTo<Value, HashObj::cSize, HashObj::cHashSize>>,
+                        emhash7::HashMap<HashObj *, Value,
+                        HashFn<Value, false, HashObj::cSize, HashObj::cHashSize>>
                         >(
             "emhash7::HashMap<K, V>", obj_size, iters, has_stress_hash_function);
     }
 #endif
 
 #if USE_ABSL_FLAT_HASH_MAP
-    if (FLAGS_test_absl_flat_hash_map) {
-        measure_hashmap<absl::flat_hash_map<HashObj,   Value, HashFn<Value, HashObj::cSize, HashObj::cHashSize, true>>,
-                        absl::flat_hash_map<HashObj *, Value, HashFn<Value, HashObj::cSize, HashObj::cHashSize, true>>
+    if (1) {
+        measure_hashmap<absl::flat_hash_map<HashObj, Value,
+                        HashFn<Value, true, HashObj::cSize, HashObj::cHashSize>,
+                        HashEqualTo<Value, HashObj::cSize, HashObj::cHashSize>>,
+                        absl::flat_hash_map<HashObj *, Value,
+                        HashFn<Value, true, HashObj::cSize, HashObj::cHashSize>>
                         >(
             "absl::flat_hash_map<K, V>", obj_size, iters, has_stress_hash_function);
     }
 #endif
 
 #if USE_ABSL_NODE_HASH_MAP
-    if (FLAGS_test_absl_node_hash_map) {
-        measure_hashmap<absl::node_hash_map<HashObj,   Value, HashFn<Value, HashObj::cSize, HashObj::cHashSize>>,
-                        absl::node_hash_map<HashObj *, Value, HashFn<Value, HashObj::cSize, HashObj::cHashSize>>
+    if (1) {
+        measure_hashmap<absl::node_hash_map<HashObj, Value,
+                        HashFn<Value, false, HashObj::cSize, HashObj::cHashSize>,
+                        HashEqualTo<Value, HashObj::cSize, HashObj::cHashSize>>,
+                        absl::node_hash_map<HashObj *, Value,
+                        HashFn<Value, false, HashObj::cSize, HashObj::cHashSize>>
                         >(
             "absl::node_hash_map<K, V>", obj_size, iters, has_stress_hash_function);
+    }
+#endif
+
+#if USE_TSL_ROBIN_HOOD
+    if (1) {
+        measure_hashmap<tsl::robin_map<HashObj, Value,
+                        HashFn<Value, false, HashObj::cSize, HashObj::cHashSize>,
+                        HashEqualTo<Value, HashObj::cSize, HashObj::cHashSize>>,
+                        absl::node_hash_map<HashObj *, Value,
+                        HashFn<Value, false, HashObj::cSize, HashObj::cHashSize>>
+                        >(
+            "tsl::robin_map<K, V>", obj_size, iters, has_stress_hash_function);
+    }
+#endif
+
+#if USE_ROBIN_HOOD_FLAT_MAP
+#if 0
+    if (0) {
+        measure_hashmap<robin_hood::unordered_flat_map<HashObj, Value,
+                        HashFn<Value, false, HashObj::cSize, HashObj::cHashSize>,
+                        HashEqualTo<Value, HashObj::cSize, HashObj::cHashSize>>,
+                        absl::node_hash_map<HashObj *, Value,
+                        HashFn<Value, false, HashObj::cSize, HashObj::cHashSize>>
+                        >(
+            "robin_hood::unordered_flat_map<K, V>", obj_size, iters, has_stress_hash_function);
+    }
+#endif
+#endif
+
+#if USE_ANKERL_UNORDERED_DENSE
+    if (1) {
+        measure_hashmap<ankerl::unordered_dense<HashObj, Value,
+                        HashFn<Value, false, HashObj::cSize, HashObj::cHashSize>,
+                        HashEqualTo<Value, HashObj::cSize, HashObj::cHashSize>>,
+                        absl::node_hash_map<HashObj *, Value,
+                        HashFn<Value, false, HashObj::cSize, HashObj::cHashSize>>
+                        >(
+            "ankerl::unordered_dense<K, V>", obj_size, iters, has_stress_hash_function);
     }
 #endif
 }

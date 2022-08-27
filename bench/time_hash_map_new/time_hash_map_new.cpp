@@ -243,29 +243,12 @@
 #define UINT64_Low(u64)         ((uint32_t)((uint64_t)u64 & 0x00000000FFFFFFFFull))
 #endif
 
-#if defined(_MSC_VER)
-static const bool FLAGS_test_std_hash_map = false;
-#else
-static const bool FLAGS_test_std_hash_map = false;
-#endif
-static bool FLAGS_test_std_unordered_map = true;
-static bool FLAGS_test_jstd_flat16_hash_map = true;
-static bool FLAGS_test_jstd_robin16_hash_map = true;
-static bool FLAGS_test_jstd_robin_hash_map = true;
-static bool FLAGS_test_ska_flat_hash_map = true;
-static bool FLAGS_test_ska_bytell_hash_map = true;
-static bool FLAGS_test_emhash5_flat_hash_map = true;
-static bool FLAGS_test_emhash7_flat_hash_map = true;
-static bool FLAGS_test_absl_flat_hash_map = true;
-static bool FLAGS_test_absl_node_hash_map = true;
-static bool FLAGS_test_map = false;
-
-static bool FLAGS_test_string_only = false;
-
 static constexpr bool FLAGS_test_4_bytes = true;
 static constexpr bool FLAGS_test_8_bytes = true;
 static constexpr bool FLAGS_test_16_bytes = true;
 static constexpr bool FLAGS_test_32_bytes = true;
+
+static bool FLAGS_test_string_only = false;
 
 #ifndef _DEBUG
 static constexpr std::size_t kDefaultIters = 10000000;
@@ -744,30 +727,6 @@ public:
     bool operator () (const argument_type * a, const argument_type * b) const noexcept {
         return (a < b);
     }
-
-    template <std::size_t nSize, std::size_t nHashSize>
-    result_type operator () (const HashObject<key_type, nSize, nHashSize> & obj) const noexcept {
-        return static_cast<result_type>(obj.Hash());
-    }
-
-    // Do the identity hash for pointers.
-    template <std::size_t nSize, std::size_t nHashSize>
-    result_type operator () (const HashObject<key_type, nSize, nHashSize> * obj) const noexcept {
-        return reinterpret_cast<result_type>(obj);
-    }
-
-    // Less operator for MSVC's hash containers.
-    template <std::size_t nSize, std::size_t nHashSize>
-    bool operator () (const HashObject<key_type, nSize, nHashSize> & a,
-                      const HashObject<key_type, nSize, nHashSize> & b) const noexcept {
-        return (a < b);
-    }
-
-    template <std::size_t nSize, std::size_t nHashSize>
-    bool operator () (const HashObject<key_type, nSize, nHashSize> * a,
-                      const HashObject<key_type, nSize, nHashSize> * b) const noexcept {
-        return (a < b);
-    }
 };
 
 #if 1
@@ -799,30 +758,6 @@ struct hash<HashObject<Key, Size, HashSize>> {
     }
 
     bool operator () (const argument_type * a, const argument_type * b) const {
-        return (a < b);
-    }
-
-    template <std::size_t nSize, std::size_t nHashSize>
-    result_type operator () (const HashObject<key_type, nSize, nHashSize> & obj) const {
-        return static_cast<result_type>(obj.Hash());
-    }
-
-    // Do the identity hash for pointers.
-    template <std::size_t nSize, std::size_t nHashSize>
-    result_type operator () (const HashObject<key_type, nSize, nHashSize> * obj) const {
-        return reinterpret_cast<result_type>(obj);
-    }
-
-    // Less operator for MSVC's hash containers.
-    template <std::size_t nSize, std::size_t nHashSize>
-    bool operator () (const HashObject<key_type, nSize, nHashSize> & a,
-                      const HashObject<key_type, nSize, nHashSize> & b) const {
-        return (a < b);
-    }
-
-    template <std::size_t nSize, std::size_t nHashSize>
-    bool operator () (const HashObject<key_type, nSize, nHashSize> * a,
-                      const HashObject<key_type, nSize, nHashSize> * b) const {
         return (a < b);
     }
 };
