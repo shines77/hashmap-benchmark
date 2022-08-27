@@ -245,23 +245,6 @@
 #define UINT64_Low(u64)         ((uint32_t)((uint64_t)u64 & 0x00000000FFFFFFFFull))
 #endif
 
-#if defined(_MSC_VER)
-static bool FLAGS_test_std_hash_map = false;
-#else
-static bool FLAGS_test_std_hash_map = false;
-#endif
-static bool FLAGS_test_std_unordered_map = true;
-static bool FLAGS_test_jstd_flat16_hash_map = true;
-static bool FLAGS_test_jstd_robin16_hash_map = true;
-static bool FLAGS_test_jstd_robin_hash_map = true;
-static bool FLAGS_test_ska_flat_hash_map = true;
-static bool FLAGS_test_ska_bytell_hash_map = true;
-static bool FLAGS_test_emhash5_flat_hash_map = true;
-static bool FLAGS_test_emhash7_flat_hash_map = true;
-static bool FLAGS_test_absl_flat_hash_map = true;
-static bool FLAGS_test_absl_node_hash_map = true;
-static bool FLAGS_test_map = false;
-
 static constexpr bool FLAGS_test_4_bytes = true;
 static constexpr bool FLAGS_test_8_bytes = true;
 static constexpr bool FLAGS_test_16_bytes = true;
@@ -1582,7 +1565,7 @@ static void test_all_hashmaps(std::size_t obj_size, std::size_t iters) {
         measure_hashmap<tsl::robin_map<HashObj, Value,
                         HashFn<Value, false, HashObj::cSize, HashObj::cHashSize>,
                         HashEqualTo<Value, HashObj::cSize, HashObj::cHashSize>>,
-                        absl::node_hash_map<HashObj *, Value,
+                        tsl::robin_map<HashObj *, Value,
                         HashFn<Value, false, HashObj::cSize, HashObj::cHashSize>>
                         >(
             "tsl::robin_map<K, V>", obj_size, iters, has_stress_hash_function);
@@ -1595,7 +1578,7 @@ static void test_all_hashmaps(std::size_t obj_size, std::size_t iters) {
         measure_hashmap<robin_hood::unordered_flat_map<HashObj, Value,
                         HashFn<Value, false, HashObj::cSize, HashObj::cHashSize>,
                         HashEqualTo<Value, HashObj::cSize, HashObj::cHashSize>>,
-                        absl::node_hash_map<HashObj *, Value,
+                        robin_hood::unordered_flat_map<HashObj *, Value,
                         HashFn<Value, false, HashObj::cSize, HashObj::cHashSize>>
                         >(
             "robin_hood::unordered_flat_map<K, V>", obj_size, iters, has_stress_hash_function);
@@ -1605,13 +1588,13 @@ static void test_all_hashmaps(std::size_t obj_size, std::size_t iters) {
 
 #if USE_ANKERL_UNORDERED_DENSE
     if (1) {
-        measure_hashmap<ankerl::unordered_dense<HashObj, Value,
+        measure_hashmap<ankerl::unordered_dense::map<HashObj, Value,
                         HashFn<Value, false, HashObj::cSize, HashObj::cHashSize>,
                         HashEqualTo<Value, HashObj::cSize, HashObj::cHashSize>>,
-                        absl::node_hash_map<HashObj *, Value,
+                        ankerl::unordered_dense::map<HashObj *, Value,
                         HashFn<Value, false, HashObj::cSize, HashObj::cHashSize>>
                         >(
-            "ankerl::unordered_dense<K, V>", obj_size, iters, has_stress_hash_function);
+            "ankerl::unordered_dense::map<K, V>", obj_size, iters, has_stress_hash_function);
     }
 #endif
 }
