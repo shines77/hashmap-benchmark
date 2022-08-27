@@ -77,7 +77,11 @@ git submodule update --init --recursive
 如果想更新到子仓库最新的版本，可以使用下面的命令：
 
 ```shell
+# 更新全部 submodule
 git submodule update --remote --recursive
+
+# 单独更新某个 submodule
+git submodule update --remote --recursive -- "3rd_party/flat_hash_map"
 ```
 
 ### 3. 配置与编译
