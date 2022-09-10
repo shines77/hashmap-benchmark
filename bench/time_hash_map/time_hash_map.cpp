@@ -423,7 +423,7 @@ public:
 
         if (remain > 0) {
             std::uint8_t * rbuf = (std::uint8_t *)&this->buffer_[length];
-            std::uint8_t ch = std::uint8_t(static_cast<std::size_t>(key) & 0xFFul);
+            std::uint8_t ch = std::uint8_t(std::size_t(key) & 0xFFul);
             for (std::ptrdiff_t i = 0; i < remain; i++) {
                 *rbuf++ = ch;
             }
