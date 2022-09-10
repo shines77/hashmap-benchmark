@@ -92,7 +92,7 @@
 #define USE_SKA_BYTELL_HASH_MAP         0
 #define USE_EMHASH5_HASH_MAP            1
 #define USE_EMHASH7_HASH_MAP            0
-#define USE_EMHASH8_HASH_MAP            0
+#define USE_EMHASH8_HASH_MAP            1
 #define USE_ABSL_FLAT_HASH_MAP          1
 #define USE_ABSL_NODE_HASH_MAP          0
 

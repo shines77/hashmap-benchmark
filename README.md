@@ -110,8 +110,7 @@ make
 如果你已经成功编译了 `abseil-cpp` 和 `hashmap-benchmark` ，并且想更新到本仓库的最新代码，你可以使用如下命令：
 
 ```bash
-git pull
-git submodule update --init --recursive
+git pull && git submodule update --init --recursive
 
 make
 ```
