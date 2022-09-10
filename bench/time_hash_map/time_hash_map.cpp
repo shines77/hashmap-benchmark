@@ -97,7 +97,7 @@
 #define USE_ABSL_NODE_HASH_MAP          0
 
 #define USE_TSL_ROBIN_HOOD              1
-#define USE_ROBIN_HOOD_UNORDERED_MAP    0
+#define USE_ROBIN_HOOD_UNORDERED_MAP    1
 #define USE_ANKERL_UNORDERED_DENSE      1
 
 #ifdef _MSC_VER
@@ -1550,10 +1550,10 @@ static void test_all_hashmaps(std::size_t obj_size, std::size_t iters) {
 #if USE_STD_HASH_MAP
     if (0) {
         measure_hashmap<StdHashMap<HashObj, Value,
-                        HashFn<Value, false, HashObj::cSize, HashObj::cHashSize>,
-                        HashEqualTo<Value, HashObj::cSize, HashObj::cHashSize>>,
+                        HashFn<typename HashObj::key_type, false, HashObj::cSize, HashObj::cHashSize>,
+                        HashEqualTo<typename HashObj::key_type, HashObj::cSize, HashObj::cHashSize>>,
                         StdHashMap<HashObj *, Value,
-                        HashFn<Value, false, HashObj::cSize, HashObj::cHashSize>>
+                        HashFn<typename HashObj::key_type, false, HashObj::cSize, HashObj::cHashSize>>
                         >(
             "stdext::hash_map<K, V>", obj_size, iters, has_stress_hash_function);
     }
@@ -1562,10 +1562,10 @@ static void test_all_hashmaps(std::size_t obj_size, std::size_t iters) {
 #if USE_STD_UNORDERED_MAP
     if (1) {
         measure_hashmap<std::unordered_map<HashObj, Value,
-                        HashFn<Value, false, HashObj::cSize, HashObj::cHashSize>,
-                        HashEqualTo<Value, HashObj::cSize, HashObj::cHashSize>>,
+                        HashFn<typename HashObj::key_type, false, HashObj::cSize, HashObj::cHashSize>,
+                        HashEqualTo<typename HashObj::key_type, HashObj::cSize, HashObj::cHashSize>>,
                         std::unordered_map<HashObj *, Value,
-                        HashFn<Value, false, HashObj::cSize, HashObj::cHashSize>>
+                        HashFn<typename HashObj::key_type, false, HashObj::cSize, HashObj::cHashSize>>
                         >(
             "std::unordered_map<K, V>", obj_size, iters, has_stress_hash_function);
     }
@@ -1574,10 +1574,10 @@ static void test_all_hashmaps(std::size_t obj_size, std::size_t iters) {
 #if USE_JSTD_FLAT16_HASH_MAP
     if (1) {
         measure_hashmap<jstd::flat16_hash_map<HashObj, Value,
-                        HashFn<Value, false, HashObj::cSize, HashObj::cHashSize>,
-                        HashEqualTo<Value, HashObj::cSize, HashObj::cHashSize>>,
+                        HashFn<typename HashObj::key_type, false, HashObj::cSize, HashObj::cHashSize>,
+                        HashEqualTo<typename HashObj::key_type, HashObj::cSize, HashObj::cHashSize>>,
                         jstd::flat16_hash_map<HashObj *, Value,
-                        HashFn<Value, false, HashObj::cSize, HashObj::cHashSize>>
+                        HashFn<typename HashObj::key_type, false, HashObj::cSize, HashObj::cHashSize>>
                         >(
             "jstd::flat16_hash_map<K, V>", obj_size, iters, has_stress_hash_function);
     }
@@ -1586,10 +1586,10 @@ static void test_all_hashmaps(std::size_t obj_size, std::size_t iters) {
 #if USE_JSTD_ROBIN16_HASH_MAP
     if (1) {
         measure_hashmap<jstd::robin16_hash_map<HashObj, Value,
-                        HashFn<Value, false, HashObj::cSize, HashObj::cHashSize>,
-                        HashEqualTo<Value, HashObj::cSize, HashObj::cHashSize>>,
+                        HashFn<typename HashObj::key_type, false, HashObj::cSize, HashObj::cHashSize>,
+                        HashEqualTo<typename HashObj::key_type, HashObj::cSize, HashObj::cHashSize>>,
                         jstd::robin16_hash_map<HashObj *, Value,
-                        HashFn<HashObj *, false, HashObj::cSize, HashObj::cHashSize>>
+                        HashFn<typename HashObj::key_type, false, HashObj::cSize, HashObj::cHashSize>>
                         >(
             "jstd::robin16_hash_map<K, V>", obj_size, iters, has_stress_hash_function);
     }
@@ -1598,10 +1598,10 @@ static void test_all_hashmaps(std::size_t obj_size, std::size_t iters) {
 #if USE_JSTD_ROBIN_HASH_MAP
     if (1) {
         measure_hashmap<jstd::robin_hash_map<HashObj, Value,
-                        HashFn<Value, false, HashObj::cSize, HashObj::cHashSize>,
-                        HashEqualTo<Value, HashObj::cSize, HashObj::cHashSize>>,
+                        HashFn<typename HashObj::key_type, false, HashObj::cSize, HashObj::cHashSize>,
+                        HashEqualTo<typename HashObj::key_type, HashObj::cSize, HashObj::cHashSize>>,
                         jstd::robin_hash_map<HashObj *, Value,
-                        HashFn<Value, false, HashObj::cSize, HashObj::cHashSize>>
+                        HashFn<typename HashObj::key_type, false, HashObj::cSize, HashObj::cHashSize>>
                         >(
             "jstd::robin_hash_map<K, V>", obj_size, iters, has_stress_hash_function);
     }
@@ -1610,10 +1610,10 @@ static void test_all_hashmaps(std::size_t obj_size, std::size_t iters) {
 #if USE_SKA_FLAT_HASH_MAP
     if (1) {
         measure_hashmap<ska::flat_hash_map<HashObj, Value,
-                        HashFn<Value, false, HashObj::cSize, HashObj::cHashSize>,
-                        HashEqualTo<Value, HashObj::cSize, HashObj::cHashSize>>,
+                        HashFn<typename HashObj::key_type, false, HashObj::cSize, HashObj::cHashSize>,
+                        HashEqualTo<typename HashObj::key_type, HashObj::cSize, HashObj::cHashSize>>,
                         ska::flat_hash_map<HashObj *, Value,
-                        HashFn<Value, false, HashObj::cSize, HashObj::cHashSize>>
+                        HashFn<typename HashObj::key_type, false, HashObj::cSize, HashObj::cHashSize>>
                         >(
             "ska::flat_hash_map<K, V>", obj_size, iters, has_stress_hash_function);
     }
@@ -1622,10 +1622,10 @@ static void test_all_hashmaps(std::size_t obj_size, std::size_t iters) {
 #if USE_SKA_BYTELL_HASH_MAP
     if (1) {
         measure_hashmap<ska::bytell_hash_map<HashObj, Value,
-                        HashFn<Value, false, HashObj::cSize, HashObj::cHashSize>,
-                        HashEqualTo<Value, HashObj::cSize, HashObj::cHashSize>>,
+                        HashFn<typename HashObj::key_type, false, HashObj::cSize, HashObj::cHashSize>,
+                        HashEqualTo<typename HashObj::key_type, HashObj::cSize, HashObj::cHashSize>>,
                         ska::bytell_hash_map<HashObj *, Value,
-                        HashFn<Value, false, HashObj::cSize, HashObj::cHashSize>>
+                        HashFn<typename HashObj::key_type, false, HashObj::cSize, HashObj::cHashSize>>
                         >(
             "ska::bytell_hash_map<K, V>", obj_size, iters, has_stress_hash_function);
     }
@@ -1634,10 +1634,10 @@ static void test_all_hashmaps(std::size_t obj_size, std::size_t iters) {
 #if USE_EMHASH5_HASH_MAP
     if (1) {
         measure_hashmap<emhash5::HashMap<HashObj, Value,
-                        HashFn<Value, false, HashObj::cSize, HashObj::cHashSize>,
-                        HashEqualTo<Value, HashObj::cSize, HashObj::cHashSize>>,
+                        HashFn<typename HashObj::key_type, false, HashObj::cSize, HashObj::cHashSize>,
+                        HashEqualTo<typename HashObj::key_type, HashObj::cSize, HashObj::cHashSize>>,
                         emhash5::HashMap<HashObj *, Value,
-                        HashFn<Value, false, HashObj::cSize, HashObj::cHashSize>>
+                        HashFn<typename HashObj::key_type, false, HashObj::cSize, HashObj::cHashSize>>
                         >(
             "emhash5::HashMap<K, V>", obj_size, iters, has_stress_hash_function);
     }
@@ -1646,10 +1646,10 @@ static void test_all_hashmaps(std::size_t obj_size, std::size_t iters) {
 #if USE_EMHASH7_HASH_MAP
     if (1) {
         measure_hashmap<emhash7::HashMap<HashObj, Value,
-                        HashFn<Value, false, HashObj::cSize, HashObj::cHashSize>,
-                        HashEqualTo<Value, HashObj::cSize, HashObj::cHashSize>>,
+                        HashFn<typename HashObj::key_type, false, HashObj::cSize, HashObj::cHashSize>,
+                        HashEqualTo<typename HashObj::key_type, HashObj::cSize, HashObj::cHashSize>>,
                         emhash7::HashMap<HashObj *, Value,
-                        HashFn<Value, false, HashObj::cSize, HashObj::cHashSize>>
+                        HashFn<typename HashObj::key_type, false, HashObj::cSize, HashObj::cHashSize>>
                         >(
             "emhash7::HashMap<K, V>", obj_size, iters, has_stress_hash_function);
     }
@@ -1658,10 +1658,10 @@ static void test_all_hashmaps(std::size_t obj_size, std::size_t iters) {
 #if USE_ABSL_FLAT_HASH_MAP
     if (1) {
         measure_hashmap<absl::flat_hash_map<HashObj, Value,
-                        HashFn<Value, true, HashObj::cSize, HashObj::cHashSize>,
-                        HashEqualTo<Value, HashObj::cSize, HashObj::cHashSize>>,
+                        HashFn<typename HashObj::key_type, true, HashObj::cSize, HashObj::cHashSize>,
+                        HashEqualTo<typename HashObj::key_type, HashObj::cSize, HashObj::cHashSize>>,
                         absl::flat_hash_map<HashObj *, Value,
-                        HashFn<Value, true, HashObj::cSize, HashObj::cHashSize>>
+                        HashFn<typename HashObj::key_type, true, HashObj::cSize, HashObj::cHashSize>>
                         >(
             "absl::flat_hash_map<K, V>", obj_size, iters, has_stress_hash_function);
     }
@@ -1670,10 +1670,10 @@ static void test_all_hashmaps(std::size_t obj_size, std::size_t iters) {
 #if USE_ABSL_NODE_HASH_MAP
     if (1) {
         measure_hashmap<absl::node_hash_map<HashObj, Value,
-                        HashFn<Value, false, HashObj::cSize, HashObj::cHashSize>,
-                        HashEqualTo<Value, HashObj::cSize, HashObj::cHashSize>>,
+                        HashFn<typename HashObj::key_type, false, HashObj::cSize, HashObj::cHashSize>,
+                        HashEqualTo<typename HashObj::key_type, HashObj::cSize, HashObj::cHashSize>>,
                         absl::node_hash_map<HashObj *, Value,
-                        HashFn<Value, false, HashObj::cSize, HashObj::cHashSize>>
+                        HashFn<typename HashObj::key_type, false, HashObj::cSize, HashObj::cHashSize>>
                         >(
             "absl::node_hash_map<K, V>", obj_size, iters, has_stress_hash_function);
     }
@@ -1682,23 +1682,23 @@ static void test_all_hashmaps(std::size_t obj_size, std::size_t iters) {
 #if USE_TSL_ROBIN_HOOD
     if (1) {
         measure_hashmap<tsl::robin_map<HashObj, Value,
-                        HashFn<Value, false, HashObj::cSize, HashObj::cHashSize>,
-                        HashEqualTo<Value, HashObj::cSize, HashObj::cHashSize>>,
+                        HashFn<typename HashObj::key_type, false, HashObj::cSize, HashObj::cHashSize>,
+                        HashEqualTo<typename HashObj::key_type, HashObj::cSize, HashObj::cHashSize>>,
                         tsl::robin_map<HashObj *, Value,
-                        HashFn<Value, false, HashObj::cSize, HashObj::cHashSize>>
+                        HashFn<typename HashObj::key_type, false, HashObj::cSize, HashObj::cHashSize>>
                         >(
             "tsl::robin_map<K, V>", obj_size, iters, has_stress_hash_function);
     }
 #endif
 
 #if USE_ROBIN_HOOD_UNORDERED_MAP
-#if 0
+#if 1
     if (1) {
         measure_hashmap<robin_hood::unordered_map<HashObj, Value,
-                        HashFn<Value, false, HashObj::cSize, HashObj::cHashSize>,
-                        HashEqualTo<Value, HashObj::cSize, HashObj::cHashSize>>,
+                        HashFn<typename HashObj::key_type, false, HashObj::cSize, HashObj::cHashSize>,
+                        HashEqualTo<typename HashObj::key_type, HashObj::cSize, HashObj::cHashSize>>,
                         robin_hood::unordered_map<HashObj *, Value,
-                        HashFn<Value, false, HashObj::cSize, HashObj::cHashSize>>
+                        HashFn<typename HashObj::key_type, false, HashObj::cSize, HashObj::cHashSize>>
                         >(
             "robin_hood::unordered_map<K, V>", obj_size, iters, has_stress_hash_function);
     }
@@ -1708,10 +1708,10 @@ static void test_all_hashmaps(std::size_t obj_size, std::size_t iters) {
 #if USE_ANKERL_UNORDERED_DENSE
     if (1) {
         measure_hashmap<ankerl::unordered_dense::map<HashObj, Value,
-                        HashFn<Value, false, HashObj::cSize, HashObj::cHashSize>,
-                        HashEqualTo<Value, HashObj::cSize, HashObj::cHashSize>>,
+                        HashFn<typename HashObj::key_type, false, HashObj::cSize, HashObj::cHashSize>,
+                        HashEqualTo<typename HashObj::key_type, HashObj::cSize, HashObj::cHashSize>>,
                         ankerl::unordered_dense::map<HashObj *, Value,
-                        HashFn<Value, false, HashObj::cSize, HashObj::cHashSize>>
+                        HashFn<typename HashObj::key_type, false, HashObj::cSize, HashObj::cHashSize>>
                         >(
             "ankerl::unordered_dense::map<K, V>", obj_size, iters, has_stress_hash_function);
     }
