@@ -97,7 +97,7 @@
 #define USE_ABSL_NODE_HASH_MAP          0
 
 #define USE_TSL_ROBIN_HOOD              1
-#define USE_ROBIN_HOOD_UNORDERED_MAP    1
+#define USE_ROBIN_HOOD_UNORDERED_MAP    0
 #define USE_ANKERL_UNORDERED_DENSE      1
 
 #ifdef _MSC_VER
@@ -1692,7 +1692,7 @@ static void test_all_hashmaps(std::size_t obj_size, std::size_t iters) {
 #endif
 
 #if USE_ROBIN_HOOD_UNORDERED_MAP
-#if 1
+#if 0
     if (1) {
         measure_hashmap<robin_hood::unordered_map<HashObj, Value,
                         HashFn<typename HashObj::key_type, false, HashObj::cSize, HashObj::cHashSize>,
