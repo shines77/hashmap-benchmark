@@ -672,8 +672,9 @@ struct HashFn {
 
     template <typename KeyT, typename std::enable_if<
                              !jstd::is_same_ex<KeyT, argument_type>::value &&
+                             !jstd::is_same_ex<KeyT, argument_type *>::value &&
                              (Size <= sizeof(KeyT))>::type * = nullptr>
-    result_type operator () (const key_type & key) noexcept {
+    result_type operator () (const KeyT & key) noexcept {
         if (isSpecial)
             return static_cast<result_type>(test::MumHash<KeyT>()(key));
         else
@@ -682,6 +683,7 @@ struct HashFn {
 
     template <typename KeyT, typename std::enable_if<
                              !jstd::is_same_ex<KeyT, argument_type>::value &&
+                             !jstd::is_same_ex<KeyT, argument_type *>::value &&
                              (Size <= sizeof(KeyT))>::type * = nullptr>
     result_type operator () (const KeyT & key) const noexcept {
         if (isSpecial)
