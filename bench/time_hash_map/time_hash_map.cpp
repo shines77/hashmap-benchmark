@@ -670,18 +670,24 @@ struct HashFn {
     static const std::size_t bucket_size = 4;
     static const std::size_t min_buckets = 8;
 
+    template <typename KeyT, typename std::enable_if<
+                             !jstd::is_same_ex<KeyT, argument_type>::value &&
+                             (Size <= sizeof(KeyT))>::type * = nullptr>
     result_type operator () (const key_type & key) noexcept {
         if (isSpecial)
-            return static_cast<result_type>(test::MumHash<key_type>()(key));
+            return static_cast<result_type>(test::MumHash<KeyT>()(key));
         else
-            return static_cast<result_type>(HASH_MAP_FUNCTION<key_type>()(key));
+            return static_cast<result_type>(HASH_MAP_FUNCTION<KeyT>()(key));
     }
 
-    result_type operator () (const key_type & key) const noexcept {
+    template <typename KeyT, typename std::enable_if<
+                             !jstd::is_same_ex<KeyT, argument_type>::value &&
+                             (Size <= sizeof(KeyT))>::type * = nullptr>
+    result_type operator () (const KeyT & key) const noexcept {
         if (isSpecial)
-            return static_cast<result_type>(test::MumHash<key_type>()(key));
+            return static_cast<result_type>(test::MumHash<KeyT>()(key));
         else
-            return static_cast<result_type>(HASH_MAP_FUNCTION<key_type>()(key));
+            return static_cast<result_type>(HASH_MAP_FUNCTION<KeyT>()(key));
     }
 
     result_type operator () (const pair_type & pair) {
@@ -700,14 +706,18 @@ struct HashFn {
         return static_cast<result_type>(pair.first->Hash());
     }
 
-    result_type operator () (const argument_type & obj) noexcept {
+    template <typename ArgumentT, typename std::enable_if<
+                                  jstd::is_same_ex<ArgumentT, argument_type>::value, int>::type = 0>
+    result_type operator () (const ArgumentT & obj) noexcept {
         if (isSpecial)
             return static_cast<result_type>(test::MumHash<key_type>()(obj.Hash()));
         else
             return static_cast<result_type>(obj.Hash());
     }
 
-    result_type operator () (const argument_type & obj) const noexcept {
+    template <typename ArgumentT, typename std::enable_if<
+                                  jstd::is_same_ex<ArgumentT, argument_type>::value, int>::type = 0>
+    result_type operator () (const ArgumentT & obj) const noexcept {
         if (isSpecial)
             return static_cast<result_type>(test::MumHash<key_type>()(obj.Hash()));
         else
