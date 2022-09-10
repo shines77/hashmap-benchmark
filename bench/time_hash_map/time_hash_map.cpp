@@ -1655,6 +1655,18 @@ static void test_all_hashmaps(std::size_t obj_size, std::size_t iters) {
     }
 #endif
 
+#if USE_EMHASH8_HASH_MAP
+    if (1) {
+        measure_hashmap<emhash8::HashMap<HashObj, Value,
+                        HashFn<typename HashObj::key_type, false, HashObj::cSize, HashObj::cHashSize>,
+                        HashEqualTo<typename HashObj::key_type, HashObj::cSize, HashObj::cHashSize>>,
+                        emhash8::HashMap<HashObj *, Value,
+                        HashFn<typename HashObj::key_type, false, HashObj::cSize, HashObj::cHashSize>>
+                        >(
+            "emhash8::HashMap<K, V>", obj_size, iters, has_stress_hash_function);
+    }
+#endif
+
 #if USE_ABSL_FLAT_HASH_MAP
     if (1) {
         measure_hashmap<absl::flat_hash_map<HashObj, Value,
