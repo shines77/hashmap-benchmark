@@ -250,6 +250,8 @@ static constexpr bool FLAGS_test_8_bytes = true;
 static constexpr bool FLAGS_test_16_bytes = true;
 static constexpr bool FLAGS_test_256_bytes = true;
 
+static bool FLAGS_test_bigobject_only = false;
+
 #ifndef _DEBUG
 static constexpr std::size_t kDefaultIters = 10000000;
 #else
@@ -783,6 +785,130 @@ struct HashFn {
 #endif
 };
 
+template <typename Key, bool isSpecial>
+struct HashFn<Key, isSpecial, 16, 16> {
+    typedef Key                             key_type;
+    typedef HashObject<Key, 16, 16>         argument_type;
+    typedef std::size_t                     result_type;
+
+    typedef std::pair<argument_type, Key>   pair_type;
+    typedef std::pair<argument_type *, Key> pair_type_2nd;
+
+    // These two public members are required by msvc.  4 and 8 are defaults.
+    static const std::size_t bucket_size = 4;
+    static const std::size_t min_buckets = 8;
+
+    result_type operator () (const pair_type & pair) {
+        return static_cast<result_type>(pair.first.Hash());
+    }
+
+    result_type operator () (const pair_type & pair) const {
+        return static_cast<result_type>(pair.first.Hash());
+    }
+
+    result_type operator () (const pair_type_2nd & pair) {
+        return static_cast<result_type>(pair.first->Hash());
+    }
+
+    result_type operator () (const pair_type_2nd & pair) const {
+        return static_cast<result_type>(pair.first->Hash());
+    }
+
+    result_type operator () (const argument_type & obj) noexcept {
+        if (isSpecial)
+            return static_cast<result_type>(test::MumHash<key_type>()(obj.Hash()));
+        else
+            return static_cast<result_type>(obj.Hash());
+    }
+
+    result_type operator () (const argument_type & obj) const noexcept {
+        if (isSpecial)
+            return static_cast<result_type>(test::MumHash<key_type>()(obj.Hash()));
+        else
+            return static_cast<result_type>(obj.Hash());
+    }
+
+    result_type operator () (const argument_type * obj) noexcept {
+        return reinterpret_cast<result_type>(obj);
+    }
+
+    // Do the identity hash for pointers.
+    result_type operator () (const argument_type * obj) const noexcept {
+        return reinterpret_cast<result_type>(obj);
+    }
+
+    // Less operator for MSVC's hash containers.
+    bool operator () (const argument_type & a, argument_type & b) const noexcept {
+        return (a < b);
+    }
+
+    bool operator () (const argument_type * a, const argument_type * b) const noexcept {
+        return (a < b);
+    }
+};
+
+template <typename Key, bool isSpecial>
+struct HashFn<Key, isSpecial, 256, 64> {
+    typedef Key                             key_type;
+    typedef HashObject<Key, 256, 64>        argument_type;
+    typedef std::size_t                     result_type;
+
+    typedef std::pair<argument_type, Key>   pair_type;
+    typedef std::pair<argument_type *, Key> pair_type_2nd;
+
+    // These two public members are required by msvc.  4 and 8 are defaults.
+    static const std::size_t bucket_size = 4;
+    static const std::size_t min_buckets = 8;
+
+    result_type operator () (const pair_type & pair) {
+        return static_cast<result_type>(pair.first.Hash());
+    }
+
+    result_type operator () (const pair_type & pair) const {
+        return static_cast<result_type>(pair.first.Hash());
+    }
+
+    result_type operator () (const pair_type_2nd & pair) {
+        return static_cast<result_type>(pair.first->Hash());
+    }
+
+    result_type operator () (const pair_type_2nd & pair) const {
+        return static_cast<result_type>(pair.first->Hash());
+    }
+
+    result_type operator () (const argument_type & obj) noexcept {
+        if (isSpecial)
+            return static_cast<result_type>(test::MumHash<key_type>()(obj.Hash()));
+        else
+            return static_cast<result_type>(obj.Hash());
+    }
+
+    result_type operator () (const argument_type & obj) const noexcept {
+        if (isSpecial)
+            return static_cast<result_type>(test::MumHash<key_type>()(obj.Hash()));
+        else
+            return static_cast<result_type>(obj.Hash());
+    }
+
+    result_type operator () (const argument_type * obj) noexcept {
+        return reinterpret_cast<result_type>(obj);
+    }
+
+    // Do the identity hash for pointers.
+    result_type operator () (const argument_type * obj) const noexcept {
+        return reinterpret_cast<result_type>(obj);
+    }
+
+    // Less operator for MSVC's hash containers.
+    bool operator () (const argument_type & a, argument_type & b) const noexcept {
+        return (a < b);
+    }
+
+    bool operator () (const argument_type * a, const argument_type * b) const noexcept {
+        return (a < b);
+    }
+};
+
 template <typename Key, std::size_t Size, std::size_t HashSize>
 struct HashEqualTo {
     typedef Key                             key_type;
@@ -797,89 +923,89 @@ struct HashEqualTo {
     typedef void is_transparent;
 
     constexpr result_type operator () (const argument_type & left,
-                                       const argument_type & right) const {
+                                       const argument_type & right) const noexcept {
 
         return (left == right);
     }
 
     constexpr result_type operator () (const argument_type & left,
-                                       const key_type & right) const {
+                                       const key_type & right) const noexcept {
 
         return (left.key() == right);
     }
 
     constexpr result_type operator () (const key_type & left,
-                                       const argument_type & right) const {
+                                       const argument_type & right) const noexcept {
 
         return (left == right.key());
     }
 
     constexpr result_type operator () (const key_type & left,
-                                       const key_type & right) const {
+                                       const key_type & right) const noexcept {
 
         return (left == right);
     }
 
     constexpr result_type operator () (const argument_type & left,
-                                       const pair_type & right) const {
+                                       const pair_type & right) const noexcept {
 
         return (left.key() == right.first.key());
     }
 
     constexpr result_type operator () (const pair_type & left,
-                                       const argument_type & right) const {
+                                       const argument_type & right) const noexcept {
 
         return (left.first.key() == right.key());
     }
 
     constexpr result_type operator () (const key_type & left,
-                                       const pair_type & right) const {
+                                       const pair_type & right) const noexcept {
 
         return (left == right.first);
     }
 
     constexpr result_type operator () (const pair_type & left,
-                                       const key_type & right) const {
+                                       const key_type & right) const noexcept {
 
         return (left.first == right);
     }
 
     constexpr result_type operator () (const pair_type & left,
-                                       const pair_type & right) const {
+                                       const pair_type & right) const noexcept {
 
         return (left.first == right.first);
     }
 
     template <typename K, typename V>
     constexpr result_type operator () (const std::pair<K, V> & left,
-                                       const argument_type & right) const {
+                                       const argument_type & right) const noexcept {
 
         return (left.first.key() == right.key());
     }
 
     template <typename K, typename V>
     constexpr result_type operator () (const argument_type & left,
-                                       const std::pair<K, V> & right) const {
+                                       const std::pair<K, V> & right) const noexcept {
 
         return (left.key() == right.first.key());
     }
 
     template <typename K, typename V>
     constexpr result_type operator () (const std::pair<K, V> & left,
-                                       const key_type & right) const {
+                                       const key_type & right) const noexcept {
 
         return (left.first.key() == right);
     }
 
     template <typename K, typename V>
     constexpr result_type operator () (const key_type & left,
-                                       const std::pair<K, V> & right) const {
+                                       const std::pair<K, V> & right) const noexcept {
 
         return (left == right.first.key());
     }
 
     template <typename L, typename R>
-    constexpr result_type operator () (const L & left, const R & right) const {
+    constexpr result_type operator () (const L & left, const R & right) const noexcept {
 
         return (left == right);
     }
@@ -1001,55 +1127,55 @@ struct equal_to<HashObject<Key, Size, HashSize>> {
     typedef void is_transparent;
 
     constexpr result_type operator () (const argument_type & left,
-                                       const argument_type & right) const {
+                                       const argument_type & right) const noexcept {
 
         return (left == right);
     }
 
     constexpr result_type operator () (const argument_type & left,
-                                       const key_type & right) const {
+                                       const key_type & right) const noexcept {
 
         return (left.key() == right);
     }
 
     constexpr result_type operator () (const key_type & left,
-                                       const argument_type & right) const {
+                                       const argument_type & right) const noexcept {
 
         return (left == right.key());
     }
 
     constexpr result_type operator () (const key_type & left,
-                                       const key_type & right) const {
+                                       const key_type & right) const noexcept {
 
         return (left == right);
     }
 
     constexpr result_type operator () (const argument_type & left,
-                                       const pair_type & right) const {
+                                       const pair_type & right) const noexcept {
 
         return (left.key() == right.first.key());
     }
 
     constexpr result_type operator () (const pair_type & left,
-                                       const argument_type & right) const {
+                                       const argument_type & right) const noexcept {
 
         return (left.first.key() == right.key());
     }
 
     constexpr result_type operator () (const key_type & left,
-                                       const pair_type & right) const {
+                                       const pair_type & right) const noexcept {
 
         return (left == right.first.key());
     }
 
     constexpr result_type operator () (const pair_type & left,
-                                       const key_type & right) const {
+                                       const key_type & right) const noexcept {
 
         return (left.first.key() == right);
     }
 
     template <typename L, typename R>
-    constexpr result_type operator () (const L & left, const R & right) const {
+    constexpr result_type operator () (const L & left, const R & right) const noexcept {
 
         return (left == right);
     }
@@ -1295,24 +1421,7 @@ static void report_result(char const * title, double ut, double lf, std::size_t 
     ::fflush(stdout);
 }
 
-#if 0
-
 // Apply a pseudorandom permutation to the given vector.
-template <typename Vector>
-void shuffle_vector(Vector & vector, int seed = 0) {
-    // shuffle
-    //::srand(9);
-    if (seed == 0)
-        seed = 20200831;
-    jstd::RandomGen RandomGen(seed);
-    for (std::size_t n = vector.size(); n >= 2; n--) {
-        std::size_t rnd_idx = std::size_t(jstd::RandomGen::nextUInt32()) % n;
-        std::swap(vector[n - 1], vector[rnd_idx]);
-    }
-}
-
-#else
-
 template <typename Vector>
 void shuffle_vector(Vector & vector, int seed = 0) {
     // shuffle
@@ -1324,8 +1433,6 @@ void shuffle_vector(Vector & vector, int seed = 0) {
         std::swap(vector[n - 1], vector[rnd_idx]);
     }
 }
-
-#endif
 
 /* The implementation of test routine */
 #include "time_hash_map_func.hpp"
@@ -1606,11 +1713,11 @@ void benchmark_all_hashmaps(std::size_t iters)
     // a HashObject as it would be to use just a straight int/char
     // buffer.  To keep memory use similar, we normalize the number of
     // iterations based on size.
-    if (FLAGS_test_4_bytes) {
+    if (FLAGS_test_4_bytes && !FLAGS_test_bigobject_only) {
         test_all_hashmaps<HashObject<std::uint32_t, 4, 4>, std::uint32_t>(4, iters / 1);
     }
 
-    if (FLAGS_test_8_bytes) {
+    if (FLAGS_test_8_bytes && !FLAGS_test_bigobject_only) {
         test_all_hashmaps<HashObject<std::uint64_t, 8, 8>, std::uint64_t>(8, iters / 2);
     }
 
@@ -1700,15 +1807,30 @@ void need_store_hash_test()
         "HashObject<std::size_t, 256, 64>", "std::size_t");
 }
 
+void strtolower(char * s) {
+    for (int i = 0; s[i]; i++)
+        s[i] = ::tolower(s[i]);
+}
+
 int main(int argc, char * argv[])
 {
     jstd::RandomGen   RandomGen(20200831);
     jstd::MtRandomGen mtRandomGen(20200831);
 
     std::size_t iters = kDefaultIters;
-    if (argc > 1) {
-        // first arg is # of iterations
-        iters = ::atoi(argv[1]);
+    for (int n = 1; n < argc; n++) {
+        char arg[256] = { 0 };
+        ::strcpy(arg, argv[n]);
+        strtolower(arg);
+
+        if (0) {
+            // Dummy header
+        } else if (::strcmp(arg, "big") == 0 || ::strcmp(arg, "bigobject") == 0) {
+            FLAGS_test_bigobject_only = true;
+        } else if (n == (argc - 1)) {
+            // first arg is # of iterations
+            iters = ::atoi(arg);
+        }
     }
 
     jtest::CPU::warm_up(1000);
