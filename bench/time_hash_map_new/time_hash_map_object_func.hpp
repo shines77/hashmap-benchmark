@@ -115,7 +115,7 @@ static void map_insert(std::size_t iters, const PairVector & kvs) {
     std::size_t start = CurrentMemoryUsage();
     MapType hashmap;
 
-    {    
+    {
         jtest::StopWatch sw;
 
         reset_counter();
@@ -135,7 +135,7 @@ static void map_insert(std::size_t iters, const PairVector & kvs) {
 
         double lf = hashmap.load_factor();
         report_result("insert", ut, lf, iters, start, finish);
-    }    
+    }
 }
 
 template <class MapType, class PairVector>
@@ -143,7 +143,7 @@ static void map_insert_predicted(std::size_t iters, const PairVector & kvs) {
     std::size_t start = CurrentMemoryUsage();
     MapType hashmap;
 
-    {    
+    {
         jtest::StopWatch sw;
 
         hashmap.rehash(iters);
@@ -204,7 +204,7 @@ static void map_emplace(std::size_t iters, const PairVector & kvs) {
     std::size_t start = CurrentMemoryUsage();
     MapType hashmap;
 
-    {        
+    {
         jtest::StopWatch sw;
 
         reset_counter();
@@ -232,7 +232,7 @@ static void map_emplace_predicted(std::size_t iters, const PairVector & kvs) {
     std::size_t start = CurrentMemoryUsage();
     MapType hashmap;
 
-    {        
+    {
         jtest::StopWatch sw;
 
         hashmap.rehash(iters);
@@ -382,7 +382,7 @@ static void map_operator(std::size_t iters, const PairVector & kvs) {
     std::size_t start = CurrentMemoryUsage();
     MapType hashmap;
 
-    {        
+    {
         jtest::StopWatch sw;
 
         reset_counter();
@@ -410,7 +410,7 @@ static void map_operator_predicted(std::size_t iters, const PairVector & kvs) {
     std::size_t start = CurrentMemoryUsage();
     MapType hashmap;
 
-    {        
+    {
         jtest::StopWatch sw;
 
         hashmap.rehash(iters);
@@ -566,7 +566,7 @@ static void map_toggle(std::size_t iters, const PairVector & kvs) {
     std::size_t start = CurrentMemoryUsage();
     MapType hashmap;
 
-    {        
+    {
         jtest::StopWatch sw;
 
         reset_counter();
@@ -620,10 +620,8 @@ static void map_iterate(std::size_t iters, const PairVector & kvs) {
         __COMPILER_BARRIER();
 
         // keep compiler from optimizing away r (we never call rand())
-        ::srand(static_cast<unsigned int>(r));
-
         // Ensure the HashMap is not destructed
-        ::srand(static_cast<unsigned int>(hashmap.size()));
+        ::srand(static_cast<unsigned int>(r + hashmap.size()));
 
         double lf = hashmap.load_factor();
         report_result("iterate", ut, lf, iters, start, finish);
