@@ -2,7 +2,7 @@
 
 | [中文版](./README.md) | [English Version](./README.en.md) |
 
-Several benchmark of `C++` high performance hashmap, even include Java, C#, golang hashmap benchmark.
+Several benchmark of `C++` high performance hashmap, include jstd::robin_hash_map, even include Java, C#, golang hashmap benchmark.
 
 ## Overview
 
