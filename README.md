@@ -2,9 +2,11 @@
 
 | [中文版](./README.md) | [English Version](./README.en.md) |
 
-几个国内外最优秀的 C++ Hashmap 库的基准测试，包括 jstd::robin_hash_map，还包括 `Java`, `C#`, `golang` 等哈希表的 `benchmark`.
-
 ## 概述
+
+几个国内外最优秀的 C++ Hashmap 库的基准测试，包括 jstd::robin_hash_map，还包括 `Java`、`C#`、`golang` 等哈希表的 `benchmark` 。
+
+### C++ Hashmap
 
 对以下 `C++` 开源库做了基准测试：
 
@@ -20,7 +22,7 @@
 
     [https://github.com/abseil/abseil-cpp](https://github.com/abseil/abseil-cpp)
 
-* [ktprime](https://github.com/ktprime) 的 `emhash5`，`emhash7`，`emhash8`：
+* [ktprime (国人)](https://github.com/ktprime) 的 `emhash5`，`emhash7`，`emhash8`：
 
     [https://github.com/ktprime/emhash](https://github.com/ktprime/emhash)
 
