@@ -18,7 +18,7 @@ The following `C++` open source libraries were benchmade:
 
     [https://github.com/skarupke/flat_hash_map](https://github.com/skarupke/flat_hash_map)
 
-* [Google abseil-cpp](https://github.com/abseil)'s `absl::flat_hash_map`:
+* From Google [abseil-cpp](https://github.com/abseil)'s `absl::flat_hash_map`:
 
     [https://github.com/abseil/abseil-cpp](https://github.com/abseil/abseil-cpp)
 
@@ -119,16 +119,19 @@ make
 ### 5. Run benchmark
 
 ```bash
-# like Google sprasehash benchmark code (New version)
+# like Google sprasehash benchmark code (New version, recommend)
 ./bin/time_hash_map_new
 
-# Only benchmark <std::string, std::string>, save time.
+# Only benchmark <std::string, std::string>, save time. (New version, recommend)
 ./bin/time_hash_map_new string
 
-# like Google sprasehash benchmark code (Old version)
+# like Google sprasehash benchmark code (Old version, not recommend)
 ./bin/time_hash_map
 
-# Small, Middle, Big, Huge - Cardinal benchmark
+# Only benchmark big object (Key is 32bytes, 256bytes), save time. (Old version, not recommend)
+./bin/time_hash_map big
+
+# Small, Middle, Big, Huge - Cardinal benchmark (recommend)
 ./bin/cardinal_bench
 
 # Small test case

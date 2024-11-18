@@ -18,7 +18,7 @@
 
     [https://github.com/skarupke/flat_hash_map](https://github.com/skarupke/flat_hash_map)
 
-* [Google abseil-cpp](https://github.com/abseil) 的 `absl::flat_hash_map` ：
+* 来自 Google 的 [abseil-cpp](https://github.com/abseil) 的 `absl::flat_hash_map` ：
 
     [https://github.com/abseil/abseil-cpp](https://github.com/abseil/abseil-cpp)
 
@@ -123,16 +123,16 @@ make
 # 跟 Google sprasehash 开源库类似的测试（新版，推荐）
 ./bin/time_hash_map_new
 
-# 只测试 <std::string, std::string>，节约时间
+# 只测试 <std::string, std::string>，节约时间（新版，推荐）
 ./bin/time_hash_map_new string
 
-# 跟 Google sprasehash 开源库类似的测试(旧版)
+# 跟 Google sprasehash 开源库类似的测试（旧版, 不推荐）
 ./bin/time_hash_map
 
-# 只测试大对象(Key为32, 256字节)，节约时间
+# 只测试大对象 (Key为32, 256字节)，节约时间（旧版, 不推荐）
 ./bin/time_hash_map big
 
-# 低、中、高、超高 - 基数测试
+# 低、中、高、超高 - 基数测试（推荐）
 ./bin/cardinal_bench
 
 # 小数据集测试

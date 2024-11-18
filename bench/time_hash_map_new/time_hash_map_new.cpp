@@ -525,11 +525,12 @@ template <typename Container>
 void print_test_time(std::size_t checksum, double elapsedTime)
 {
     // printf("---------------------------------------------------------------------------\n");
+    std::string name;
     if (jstd::has_static_name<Container>::value)
-        printf(" %-36s  ", jstd::call_static_name<Container>::name().c_str());
+        name = jstd::call_static_name<Container>::name() + "<K, V>";
     else
-        printf(" %-36s  ", "std::unordered_map<K, V>");
-    printf("sum = %-10" PRIuPTR "  time: %8.3f ms\n", checksum, elapsedTime);
+        name = "std::unordered_map<K, V>";
+    printf(" %-36s  sum = %-10" PRIuPTR "  time: %8.3f ms\n", name.c_str(), checksum, elapsedTime);
 }
 
 static void report_result(char const * title, double ut, double lf, std::size_t iters,
@@ -599,7 +600,7 @@ void measure_hashmap(const char * name, std::size_t obj_size,
     typedef typename MapType::value_type    value_type;
     typedef typename MapType::mapped_type   mapped_type;
 
-    printf("%s (%" PRIuPTR " byte objects, %" PRIuPTR " byte ValueType, %" PRIuPTR " iterations):\n",
+    printf("%s<K, V> (%" PRIuPTR " byte objects, %" PRIuPTR " byte ValueType, %" PRIuPTR " iterations):\n",
            name, obj_size, sizeof(value_type), iters);
 
     if (1) printf("\n");
@@ -775,7 +776,7 @@ void measure_string_hashmap(const char * name, std::size_t obj_size, std::size_t
     typedef typename MapType::key_type      key_type;
     typedef typename MapType::mapped_type   mapped_type;
 
-    printf("%s (%" PRIuPTR " byte objects, %" PRIuPTR " byte ValueType, %" PRIuPTR " iterations):\n",
+    printf("%s<K, V> (%" PRIuPTR " byte objects, %" PRIuPTR " byte ValueType, %" PRIuPTR " iterations):\n",
            name, obj_size, sizeof(value_type), iters);
 
     if (1) printf("\n");
@@ -841,7 +842,7 @@ void test_hashmap_by_name(const std::string & name, std::size_t obj_size, std::s
     if (name == "stdext::hash_map") {
         measure_hashmap<StdHashMap<Key,   Value, HASH_MAP_FUNCTION<Key>>,
                         StdHashMap<Key *, Value, HASH_MAP_FUNCTION<Key *>>>
-            ("stdext::hash_map<K, V>", obj_size, iters, has_stress_hash_function);
+            ("stdext::hash_map", obj_size, iters, has_stress_hash_function);
     }
 #endif
 
@@ -849,7 +850,7 @@ void test_hashmap_by_name(const std::string & name, std::size_t obj_size, std::s
     if (name == "std::unordered_map") {
         measure_hashmap<std::unordered_map<Key,   Value, HASH_MAP_FUNCTION<Key>>,
                         std::unordered_map<Key *, Value, HASH_MAP_FUNCTION<Key *>>>
-            ("std::unordered_map<K, V>", obj_size, iters, has_stress_hash_function);
+            ("std::unordered_map", obj_size, iters, has_stress_hash_function);
     }
 #endif
 
@@ -857,7 +858,7 @@ void test_hashmap_by_name(const std::string & name, std::size_t obj_size, std::s
     if (name == "jstd::flat16_hash_map") {
         measure_hashmap<jstd::flat16_hash_map<Key,   Value, HASH_MAP_FUNCTION<Key>>,
                         jstd::flat16_hash_map<Key *, Value, HASH_MAP_FUNCTION<Key *>>>
-            ("jstd::flat16_hash_map<K, V>", obj_size, iters, has_stress_hash_function);
+            ("jstd::flat16_hash_map", obj_size, iters, has_stress_hash_function);
     }
 #endif
 
@@ -865,7 +866,7 @@ void test_hashmap_by_name(const std::string & name, std::size_t obj_size, std::s
     if (name == "jstd::robin16_hash_map") {
         measure_hashmap<jstd::robin16_hash_map<Key,   Value, HASH_MAP_FUNCTION<Key>>,
                         jstd::robin16_hash_map<Key *, Value, HASH_MAP_FUNCTION<Key *>>>
-            ("jstd::robin16_hash_map<K, V>", obj_size, iters, has_stress_hash_function);
+            ("jstd::robin16_hash_map", obj_size, iters, has_stress_hash_function);
     }
 #endif
 
@@ -873,7 +874,7 @@ void test_hashmap_by_name(const std::string & name, std::size_t obj_size, std::s
     if (name == "jstd::robin_hash_map") {
         measure_hashmap<jstd::robin_hash_map<Key,   Value, HASH_MAP_FUNCTION<Key>>,
                         jstd::robin_hash_map<Key *, Value, HASH_MAP_FUNCTION<Key *>>>
-            ("jstd::robin_hash_map<K, V>", obj_size, iters, has_stress_hash_function);
+            ("jstd::robin_hash_map", obj_size, iters, has_stress_hash_function);
     }
 #endif
 
@@ -881,7 +882,7 @@ void test_hashmap_by_name(const std::string & name, std::size_t obj_size, std::s
     if (name == "ska::flat_hash_map") {
         measure_hashmap<ska::flat_hash_map<Key,   Value, HASH_MAP_FUNCTION<Key>>,
                         ska::flat_hash_map<Key *, Value, HASH_MAP_FUNCTION<Key *>>>
-            ("ska::flat_hash_map<K, V>", obj_size, iters, has_stress_hash_function);
+            ("ska::flat_hash_map", obj_size, iters, has_stress_hash_function);
     }
 #endif
 
@@ -889,7 +890,7 @@ void test_hashmap_by_name(const std::string & name, std::size_t obj_size, std::s
     if (FLAGS_test_ska_bytell_hash_map && (name == "ska::bytell_hash_map")) {
         measure_hashmap<ska::bytell_hash_map<Key,   Value, HASH_MAP_FUNCTION<Key>>,
                         ska::bytell_hash_map<Key *, Value, HASH_MAP_FUNCTION<Key *>>>
-            ("ska::bytell_hash_map<K, V>", obj_size, iters, has_stress_hash_function);
+            ("ska::bytell_hash_map", obj_size, iters, has_stress_hash_function);
     }
 #endif
 
@@ -897,7 +898,7 @@ void test_hashmap_by_name(const std::string & name, std::size_t obj_size, std::s
     if (name == "emhash5::HashMap") {
         measure_hashmap<emhash5::HashMap<Key,   Value, HASH_MAP_FUNCTION<Key>>,
                         emhash5::HashMap<Key *, Value, HASH_MAP_FUNCTION<Key *>>>
-            ("emhash5::HashMap<K, V>", obj_size, iters, has_stress_hash_function);
+            ("emhash5::HashMap", obj_size, iters, has_stress_hash_function);
     }
 #endif
 
@@ -905,7 +906,7 @@ void test_hashmap_by_name(const std::string & name, std::size_t obj_size, std::s
     if (name == "emhash7::HashMap") {
         measure_hashmap<emhash7::HashMap<Key,   Value, HASH_MAP_FUNCTION<Key>>,
                         emhash7::HashMap<Key *, Value, HASH_MAP_FUNCTION<Key *>>>
-            ("emhash7::HashMap<K, V>", obj_size, iters, has_stress_hash_function);
+            ("emhash7::HashMap", obj_size, iters, has_stress_hash_function);
     }
 #endif
 
@@ -913,7 +914,7 @@ void test_hashmap_by_name(const std::string & name, std::size_t obj_size, std::s
     if (name == "absl::flat_hash_map") {
         measure_hashmap<absl::flat_hash_map<Key,   Value, test::MumHash<Key>>,
                         absl::flat_hash_map<Key *, Value, HASH_MAP_FUNCTION<Key *>>>
-            ("absl::flat_hash_map<K, V>", obj_size, iters, has_stress_hash_function);
+            ("absl::flat_hash_map", obj_size, iters, has_stress_hash_function);
     }
 #endif
 
@@ -921,7 +922,7 @@ void test_hashmap_by_name(const std::string & name, std::size_t obj_size, std::s
     if (name == "absl::node_hash_map") {
         measure_hashmap<absl::node_hash_map<Key,   Value, HASH_MAP_FUNCTION<Key>>,
                         absl::node_hash_map<Key *, Value, HASH_MAP_FUNCTION<Key *>>>
-            ("absl::node_hash_map<K, V>", obj_size, iters, has_stress_hash_function);
+            ("absl::node_hash_map", obj_size, iters, has_stress_hash_function);
     }
 #endif
 
@@ -929,7 +930,7 @@ void test_hashmap_by_name(const std::string & name, std::size_t obj_size, std::s
     if (name == "") {
         measure_hashmap<tsl::robin_map<Key,   Value, HASH_MAP_FUNCTION<Key>>,
                         tsl::robin_map<Key *, Value, HASH_MAP_FUNCTION<Key *>>>
-            ("tsl::robin_map<K, V>", obj_size, iters, has_stress_hash_function);
+            ("tsl::robin_map", obj_size, iters, has_stress_hash_function);
     }
 #endif
 
@@ -938,7 +939,7 @@ void test_hashmap_by_name(const std::string & name, std::size_t obj_size, std::s
     if (name == "robin_hood::unordered_map") {
         measure_hashmap<robin_hood::unordered_map<Key,   Value, HASH_MAP_FUNCTION<Key>>,
                         robin_hood::unordered_map<Key *, Value, HASH_MAP_FUNCTION<Key *>>>
-            ("robin_hood::unordered_map<K, V>", obj_size, iters, has_stress_hash_function);
+            ("robin_hood::unordered_map", obj_size, iters, has_stress_hash_function);
     }
 #endif
 #endif
@@ -947,7 +948,7 @@ void test_hashmap_by_name(const std::string & name, std::size_t obj_size, std::s
     if (name == "ankerl::unordered_dense") {
         measure_hashmap<ankerl::unordered_dense::map<Key,   Value, HASH_MAP_FUNCTION<Key>>,
                         ankerl::unordered_dense::map<Key *, Value, HASH_MAP_FUNCTION<Key *>>>
-            ("ankerl::unordered_dense::map<K, V>", obj_size, iters, has_stress_hash_function);
+            ("ankerl::unordered_dense::map", obj_size, iters, has_stress_hash_function);
     }
 #endif
 }
@@ -961,7 +962,7 @@ void test_all_hashmaps(std::size_t obj_size, std::size_t iters)
     if (1) {
         measure_hashmap<StdHashMap<Key,   Value, HASH_MAP_FUNCTION<Key>>,
                         StdHashMap<Key *, Value, HASH_MAP_FUNCTION<Key *>>>
-            ("stdext::hash_map<K, V>", obj_size, iters, has_stress_hash_function);
+            ("stdext::hash_map", obj_size, iters, has_stress_hash_function);
     }
 #endif
 
@@ -969,7 +970,7 @@ void test_all_hashmaps(std::size_t obj_size, std::size_t iters)
     if (1) {
         measure_hashmap<std::unordered_map<Key,   Value, HASH_MAP_FUNCTION<Key>>,
                         std::unordered_map<Key *, Value, HASH_MAP_FUNCTION<Key *>>>
-            ("std::unordered_map<K, V>", obj_size, iters, has_stress_hash_function);
+            ("std::unordered_map", obj_size, iters, has_stress_hash_function);
     }
 #endif
 
@@ -977,7 +978,7 @@ void test_all_hashmaps(std::size_t obj_size, std::size_t iters)
     if (1) {
         measure_hashmap<jstd::flat16_hash_map<Key,   Value, HASH_MAP_FUNCTION<Key>>,
                         jstd::flat16_hash_map<Key *, Value, HASH_MAP_FUNCTION<Key *>>>
-            ("jstd::flat16_hash_map<K, V>", obj_size, iters, has_stress_hash_function);
+            ("jstd::flat16_hash_map", obj_size, iters, has_stress_hash_function);
     }
 #endif
 
@@ -985,7 +986,7 @@ void test_all_hashmaps(std::size_t obj_size, std::size_t iters)
     if (1) {
         measure_hashmap<jstd::robin16_hash_map<Key,   Value, HASH_MAP_FUNCTION<Key>>,
                         jstd::robin16_hash_map<Key *, Value, HASH_MAP_FUNCTION<Key *>>>
-            ("jstd::robin16_hash_map<K, V>", obj_size, iters, has_stress_hash_function);
+            ("jstd::robin16_hash_map", obj_size, iters, has_stress_hash_function);
     }
 #endif
 
@@ -993,7 +994,7 @@ void test_all_hashmaps(std::size_t obj_size, std::size_t iters)
     if (1) {
         measure_hashmap<jstd::robin_hash_map<Key,   Value, HASH_MAP_FUNCTION<Key>>,
                         jstd::robin_hash_map<Key *, Value, HASH_MAP_FUNCTION<Key *>>>
-            ("jstd::robin_hash_map<K, V>", obj_size, iters, has_stress_hash_function);
+            ("jstd::robin_hash_map", obj_size, iters, has_stress_hash_function);
     }
 #endif
 
@@ -1001,7 +1002,7 @@ void test_all_hashmaps(std::size_t obj_size, std::size_t iters)
     if (1) {
         measure_hashmap<ska::flat_hash_map<Key,   Value, HASH_MAP_FUNCTION<Key>>,
                         ska::flat_hash_map<Key *, Value, HASH_MAP_FUNCTION<Key *>>>
-            ("ska::flat_hash_map<K, V>", obj_size, iters, has_stress_hash_function);
+            ("ska::flat_hash_map", obj_size, iters, has_stress_hash_function);
     }
 #endif
 
@@ -1009,7 +1010,7 @@ void test_all_hashmaps(std::size_t obj_size, std::size_t iters)
     if (FLAGS_test_ska_bytell_hash_map) {
         measure_hashmap<ska::bytell_hash_map<Key,   Value, HASH_MAP_FUNCTION<Key>>,
                         ska::bytell_hash_map<Key *, Value, HASH_MAP_FUNCTION<Key *>>>
-            ("ska::bytell_hash_map<K, V>", obj_size, iters, has_stress_hash_function);
+            ("ska::bytell_hash_map", obj_size, iters, has_stress_hash_function);
     }
 #endif
 
@@ -1017,7 +1018,7 @@ void test_all_hashmaps(std::size_t obj_size, std::size_t iters)
     if (1) {
         measure_hashmap<emhash5::HashMap<Key,   Value, HASH_MAP_FUNCTION<Key>>,
                         emhash5::HashMap<Key *, Value, HASH_MAP_FUNCTION<Key *>>>
-            ("emhash5::HashMap<K, V>", obj_size, iters, has_stress_hash_function);
+            ("emhash5::HashMap", obj_size, iters, has_stress_hash_function);
     }
 #endif
 
@@ -1025,7 +1026,7 @@ void test_all_hashmaps(std::size_t obj_size, std::size_t iters)
     if (1) {
         measure_hashmap<emhash7::HashMap<Key,   Value, HASH_MAP_FUNCTION<Key>>,
                         emhash7::HashMap<Key *, Value, HASH_MAP_FUNCTION<Key *>>>
-            ("emhash7::HashMap<K, V>", obj_size, iters, has_stress_hash_function);
+            ("emhash7::HashMap", obj_size, iters, has_stress_hash_function);
     }
 #endif
 
@@ -1033,7 +1034,7 @@ void test_all_hashmaps(std::size_t obj_size, std::size_t iters)
     if (1) {
         measure_hashmap<absl::flat_hash_map<Key,   Value, test::MumHash<Key>>,
                         absl::flat_hash_map<Key *, Value, HASH_MAP_FUNCTION<Key *>>>
-            ("absl::flat_hash_map<K, V>", obj_size, iters, has_stress_hash_function);
+            ("absl::flat_hash_map", obj_size, iters, has_stress_hash_function);
     }
 #endif
 
@@ -1041,7 +1042,7 @@ void test_all_hashmaps(std::size_t obj_size, std::size_t iters)
     if (1) {
         measure_hashmap<absl::node_hash_map<Key,   Value, HASH_MAP_FUNCTION<Key>>,
                         absl::node_hash_map<Key *, Value, HASH_MAP_FUNCTION<Key *>>>
-            ("absl::node_hash_map<K, V>", obj_size, iters, has_stress_hash_function);
+            ("absl::node_hash_map", obj_size, iters, has_stress_hash_function);
     }
 #endif
 
@@ -1049,7 +1050,7 @@ void test_all_hashmaps(std::size_t obj_size, std::size_t iters)
     if (1) {
         measure_hashmap<tsl::robin_map<Key,   Value, HASH_MAP_FUNCTION<Key>>,
                         tsl::robin_map<Key *, Value, HASH_MAP_FUNCTION<Key *>>>
-            ("tsl::robin_map<K, V>", obj_size, iters, has_stress_hash_function);
+            ("tsl::robin_map", obj_size, iters, has_stress_hash_function);
     }
 #endif
 
@@ -1058,7 +1059,7 @@ void test_all_hashmaps(std::size_t obj_size, std::size_t iters)
     if (1) {
         measure_hashmap<robin_hood::unordered_map<Key,   Value, HASH_MAP_FUNCTION<Key>>,
                         robin_hood::unordered_map<Key *, Value, HASH_MAP_FUNCTION<Key *>>>
-            ("robin_hood::unordered_map<K, V>", obj_size, iters, has_stress_hash_function);
+            ("robin_hood::unordered_map", obj_size, iters, has_stress_hash_function);
     }
 #endif
 #endif
@@ -1067,7 +1068,7 @@ void test_all_hashmaps(std::size_t obj_size, std::size_t iters)
     if (1) {
         measure_hashmap<ankerl::unordered_dense::map<Key,   Value, HASH_MAP_FUNCTION<Key>>,
                         ankerl::unordered_dense::map<Key *, Value, HASH_MAP_FUNCTION<Key *>>>
-            ("ankerl::unordered_dense::map<K, V>", obj_size, iters, has_stress_hash_function);
+            ("ankerl::unordered_dense::map", obj_size, iters, has_stress_hash_function);
     }
 #endif
 }
@@ -1078,105 +1079,105 @@ void test_hashmap_by_name_for_string(const std::string & name, std::size_t obj_s
 #if USE_STD_HASH_MAP
     if (name == "stdext::hash_map") {
         measure_string_hashmap<StdHashMap<Key, Value>>
-            ("stdext::hash_map<K, V>", obj_size, iters);
+            ("stdext::hash_map", obj_size, iters);
     }
 #endif
 
 #if USE_STD_UNORDERED_MAP
     if (name == "std::unordered_map") {
         measure_string_hashmap<std::unordered_map<Key, Value>>
-            ("std::unordered_map<K, V>", obj_size, iters);
+            ("std::unordered_map", obj_size, iters);
     }
 #endif
 
 #if USE_JSTD_FLAT16_HASH_MAP
     if (name == "jstd::flat16_hash_map") {
         measure_string_hashmap<jstd::flat16_hash_map<Key, Value>>
-            ("jstd::flat16_hash_map<K, V>", obj_size, iters);
+            ("jstd::flat16_hash_map", obj_size, iters);
     }
 #endif
 
 #if USE_JSTD_ROBIN16_HASH_MAP
     if (name == "jstd::robin16_hash_map") {
         measure_string_hashmap<jstd::robin16_hash_map<Key, Value>>
-            ("jstd::robin16_hash_map<K, V>", obj_size, iters);
+            ("jstd::robin16_hash_map", obj_size, iters);
     }
 #endif
 
 #if USE_JSTD_ROBIN_HASH_MAP
     if (name == "jstd::robin_hash_map") {
         measure_string_hashmap<jstd::robin_hash_map<Key, Value>>
-            ("jstd::robin_hash_map<K, V>", obj_size, iters);
+            ("jstd::robin_hash_map", obj_size, iters);
     }
 #endif
 
 #if USE_SKA_FLAT_HASH_MAP
     if (name == "ska::flat_hash_map") {
         measure_string_hashmap<ska::flat_hash_map<Key, Value>>
-            ("ska::flat_hash_map<K, V>", obj_size, iters);
+            ("ska::flat_hash_map", obj_size, iters);
     }
 #endif
 
 #if USE_SKA_BYTELL_HASH_MAP
     if (name == "ska::bytell_hash_map") {
         measure_string_hashmap<ska::bytell_hash_map<Key, Value>>
-            ("ska::bytell_hash_map<K, V>", obj_size, iters);
+            ("ska::bytell_hash_map", obj_size, iters);
     }
 #endif
 
 #if USE_EMHASH5_HASH_MAP
     if (name == "emhash5::HashMap") {
         measure_string_hashmap<emhash5::HashMap<Key, Value>>
-            ("emhash5::HashMap<K, V>", obj_size, iters);
+            ("emhash5::HashMap", obj_size, iters);
     }
 #endif
 
 #if USE_EMHASH7_HASH_MAP
     if (name == "emhash7::HashMap") {
         measure_string_hashmap<emhash7::HashMap<Key, Value>>
-            ("emhash7::HashMap<K, V>", obj_size, iters);
+            ("emhash7::HashMap", obj_size, iters);
     }
 #endif
 
 #if USE_EMHASH8_HASH_MAP
     if (name == "emhash8::HashMap") {
         measure_string_hashmap<emhash8::HashMap<Key, Value>>
-            ("emhash8::HashMap<K, V>", obj_size, iters);
+            ("emhash8::HashMap", obj_size, iters);
     }
 #endif
 
 #if USE_ABSL_FLAT_HASH_MAP
     if (name == "absl::flat_hash_map") {
         measure_string_hashmap<absl::flat_hash_map<Key, Value>>
-            ("absl::flat_hash_map<K, V>", obj_size, iters);
+            ("absl::flat_hash_map", obj_size, iters);
     }
 #endif
 
 #if USE_ABSL_NODE_HASH_MAP
     if (name == "absl::node_hash_map") {
         measure_string_hashmap<absl::node_hash_map<Key, Value>>
-            ("absl::node_hash_map<K, V>", obj_size, iters);
+            ("absl::node_hash_map", obj_size, iters);
     }
 #endif
 
 #if USE_TSL_ROBIN_HOOD
     if (name == "tsl::robin_map") {
         measure_string_hashmap<tsl::robin_map<Key, Value>>
-            ("tsl::robin_map<K, V>", obj_size, iters);
+            ("tsl::robin_map", obj_size, iters);
     }
 #endif
 
 #if USE_ROBIN_HOOD_UNORDERED_MAP
     if (name == "robin_hood::unordered_map") {
         measure_string_hashmap<robin_hood::unordered_map<Key, Value>>
-            ("robin_hood::unordered_map<K, V>", obj_size, iters);
+            ("robin_hood::unordered_map", obj_size, iters);
     }
 #endif
 
 #if USE_ANKERL_UNORDERED_DENSE
     if (name == "ankerl::unordered_dense::map") {
         measure_string_hashmap<ankerl::unordered_dense::map<Key, Value>>
-            ("ankerl::unordered_dense::map<K, V>", obj_size, iters);
+            ("ankerl::unordered_dense::map", obj_size, iters);
     }
 #endif
 }
@@ -1187,105 +1188,105 @@ void test_all_hashmaps_for_string(std::size_t obj_size, std::size_t iters)
 #if USE_STD_HASH_MAP
     if (1) {
         measure_string_hashmap<StdHashMap<Key, Value>>
-            ("stdext::hash_map<K, V>", obj_size, iters);
+            ("stdext::hash_map", obj_size, iters);
     }
 #endif
 
 #if USE_STD_UNORDERED_MAP
     if (1) {
         measure_string_hashmap<std::unordered_map<Key, Value>>
-            ("std::unordered_map<K, V>", obj_size, iters);
+            ("std::unordered_map", obj_size, iters);
     }
 #endif
 
 #if USE_JSTD_FLAT16_HASH_MAP
     if (1) {
         measure_string_hashmap<jstd::flat16_hash_map<Key, Value>>
-            ("jstd::flat16_hash_map<K, V>", obj_size, iters);
+            ("jstd::flat16_hash_map", obj_size, iters);
     }
 #endif
 
 #if USE_JSTD_ROBIN16_HASH_MAP
     if (1) {
         measure_string_hashmap<jstd::robin16_hash_map<Key, Value>>
-            ("jstd::robin16_hash_map<K, V>", obj_size, iters);
+            ("jstd::robin16_hash_map", obj_size, iters);
     }
 #endif
 
 #if USE_JSTD_ROBIN_HASH_MAP
     if (1) {
         measure_string_hashmap<jstd::robin_hash_map<Key, Value>>
-            ("jstd::robin_hash_map<K, V>", obj_size, iters);
+            ("jstd::robin_hash_map", obj_size, iters);
     }
 #endif
 
 #if USE_SKA_FLAT_HASH_MAP
     if (1) {
         measure_string_hashmap<ska::flat_hash_map<Key, Value>>
-            ("ska::flat_hash_map<K, V>", obj_size, iters);
+            ("ska::flat_hash_map", obj_size, iters);
     }
 #endif
 
 #if USE_SKA_BYTELL_HASH_MAP
     if (1) {
         measure_string_hashmap<ska::bytell_hash_map<Key, Value>>
-            ("ska::bytell_hash_map<K, V>", obj_size, iters);
+            ("ska::bytell_hash_map", obj_size, iters);
     }
 #endif
 
 #if USE_EMHASH5_HASH_MAP
     if (1) {
         measure_string_hashmap<emhash5::HashMap<Key, Value>>
-            ("emhash5::HashMap<K, V>", obj_size, iters);
+            ("emhash5::HashMap", obj_size, iters);
     }
 #endif
 
 #if USE_EMHASH7_HASH_MAP
     if (1) {
         measure_string_hashmap<emhash7::HashMap<Key, Value>>
-            ("emhash7::HashMap<K, V>", obj_size, iters);
+            ("emhash7::HashMap", obj_size, iters);
     }
 #endif
 
 #if USE_EMHASH8_HASH_MAP
     if (1) {
         measure_string_hashmap<emhash8::HashMap<Key, Value>>
-            ("emhash8::HashMap<K, V>", obj_size, iters);
+            ("emhash8::HashMap", obj_size, iters);
     }
 #endif
 
 #if USE_ABSL_FLAT_HASH_MAP
     if (1) {
         measure_string_hashmap<absl::flat_hash_map<Key, Value>>
-            ("absl::flat_hash_map<K, V>", obj_size, iters);
+            ("absl::flat_hash_map", obj_size, iters);
     }
 #endif
 
 #if USE_ABSL_NODE_HASH_MAP
     if (1) {
         measure_string_hashmap<absl::node_hash_map<Key, Value>>
-            ("absl::node_hash_map<K, V>", obj_size, iters);
+            ("absl::node_hash_map", obj_size, iters);
     }
 #endif
 
 #if USE_TSL_ROBIN_HOOD
     if (1) {
         measure_string_hashmap<tsl::robin_map<Key, Value>>
-            ("tsl::robin_map<K, V>", obj_size, iters);
+            ("tsl::robin_map", obj_size, iters);
     }
 #endif
 
 #if USE_ROBIN_HOOD_UNORDERED_MAP
     if (1) {
         measure_string_hashmap<robin_hood::unordered_map<Key, Value>>
-            ("robin_hood::unordered_map<K, V>", obj_size, iters);
+            ("robin_hood::unordered_map", obj_size, iters);
     }
 #endif
 
 #if USE_ANKERL_UNORDERED_DENSE
     if (1) {
         measure_string_hashmap<ankerl::unordered_dense::map<Key, Value>>
-            ("ankerl::unordered_dense::map<K, V>", obj_size, iters);
+            ("ankerl::unordered_dense::map", obj_size, iters);
     }
 #endif
 }
@@ -1304,7 +1305,7 @@ void test_all_hashmaps_for_string_view(std::size_t obj_size, std::size_t iters)
 
 void benchmark_hashmap(const std::string & name, std::size_t iters)
 {
-#ifdef NDEBUG
+#ifndef _DEBUG
     if (FLAGS_test_4_bytes && !FLAGS_test_string_only) {
         test_hashmap_by_name<std::uint32_t, std::uint32_t>(name, 4, iters / 1);
     }
@@ -1332,7 +1333,7 @@ void benchmark_all_hashmaps(std::size_t iters)
     // a HashObject as it would be to use just a straight int/char
     // buffer.  To keep memory use similar, we normalize the number of
     // iterations based on size.
-#ifdef NDEBUG
+#ifndef _DEBUG
     if (FLAGS_test_4_bytes && !FLAGS_test_string_only) {
         test_all_hashmaps<std::uint32_t, std::uint32_t>(4, iters / 1);
     }
