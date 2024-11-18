@@ -833,6 +833,126 @@ void measure_string_hashmap(const char * name, std::size_t obj_size, std::size_t
 }
 
 template <typename Key, typename Value>
+void test_hashmap_by_name(const std::string & name, std::size_t obj_size, std::size_t iters)
+{
+    const bool has_stress_hash_function = (obj_size <= 8);
+
+#if USE_STD_HASH_MAP
+    if (name == "stdext::hash_map") {
+        measure_hashmap<StdHashMap<Key,   Value, HASH_MAP_FUNCTION<Key>>,
+                        StdHashMap<Key *, Value, HASH_MAP_FUNCTION<Key *>>>
+            ("stdext::hash_map<K, V>", obj_size, iters, has_stress_hash_function);
+    }
+#endif
+
+#if USE_STD_UNORDERED_MAP
+    if (name == "std::unordered_map") {
+        measure_hashmap<std::unordered_map<Key,   Value, HASH_MAP_FUNCTION<Key>>,
+                        std::unordered_map<Key *, Value, HASH_MAP_FUNCTION<Key *>>>
+            ("std::unordered_map<K, V>", obj_size, iters, has_stress_hash_function);
+    }
+#endif
+
+#if USE_JSTD_FLAT16_HASH_MAP
+    if (name == "jstd::flat16_hash_map") {
+        measure_hashmap<jstd::flat16_hash_map<Key,   Value, HASH_MAP_FUNCTION<Key>>,
+                        jstd::flat16_hash_map<Key *, Value, HASH_MAP_FUNCTION<Key *>>>
+            ("jstd::flat16_hash_map<K, V>", obj_size, iters, has_stress_hash_function);
+    }
+#endif
+
+#if USE_JSTD_ROBIN16_HASH_MAP
+    if (name == "jstd::robin16_hash_map") {
+        measure_hashmap<jstd::robin16_hash_map<Key,   Value, HASH_MAP_FUNCTION<Key>>,
+                        jstd::robin16_hash_map<Key *, Value, HASH_MAP_FUNCTION<Key *>>>
+            ("jstd::robin16_hash_map<K, V>", obj_size, iters, has_stress_hash_function);
+    }
+#endif
+
+#if USE_JSTD_ROBIN_HASH_MAP
+    if (name == "jstd::robin_hash_map") {
+        measure_hashmap<jstd::robin_hash_map<Key,   Value, HASH_MAP_FUNCTION<Key>>,
+                        jstd::robin_hash_map<Key *, Value, HASH_MAP_FUNCTION<Key *>>>
+            ("jstd::robin_hash_map<K, V>", obj_size, iters, has_stress_hash_function);
+    }
+#endif
+
+#if USE_SKA_FLAT_HASH_MAP
+    if (name == "ska::flat_hash_map") {
+        measure_hashmap<ska::flat_hash_map<Key,   Value, HASH_MAP_FUNCTION<Key>>,
+                        ska::flat_hash_map<Key *, Value, HASH_MAP_FUNCTION<Key *>>>
+            ("ska::flat_hash_map<K, V>", obj_size, iters, has_stress_hash_function);
+    }
+#endif
+
+#if USE_SKA_BYTELL_HASH_MAP
+    if (FLAGS_test_ska_bytell_hash_map && (name == "ska::bytell_hash_map")) {
+        measure_hashmap<ska::bytell_hash_map<Key,   Value, HASH_MAP_FUNCTION<Key>>,
+                        ska::bytell_hash_map<Key *, Value, HASH_MAP_FUNCTION<Key *>>>
+            ("ska::bytell_hash_map<K, V>", obj_size, iters, has_stress_hash_function);
+    }
+#endif
+
+#if USE_EMHASH5_HASH_MAP
+    if (name == "emhash5::HashMap") {
+        measure_hashmap<emhash5::HashMap<Key,   Value, HASH_MAP_FUNCTION<Key>>,
+                        emhash5::HashMap<Key *, Value, HASH_MAP_FUNCTION<Key *>>>
+            ("emhash5::HashMap<K, V>", obj_size, iters, has_stress_hash_function);
+    }
+#endif
+
+#if USE_EMHASH7_HASH_MAP
+    if (name == "emhash7::HashMap") {
+        measure_hashmap<emhash7::HashMap<Key,   Value, HASH_MAP_FUNCTION<Key>>,
+                        emhash7::HashMap<Key *, Value, HASH_MAP_FUNCTION<Key *>>>
+            ("emhash7::HashMap<K, V>", obj_size, iters, has_stress_hash_function);
+    }
+#endif
+
+#if USE_ABSL_FLAT_HASH_MAP
+    if (name == "absl::flat_hash_map") {
+        measure_hashmap<absl::flat_hash_map<Key,   Value, test::MumHash<Key>>,
+                        absl::flat_hash_map<Key *, Value, HASH_MAP_FUNCTION<Key *>>>
+            ("absl::flat_hash_map<K, V>", obj_size, iters, has_stress_hash_function);
+    }
+#endif
+
+#if USE_ABSL_NODE_HASH_MAP
+    if (name == "absl::node_hash_map") {
+        measure_hashmap<absl::node_hash_map<Key,   Value, HASH_MAP_FUNCTION<Key>>,
+                        absl::node_hash_map<Key *, Value, HASH_MAP_FUNCTION<Key *>>>
+            ("absl::node_hash_map<K, V>", obj_size, iters, has_stress_hash_function);
+    }
+#endif
+
+#if USE_TSL_ROBIN_HOOD
+    if (name == "") {
+        measure_hashmap<tsl::robin_map<Key,   Value, HASH_MAP_FUNCTION<Key>>,
+                        tsl::robin_map<Key *, Value, HASH_MAP_FUNCTION<Key *>>>
+            ("tsl::robin_map<K, V>", obj_size, iters, has_stress_hash_function);
+    }
+#endif
+
+#if USE_ROBIN_HOOD_UNORDERED_MAP
+#if 0
+    if (name == "robin_hood::unordered_map") {
+        measure_hashmap<robin_hood::unordered_map<Key,   Value, HASH_MAP_FUNCTION<Key>>,
+                        robin_hood::unordered_map<Key *, Value, HASH_MAP_FUNCTION<Key *>>>
+            ("robin_hood::unordered_map<K, V>", obj_size, iters, has_stress_hash_function);
+    }
+#endif
+#endif
+
+#if USE_ANKERL_UNORDERED_DENSE
+    if (name == "ankerl::unordered_dense") {
+        measure_hashmap<ankerl::unordered_dense::map<Key,   Value, HASH_MAP_FUNCTION<Key>>,
+                        ankerl::unordered_dense::map<Key *, Value, HASH_MAP_FUNCTION<Key *>>>
+            ("ankerl::unordered_dense::map<K, V>", obj_size, iters, has_stress_hash_function);
+    }
+#endif
+}
+
+template <typename Key, typename Value>
 void test_all_hashmaps(std::size_t obj_size, std::size_t iters)
 {
     const bool has_stress_hash_function = (obj_size <= 8);
@@ -953,6 +1073,115 @@ void test_all_hashmaps(std::size_t obj_size, std::size_t iters)
 }
 
 template <typename Key, typename Value>
+void test_hashmap_by_name_for_string(const std::string & name, std::size_t obj_size, std::size_t iters)
+{
+#if USE_STD_HASH_MAP
+    if (name == "stdext::hash_map") {
+        measure_string_hashmap<StdHashMap<Key, Value>>
+            ("stdext::hash_map<K, V>", obj_size, iters);
+    }
+#endif
+
+#if USE_STD_UNORDERED_MAP
+    if (name == "std::unordered_map") {
+        measure_string_hashmap<std::unordered_map<Key, Value>>
+            ("std::unordered_map<K, V>", obj_size, iters);
+    }
+#endif
+
+#if USE_JSTD_FLAT16_HASH_MAP
+    if (name == "jstd::flat16_hash_map") {
+        measure_string_hashmap<jstd::flat16_hash_map<Key, Value>>
+            ("jstd::flat16_hash_map<K, V>", obj_size, iters);
+    }
+#endif
+
+#if USE_JSTD_ROBIN16_HASH_MAP
+    if (name == "jstd::robin16_hash_map") {
+        measure_string_hashmap<jstd::robin16_hash_map<Key, Value>>
+            ("jstd::robin16_hash_map<K, V>", obj_size, iters);
+    }
+#endif
+
+#if USE_JSTD_ROBIN_HASH_MAP
+    if (name == "jstd::robin_hash_map") {
+        measure_string_hashmap<jstd::robin_hash_map<Key, Value>>
+            ("jstd::robin_hash_map<K, V>", obj_size, iters);
+    }
+#endif
+
+#if USE_SKA_FLAT_HASH_MAP
+    if (name == "ska::flat_hash_map") {
+        measure_string_hashmap<ska::flat_hash_map<Key, Value>>
+            ("ska::flat_hash_map<K, V>", obj_size, iters);
+    }
+#endif
+
+#if USE_SKA_BYTELL_HASH_MAP
+    if (name == "ska::bytell_hash_map") {
+        measure_string_hashmap<ska::bytell_hash_map<Key, Value>>
+            ("ska::bytell_hash_map<K, V>", obj_size, iters);
+    }
+#endif
+
+#if USE_EMHASH5_HASH_MAP
+    if (name == "emhash5::HashMap") {
+        measure_string_hashmap<emhash5::HashMap<Key, Value>>
+            ("emhash5::HashMap<K, V>", obj_size, iters);
+    }
+#endif
+
+#if USE_EMHASH7_HASH_MAP
+    if (name == "emhash7::HashMap") {
+        measure_string_hashmap<emhash7::HashMap<Key, Value>>
+            ("emhash7::HashMap<K, V>", obj_size, iters);
+    }
+#endif
+
+#if USE_EMHASH8_HASH_MAP
+    if (name == "emhash8::HashMap") {
+        measure_string_hashmap<emhash8::HashMap<Key, Value>>
+            ("emhash8::HashMap<K, V>", obj_size, iters);
+    }
+#endif
+
+#if USE_ABSL_FLAT_HASH_MAP
+    if (name == "absl::flat_hash_map") {
+        measure_string_hashmap<absl::flat_hash_map<Key, Value>>
+            ("absl::flat_hash_map<K, V>", obj_size, iters);
+    }
+#endif
+
+#if USE_ABSL_NODE_HASH_MAP
+    if (name == "absl::node_hash_map") {
+        measure_string_hashmap<absl::node_hash_map<Key, Value>>
+            ("absl::node_hash_map<K, V>", obj_size, iters);
+    }
+#endif
+
+#if USE_TSL_ROBIN_HOOD
+    if (name == "tsl::robin_map") {
+        measure_string_hashmap<tsl::robin_map<Key, Value>>
+            ("tsl::robin_map<K, V>", obj_size, iters);
+    }
+#endif
+
+#if USE_ROBIN_HOOD_UNORDERED_MAP
+    if (name == "robin_hood::unordered_map") {
+        measure_string_hashmap<robin_hood::unordered_map<Key, Value>>
+            ("robin_hood::unordered_map<K, V>", obj_size, iters);
+    }
+#endif
+
+#if USE_ANKERL_UNORDERED_DENSE
+    if (name == "ankerl::unordered_dense::map") {
+        measure_string_hashmap<ankerl::unordered_dense::map<Key, Value>>
+            ("ankerl::unordered_dense::map<K, V>", obj_size, iters);
+    }
+#endif
+}
+
+template <typename Key, typename Value>
 void test_all_hashmaps_for_string(std::size_t obj_size, std::size_t iters)
 {
 #if USE_STD_HASH_MAP
@@ -1062,9 +1291,38 @@ void test_all_hashmaps_for_string(std::size_t obj_size, std::size_t iters)
 }
 
 template <typename Key, typename Value>
+void test_hashmap_by_name_for_string_view(const std::string & name, std::size_t obj_size, std::size_t iters)
+{
+
+}
+
+template <typename Key, typename Value>
 void test_all_hashmaps_for_string_view(std::size_t obj_size, std::size_t iters)
 {
 
+}
+
+void benchmark_hashmap(const std::string & name, std::size_t iters)
+{
+#ifdef NDEBUG
+    if (FLAGS_test_4_bytes && !FLAGS_test_string_only) {
+        test_hashmap_by_name<std::uint32_t, std::uint32_t>(name, 4, iters / 1);
+    }
+
+    if (FLAGS_test_8_bytes && !FLAGS_test_string_only) {
+        test_hashmap_by_name<std::uint64_t, std::uint64_t>(name, 8, iters / 2);
+    }
+#endif
+
+    if (FLAGS_test_32_bytes) {
+        test_hashmap_by_name_for_string<std::string, std::string>
+            (name, sizeof(std::string), iters / 16);
+    }
+
+    if (FLAGS_test_16_bytes) {
+        test_hashmap_by_name_for_string_view<jstd::string_view, jstd::string_view>
+            (name, sizeof(jstd::string_view), iters / 8);
+    }
 }
 
 void benchmark_all_hashmaps(std::size_t iters)
@@ -1074,7 +1332,7 @@ void benchmark_all_hashmaps(std::size_t iters)
     // a HashObject as it would be to use just a straight int/char
     // buffer.  To keep memory use similar, we normalize the number of
     // iterations based on size.
-#ifndef _DEBUG
+#ifdef NDEBUG
     if (FLAGS_test_4_bytes && !FLAGS_test_string_only) {
         test_all_hashmaps<std::uint32_t, std::uint32_t>(4, iters / 1);
     }
@@ -1252,24 +1510,92 @@ void strtolower(char * s) {
         s[i] = tolower(s[i]);
 }
 
+bool strisdigits(char * str)
+{
+    while (*str != '\0') {
+        char ch = *str;
+        if (ch >= '0' && ch <= '9')
+            str++;
+        else
+            return false;
+    }
+    return true;
+}
+
 int main(int argc, char * argv[])
 {
     jstd::RandomGen   RandomGen(20200831);
     jstd::MtRandomGen mtRandomGen(20200831);
 
     std::size_t iters = kDefaultIters;
+    std::string name;
     if (argc > 1) {
-        char arg[256] = { 0 };
-        strcpy(arg, argv[1]);
-        strtolower(arg);
+        char arg1[256] = { 0 };
+        char arg2[256] = { 0 };
+        char arg3[256] = { 0 };
+        strcpy(arg1, argv[1]);
+        strtolower(arg1);
+        if (argc > 2) {
+            strcpy(arg2, argv[2]);
+            strtolower(arg2);
+        }
+        if (argc > 3) {
+            strcpy(arg3, argv[3]);
+            strtolower(arg3);
+        }
 
         if (0) {
             // Dummy header
-        } else if (strcmp(arg, "string") == 0) {
-            FLAGS_test_string_only = true;
-        } else {
-            // first arg is # of iterations
-            iters = ::atoi(arg);
+        } else if (argc > 3) {
+            if (strcmp(arg1, "string") == 0) {
+                FLAGS_test_string_only = true;
+                if (!strisdigits(arg2)) {
+                    name = arg2;
+                    if (strisdigits(arg3))
+                        iters = ::atoi(arg3);
+                } else {
+                    // first arg is # of iterations
+                    iters = ::atoi(arg2);
+                }
+            } else if (!strisdigits(arg1)) {
+                name = arg1;
+                if (strisdigits(arg2))
+                    iters = ::atoi(arg2);
+            } else {
+                // first arg is # of iterations
+                iters = ::atoi(arg1);
+            }
+        } else if (argc > 2) {
+            if (strcmp(arg1, "string") == 0) {
+                FLAGS_test_string_only = true;
+                if (!strisdigits(arg2)) {
+                    name = arg2;
+                } else {
+                    // first arg is # of iterations
+                    iters = ::atoi(arg2);
+                }
+            } else if (!strisdigits(arg1)) {
+                name = arg1;
+                if (strisdigits(arg2))
+                    iters = ::atoi(arg2);
+            } else {
+                // first arg is # of iterations
+                iters = ::atoi(arg1);
+            }
+        } else if (argc > 1) {
+            if (strcmp(arg1, "string") == 0) {
+                FLAGS_test_string_only = true;
+            } else if (!strisdigits(arg1)) {
+                name = arg1;
+            } else {
+                // first arg is # of iterations
+                iters = ::atoi(arg1);
+            }
+        }
+
+        if (iters == 0) {
+            printf("Error: iters parameter is wrong.");
+            exit(1);
         }
     }
 
@@ -1279,11 +1605,14 @@ int main(int argc, char * argv[])
     if (1) { need_store_hash_test(); }
     if (1) { is_compatible_layout_test(); }
 
-    if (1)
-    {
+    if (name == "") {
         printf("---------------------- benchmark_all_hashmaps (iters = %u) ----------------------\n\n",
                (std::uint32_t)iters);
         benchmark_all_hashmaps(iters);
+    } else {
+        printf("---------------------- benchmark_a_hashmap (iters = %u) ----------------------\n\n",
+               (std::uint32_t)iters);
+        benchmark_hashmap(name, iters);
     }
 
     printf("-----------------------------------------------------------------------------\n\n");

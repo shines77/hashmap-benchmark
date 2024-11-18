@@ -2,7 +2,7 @@
 
 | [中文版](./README.md) | [English Version](./README.en.md) |
 
-## 概述
+## 简介
 
 几个国内外最优秀的 C++ Hashmap 库的基准测试，包括 jstd::robin_hash_map，还包括 `Java`、`C#`、`golang` 等哈希表的 `benchmark` 。
 
