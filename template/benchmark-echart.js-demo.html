@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>hashmap-benchmark-echart.js</title>
+  <style>
+    .canvas_box {
+      width: 900px;
+      height: 600px;
+      //background-color: #cccccc;
+    }
+  </style>
+  <script src="./js/echarts@5.5.1/dist/echarts.min.js"></script>
+  <!--<script src="https://cdn.jsdelivr.net/npm/echarts@5.5.1/dist/echarts.min.js"></script>-->
+</head>
+<body>
+<table align="center">
+  <tr>
+    <td><div id="myChart" class="canvas_box"></div></td>
+  </tr>
+</table>
+<script>
+var myChart = echarts.init(document.getElementById("myChart"));
+const labelOption = {
+  show: false,
+  rotate: 90,
+  formatter: '{c} ns',
+  fontSize: 11,
+  rich: {
+    name: {}
+  }
+};
+var serial_find_option = {
+  title: {
+    show: true,
+    text: '4 byte objects, 8 byte ValueType, 10000000 iterations',
+    textAlign: 'auto',
+    left: '25%',
+    right: '20%',
+    top: 8,
+    textStyle: {
+      fontSize: 16,
+    }
+  },
+  legend: {
+    padding: 44,
+    width: '60%',
+    height: 'auto',
+    align: 'left',
+  },
+  toolbox: {
+    feature: {
+        saveAsImage: {},
+        dataView: {},
+        // restore: {},
+    }
+  },
+  grid: {
+    show: true,
+    ///*
+    left: '6%',
+    right: '6%',
+    top: 100,
+    bottom: 50,
+    //*/
+    containLabel: true,
+    showBackground: true,
+    backgroundColor: 'rgba(160, 160, 160, 0.15)',
+    borderWidth: 1,
+    borderColor: '#ccc'
+  },
+  xAxis: {
+    type: 'category',
+    name: '哈希表顺序查询',
+    nameTextStyle: {
+        fontSize: 16,
+    },
+    nameGap: 38,
+    nameLocation: 'middle',
+    data: ['serial_find_success', 'serial_find_random', 'serial_find_failed', 'serial_find_empty'],
+    axisLabel: {
+      align: 'center',
+      fontSize: 14,
+    },
+    axisTick: {
+      show: true,
+      length: 5,
+      interval: 'auto',
+    },
+    splitLine: {
+      show: true,
+      lineStyle: {
+        color: ['#ccc'],
+        width: 1,
+        type: 'solid',
+      }
+    },
+  },
+  yAxis: {
+    type: 'value',
+    name: '平均耗时/item (单位: ns)',
+    nameTextStyle: {
+        fontSize: 14,
+        color: '#888',
+    },
+    nameGap: 60,
+    nameLocation: 'middle',
+    nameRotate: 90,
+    axisLabel: {
+      show: true,
+      formatter: '{value} ns',
+      align: 'right',
+      fontSize: 14,
+      interval: 'auto',
+      showMinLabel: true,
+      showMaxLabel: true,
+    },
+    axisTick: {
+      show: true,
+      length: 5,
+      interval: 'auto',
+      lineStyle: {
+        type: 'solid'
+      }
+    },
+    axisLine: {
+      show: true,
+      lineStyle: {
+        color: '#888',
+        witdh: 1,
+        type: 'solid',
+      }
+    },
+    splitLine: {
+      show: true,
+      lineStyle: {
+        color: ['#ccc'],
+        width: 1,
+        type: 'solid',
+      }
+    },
+    minorTick: {
+      show: true,
+      splitNumber: 5,
+    },
+    minorSplitLine: {
+      show: true,
+      lineStyle : {
+        color: '#fff',
+      }
+    },
+    splitArea: {
+      show: true
+    }
+  },
+  tooltip1: {
+    trigger: 'item',
+    formatter: '{b} - {a} - {c} ns',
+  },
+  tooltip: {
+    order: 'valueAsc',
+    trigger: 'axis',
+  },
+  series: [
+    {
+      type: 'bar',
+      name: 'std::unordered_map',
+      label: labelOption,
+      data: [ 9.08, 82.85, 16.49, 1.64 ],
+      itemStyle: {
+        borderColor: '#333',
+        borderWidth: 1,
+        borderType: 'solid',
+      },
+    },
+    {
+      type: 'bar',
+      name: 'jstd::robin_hash_map',
+      label: labelOption,
+      data: [ 1.75, 20.14, 3.16, 1.61 ],
+      itemStyle: {
+        borderColor: '#333',
+        borderWidth: 1,
+        borderType: 'solid',
+      },
+    },
+    {
+      type: 'bar',
+      name: 'ska::flat_hash_map',
+      label: labelOption,
+      data: [ 23.79, 20.42, 19.38, 19.27 ],
+      itemStyle: {
+        borderColor: '#333',
+        borderWidth: 1,
+        borderType: 'solid',
+      },
+    },
+    {
+      type: 'bar',
+      name: 'absl::flat_hash_map',
+      label: labelOption,
+      data: [ 30.91, 30.43, 18.42, 3.33 ],
+      itemStyle: {
+        borderColor: '#333',
+        borderWidth: 1,
+        borderType: 'solid',
+      },
+    },
+    {
+      type: 'bar',
+      name: 'tsl::robin_map',
+      label: labelOption,
+      data: [ 1.78, 15.04, 1.28, 1.41 ],
+      itemStyle: {
+        borderColor: '#333',
+        borderWidth: 1,
+        borderType: 'solid',
+      },
+    },
+    {
+      type: 'bar',
+      name: 'ankerl::unordered_dense::map',
+      label: labelOption,
+      data: [ 21.09, 36.95, 35.74, 1.95 ],
+      itemStyle: {
+        borderColor: '#333',
+        borderWidth: 1,
+        borderType: 'solid',
+      },
+    },
+  ]
+};
+myChart.setOption(serial_find_option);
+</script>
+</body>
+</html>
