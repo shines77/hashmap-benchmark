@@ -22,7 +22,7 @@ The following `C++` open source libraries were benchmade:
 
     [https://github.com/abseil/abseil-cpp](https://github.com/abseil/abseil-cpp)
 
-* [ktprime (Chinese)](https://github.com/ktprime)'s `emhash5`, `emhash7`, `emhash8`:
+* (Chinese) [ktprime](https://github.com/ktprime)'s `emhash5`, `emhash7`, `emhash8`:
 
     [https://github.com/ktprime/emhash](https://github.com/ktprime/emhash)
 

@@ -18,11 +18,11 @@
 
     [https://github.com/skarupke/flat_hash_map](https://github.com/skarupke/flat_hash_map)
 
-* 来自 Google 的 [abseil-cpp](https://github.com/abseil) 的 `absl::flat_hash_map` ：
+* 来自 Google [abseil-cpp](https://github.com/abseil) 的 `absl::flat_hash_map` ：
 
     [https://github.com/abseil/abseil-cpp](https://github.com/abseil/abseil-cpp)
 
-* [ktprime (国人)](https://github.com/ktprime) 的 `emhash5`，`emhash7`，`emhash8`：
+* 国人 [ktprime](https://github.com/ktprime) 的 `emhash5`，`emhash7`，`emhash8`：
 
     [https://github.com/ktprime/emhash](https://github.com/ktprime/emhash)
 
