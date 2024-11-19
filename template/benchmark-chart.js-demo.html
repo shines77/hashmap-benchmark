@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-cn">
 <head>
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>hashmap-benchmark-chart</title>
+  <title>hashmap-benchmark-chart.js</title>
   <style>
     .canvas_box {
       width: 900px;
@@ -33,56 +33,13 @@
   </tr>
 </table>
 <script>
+//
+// See: https://chartjs.bootcss.com/
+// See: https://chartjs.cn/
+//
 var ctx = document.getElementById("myChart");
 var myChart = new Chart(ctx, {
     type: 'bar',
-    data: {
-        labels: ['serial_find_success', 'serial_find_random', 'serial_find_failed', 'serial_find_empty'],
-        datasets: [
-          {
-            label: 'std::unordered_map',
-            data: [ 9.08, 82.85, 16.49, 1.64 ],
-            backgroundColor: 'rgba(255, 99, 132, 0.3)',
-            borderColor: 'rgba(255, 99, 132, 1)',
-            borderWidth: 1
-          },
-          {
-            label: 'jstd::robin_hash_map',
-            data: [ 1.75, 20.14, 3.16, 1.61 ],
-            backgroundColor: 'rgba(54, 162, 235, 0.3)',
-            borderColor: 'rgba(54, 162, 235, 1)',
-            borderWidth: 1
-          },
-          {
-            label: 'ska::flat_hash_map',
-            data: [ 23.79, 20.42, 19.38, 19.27 ],
-            backgroundColor: 'rgba(255, 206, 86, 0.3)',
-            borderColor: 'rgba(255, 206, 86, 1)',
-            borderWidth: 1
-          },
-          {
-            label: 'absl::flat_hash_map',
-            data: [ 30.91, 30.43, 18.42, 3.33 ],
-            backgroundColor: 'rgba(75, 192, 192, 0.3)',
-            borderColor: 'rgba(75, 192, 192, 1)',
-            borderWidth: 1
-          },
-          {
-            label: 'tsl::robin_map',
-            data: [ 1.78, 15.04, 1.28, 1.41 ],
-            backgroundColor: 'rgba(153, 102, 255, 0.3)',
-            borderColor: 'rgba(153, 102, 255, 1)',
-            borderWidth: 1
-          },
-          {
-            label: 'ankerl::unordered_dense::map',
-            data: [ 21.09, 36.95, 35.74, 1.95 ],
-            backgroundColor: 'rgba(255, 159, 64, 0.3)',
-            borderColor: 'rgba(255, 159, 64, 1)',
-            borderWidth: 1
-          },
-        ]
-    },
     options: {
         responsive: true,
         layout: {
@@ -172,7 +129,54 @@ var myChart = new Chart(ctx, {
             beginAtZero: true,
           },
         },
-    }
+    },
+    data: {
+        labels: ['serial_find_success', 'serial_find_random', 'serial_find_failed', 'serial_find_empty'],
+        datasets: [
+          {
+            label: 'std::unordered_map',
+            data: [ 9.08, 82.85, 16.49, 1.64 ],
+            backgroundColor: 'rgba(255, 99, 132, 0.3)',
+            borderColor: 'rgba(255, 99, 132, 1)',
+            borderWidth: 1
+          },
+          {
+            label: 'jstd::robin_hash_map',
+            data: [ 1.75, 20.14, 3.16, 1.61 ],
+            backgroundColor: 'rgba(54, 162, 235, 0.3)',
+            borderColor: 'rgba(54, 162, 235, 1)',
+            borderWidth: 1
+          },
+          {
+            label: 'ska::flat_hash_map',
+            data: [ 23.79, 20.42, 19.38, 19.27 ],
+            backgroundColor: 'rgba(255, 206, 86, 0.3)',
+            borderColor: 'rgba(255, 206, 86, 1)',
+            borderWidth: 1
+          },
+          {
+            label: 'absl::flat_hash_map',
+            data: [ 30.91, 30.43, 18.42, 3.33 ],
+            backgroundColor: 'rgba(75, 192, 192, 0.3)',
+            borderColor: 'rgba(75, 192, 192, 1)',
+            borderWidth: 1
+          },
+          {
+            label: 'tsl::robin_map',
+            data: [ 1.78, 15.04, 1.28, 1.41 ],
+            backgroundColor: 'rgba(153, 102, 255, 0.3)',
+            borderColor: 'rgba(153, 102, 255, 1)',
+            borderWidth: 1
+          },
+          {
+            label: 'ankerl::unordered_dense::map',
+            data: [ 21.09, 36.95, 35.74, 1.95 ],
+            backgroundColor: 'rgba(255, 159, 64, 0.3)',
+            borderColor: 'rgba(255, 159, 64, 1)',
+            borderWidth: 1
+          },
+        ]
+    },
 });
 </script>
 </body>
