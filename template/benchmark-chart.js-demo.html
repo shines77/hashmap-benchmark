@@ -52,12 +52,12 @@ var myChart = new Chart(ctx, {
         },
         plugins: {
           legend: {
+            display: true,
             position: 'top',
-            padding: {
-              left: 120,
-              right: 120,
-            },
+            fullWidth: true,
             labels: {
+              boxWidth: 42,
+              padding: 10,
               font: {
                 size: 14
               }
@@ -73,10 +73,12 @@ var myChart = new Chart(ctx, {
               lineHeight: 1.2,
             },
           },
+          /*
           subtitle: {
             display: true,
             text: 'Hashmap benchmark'
           },
+          //*/
         },
         scales: {
           x: {
