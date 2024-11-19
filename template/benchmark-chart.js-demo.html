@@ -9,6 +9,10 @@
     .canvas_box {
       width: 900px;
       height: 600px;
+      //background-color: #cccccc;
+    }
+    .token.string, .token.variable {
+      color:#7ec699
     }
   </style>
   <script src="./js/chart.js@4.4.6/dist/chart.umd.min.js"></script>
@@ -18,73 +22,156 @@
 <body>
 <table align="center">
   <tr>
-  <td>
+    <td>
     <div class="canvas_box">
       <canvas id="myChart" width="900" height="600"></canvas>
     </div>
-  </td>
+    </td>
+  </tr>
+  <tr>
+    <td><span class="token string">'Alignment: start'</span> | <span class="token string">'Alignment: center (default)'</span> | <span class="token string">'Alignment: end'</span></td>
   </tr>
 </table>
-</center>
 <script>
 var ctx = document.getElementById("myChart");
 var myChart = new Chart(ctx, {
     type: 'bar',
     data: {
-        labels: ["Red", "Blue", "Yellow", "Green", "Purple", "Orange"],
+        labels: ['serial_find_success', 'serial_find_random', 'serial_find_failed', 'serial_find_empty'],
         datasets: [
           {
-            label: '# of Votes 1',
-            data: [12, 19, 3, 5, 2, 3],
-            backgroundColor: [
-                'rgba(255, 99, 132, 0.2)',
-                'rgba(54, 162, 235, 0.2)',
-                'rgba(255, 206, 86, 0.2)',
-                'rgba(75, 192, 192, 0.2)',
-                'rgba(153, 102, 255, 0.2)',
-                'rgba(255, 159, 64, 0.2)'
-            ],
-            borderColor: [
-                'rgba(255,99,132,1)',
-                'rgba(54, 162, 235, 1)',
-                'rgba(255, 206, 86, 1)',
-                'rgba(75, 192, 192, 1)',
-                'rgba(153, 102, 255, 1)',
-                'rgba(255, 159, 64, 1)'
-            ],
+            label: 'std::unordered_map',
+            data: [ 9.08, 82.85, 16.49, 1.64 ],
+            backgroundColor: 'rgba(255, 99, 132, 0.3)',
+            borderColor: 'rgba(255, 99, 132, 1)',
             borderWidth: 1
           },
           {
-            label: '# of Votes 2',
-            data: [12, 19, 3, 5, 2, 3],
-            backgroundColor: [
-                'rgba(255, 99, 132, 0.2)',
-                'rgba(54, 162, 235, 0.2)',
-                'rgba(255, 206, 86, 0.2)',
-                'rgba(75, 192, 192, 0.2)',
-                'rgba(153, 102, 255, 0.2)',
-                'rgba(255, 159, 64, 0.2)'
-            ],
-            borderColor: [
-                'rgba(255,99,132,1)',
-                'rgba(54, 162, 235, 1)',
-                'rgba(255, 206, 86, 1)',
-                'rgba(75, 192, 192, 1)',
-                'rgba(153, 102, 255, 1)',
-                'rgba(255, 159, 64, 1)'
-            ],
+            label: 'jstd::robin_hash_map',
+            data: [ 1.75, 20.14, 3.16, 1.61 ],
+            backgroundColor: 'rgba(54, 162, 235, 0.3)',
+            borderColor: 'rgba(54, 162, 235, 1)',
             borderWidth: 1
-          }
+          },
+          {
+            label: 'ska::flat_hash_map',
+            data: [ 23.79, 20.42, 19.38, 19.27 ],
+            backgroundColor: 'rgba(255, 206, 86, 0.3)',
+            borderColor: 'rgba(255, 206, 86, 1)',
+            borderWidth: 1
+          },
+          {
+            label: 'absl::flat_hash_map',
+            data: [ 30.91, 30.43, 18.42, 3.33 ],
+            backgroundColor: 'rgba(75, 192, 192, 0.3)',
+            borderColor: 'rgba(75, 192, 192, 1)',
+            borderWidth: 1
+          },
+          {
+            label: 'tsl::robin_map',
+            data: [ 1.78, 15.04, 1.28, 1.41 ],
+            backgroundColor: 'rgba(153, 102, 255, 0.3)',
+            borderColor: 'rgba(153, 102, 255, 1)',
+            borderWidth: 1
+          },
+          {
+            label: 'ankerl::unordered_dense::map',
+            data: [ 21.09, 36.95, 35.74, 1.95 ],
+            backgroundColor: 'rgba(255, 159, 64, 0.3)',
+            borderColor: 'rgba(255, 159, 64, 1)',
+            borderWidth: 1
+          },
         ]
     },
     options: {
+        responsive: true,
+        layout: {
+          padding: {
+            left: 16,
+            right: 16,
+            top: 6,
+            bottom: 10,
+          }
+        },
+        plugins: {
+          legend: {
+            position: 'top',
+            padding: {
+              left: 120,
+              right: 120,
+            },
+            labels: {
+              font: {
+                size: 14
+              }
+            },
+          },
+          title: {
+            display: true,
+            text: '4 byte objects, 8 byte ValueType, 10000000 iterations',
+            font: {
+              family: 'Comic Sans MS',
+              size: 15,
+              weight: 'bold',
+              lineHeight: 1.2,
+            },
+          },
+          subtitle: {
+            display: true,
+            text: 'Hashmap benchmark'
+          },
+        },
         scales: {
-            yAxes: [{
-                ticks: {
-                    beginAtZero: true
-                }
-            }]
-        }
+          x: {
+            display: true,
+            title: {
+              display: true,
+              text: '哈希表顺序查询',
+              color: '#119',
+              font: {
+                family: 'Comic Sans MS',
+                size: 16,
+                weight: 'bold',
+                lineHeight: 1.2,
+              },
+            },
+            ticks: {
+              font: {
+                family: 'Times',
+                size: 17,
+                weight: 'normal',
+                lineHeight: 1.2,
+              },
+            },
+            beginAtZero: true,
+          },
+          y: {
+            display: true,
+            title: {
+              display: true,
+              text: '平均耗时/item (单位: ns)',
+              color: '#191',
+              font: {
+                family: 'Times',
+                size: 16,
+                style: 'bold',
+                lineHeight: 1.2
+              },
+            },
+            ticks: {
+              font: {
+                family: 'Times',
+                size: 15,
+                weight: 'normal',
+                lineHeight: 1.2,
+              },
+              callback: function(value, index, ticks) {
+                return (value + " ns");
+              },
+            },
+            beginAtZero: true,
+          },
+        },
     }
 });
 </script>
