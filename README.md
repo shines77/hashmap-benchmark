@@ -4,7 +4,7 @@
 
 ## 简介
 
-几个国内外最优秀的 C++ Hashmap 库的基准测试，包括 jstd::robin_hash_map，还包括 `Java`、`C#`、`golang` 等哈希表的 `benchmark` 。
+几个国内外最优秀的 C++ Hashmap 库的基准测试，包括 `Google abseil-cpp` 的哈希表 `absl::flat_hash_map`，还包括 aka::flat_hash_map、tsl::robin_map、ktprime::emhash7、ankerl::unordered_dense::map 等著名的哈希表，`jstd::robin_hash_map` 均取得了不错的成绩。
 
 ### C++ Hashmap
 
