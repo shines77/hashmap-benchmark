@@ -59,6 +59,19 @@
 
 - Google [abseil-cpp] 的 `absl::flat_hash_map`：更新至最新版，最新 tag：20240722.rc2
 
+    由于我更改了 [abseil-cpp] 仓库的 URL，所以请使用下列的命令更新 submodule ：
+
+    ```bash
+    # 先删除旧的 /3rd_party/abseil-cpp 目录
+    cd ./3rd_party
+    rm -rf ./abseil-cpp
+
+    # 使用 sync 命令同步为新的 URL，并重新初始化 abseil-cpp
+    git config -f .gitmodules submodule.3rd_party/abseil-cpp.branch master
+    git submodule sync
+    git submodule update --init --recursive 3rd_party/abseil-cpp
+    ```
+
 - [ktprime] 的 `emhash`：更新至最新版
 
 - [Tessil] 的 `tsl::robin_map`：更新至最新，最新 tag：1.3.0
