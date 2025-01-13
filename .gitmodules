@@ -26,3 +26,6 @@
 	path = 3rd_party/robin-map
 	url = https://gitee.com/shines77/robin-map.git
 	branch = master
+[submodule "3rd_party/boost_unordered"]
+	path = 3rd_party/boost_unordered
+	url = https://gitee.com/shines77/boost_unordered.git

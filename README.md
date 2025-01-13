@@ -42,6 +42,8 @@
 
 2025-01-13 更新：
 
+- 新增了 [boost::unordered](https://github.com/boostorg/unordered) library 的 [boost::unordered::unordered_flat_map](https://github.com/MikePopoloski/boost_unordered) (非官方库) 。
+
 - 我自己的 `jstd::robin_hash_map`：更新至最新版，并添加新的 `jstd::cluster_flat_map` 。
 
 - Google [abseil-cpp] 的 `absl::flat_hash_map`：更新至最新版，最新 tag：20240722.rc2
