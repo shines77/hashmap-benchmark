@@ -500,6 +500,10 @@ void benchmark_insert_random_impl()
     run_insert_random<jstd::robin_hash_map<Key, Value>>
         ("jstd::robin_hash_map", keys, Cardinal);
 #endif
+#if USE_TSL_ROBIN_HOOD
+    run_insert_random<tsl::robin_map<Key, Value>>
+        ("tsl::robin_map", keys, Cardinal);
+#endif
 #if USE_SKA_FLAT_HASH_MAP
     run_insert_random<ska::flat_hash_map<Key, Value>>
         ("ska::flat_hash_map", keys, Cardinal);
@@ -523,10 +527,6 @@ void benchmark_insert_random_impl()
 #if USE_ABSL_NODE_HASH_MAP
     run_insert_random<absl::node_hash_map<Key, Value>>
         ("absl::node_hash_map", keys, Cardinal);
-#endif
-#if USE_TSL_ROBIN_HOOD
-    run_insert_random<tsl::robin_map<Key, Value>>
-        ("tsl::robin_map", keys, Cardinal);
 #endif
 #if USE_ROBIN_HOOD_UNORDERED_MAP
     run_insert_random<robin_hood::unordered_flat_map<Key, Value>>
@@ -603,6 +603,10 @@ void benchmark_MumHash_insert_random_impl()
     run_insert_random<jstd::robin_hash_map<Key, Value, test::MumHash<Key>>>
         ("jstd::robin_hash_map", keys, Cardinal);
 #endif
+#if USE_TSL_ROBIN_HOOD
+    run_insert_random<tsl::robin_map<Key, Value, test::MumHash<Key>>>
+        ("tsl::robin_map", keys, Cardinal);
+#endif
 #if USE_SKA_FLAT_HASH_MAP
     run_insert_random<ska::flat_hash_map<Key, Value, test::MumHash<Key>>>
         ("ska::flat_hash_map", keys, Cardinal);
@@ -630,10 +634,6 @@ void benchmark_MumHash_insert_random_impl()
 #if USE_ABSL_NODE_HASH_MAP
     run_insert_random<absl::node_hash_map<Key, Value, test::MumHash<Key>>>
         ("absl::node_hash_map", keys, Cardinal);
-#endif
-#if USE_TSL_ROBIN_HOOD
-    run_insert_random<tsl::robin_map<Key, Value, test::MumHash<Key>>>
-        ("tsl::robin_map", keys, Cardinal);
 #endif
 #if USE_ROBIN_HOOD_UNORDERED_MAP
     run_insert_random<robin_hood::unordered_map<Key, Value, test::MumHash<Key>>>
