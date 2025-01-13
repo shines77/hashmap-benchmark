@@ -82,7 +82,7 @@
 
 #define USE_STD_UNORDERED_MAP           1
 #define USE_JSTD_ROBIN_HASH_MAP         1
-#define USE_SKA_FLAT_HASH_MAP           0
+#define USE_SKA_FLAT_HASH_MAP           1
 #define USE_SKA_BYTELL_HASH_MAP         0
 #define USE_EMHASH5_HASH_MAP            1
 #define USE_EMHASH7_HASH_MAP            1
@@ -583,10 +583,10 @@ void benchmark_insert_random(std::size_t iters)
     printf("-----------------------------------------------------------------------\n\n");
     benchmark_insert_random_impl<Key, Value, DataSize, Cardinal4>();
     printf("-----------------------------------------------------------------------\n\n");
-    //benchmark_insert_random_impl<Key, Value, DataSize, Cardinal5>();
+    benchmark_insert_random_impl<Key, Value, DataSize, Cardinal5>();
     //printf("-----------------------------------------------------------------------\n\n");
 #endif
-    benchmark_insert_random_impl<Key, Value, DataSize, Cardinal6>();
+    //benchmark_insert_random_impl<Key, Value, DataSize, Cardinal6>();
 }
 
 template <typename Key, typename Value, std::size_t DataSize, std::size_t Cardinal>
@@ -689,9 +689,9 @@ void benchmark_MumHash_insert_random(std::size_t iters)
     printf("-----------------------------------------------------------------------\n\n");
     benchmark_MumHash_insert_random_impl<Key, Value, DataSize, Cardinal4>();
     printf("-----------------------------------------------------------------------\n\n");
-    //benchmark_MumHash_insert_random_impl<Key, Value, DataSize, Cardinal5>();
+    benchmark_MumHash_insert_random_impl<Key, Value, DataSize, Cardinal5>();
     //printf("-----------------------------------------------------------------------\n\n");
-    benchmark_MumHash_insert_random_impl<Key, Value, DataSize, Cardinal6>();
+    //benchmark_MumHash_insert_random_impl<Key, Value, DataSize, Cardinal6>();
 }
 
 void benchmark_all_hashmaps(std::size_t iters)
