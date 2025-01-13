@@ -87,16 +87,16 @@ git clone https://github.com/shines77/hashmap-benchmark.git
 
 ### 2. 初始化子模块
 
-由于引用了以上 `3` 个开源库，`clone` 完以后必须先更新 `submodule`：
+由于引用了以上 `6` 个开源库，`clone` 完以后必须先初始化 `submodule`：
 
 ```shell
 git submodule init
 git submodule update --init --recursive
 ```
 
-`git submodule update --init --recursive` 是更新到本仓库指定的 `子仓库` 的版本，推荐使用这个命令。
+### 3. 更新子模块
 
-如果有需要，想更新到子仓库最新的版本（不推荐！正常更新请使用上面的命令），可以使用下面的命令：
+更新子模块到最新版，如果你需要的话。
 
 ```shell
 # 更新全部 submodule
@@ -106,7 +106,7 @@ git submodule update --remote --recursive
 git submodule update --remote --recursive -- "3rd_party/flat_hash_map"
 ```
 
-### 3. 配置与编译
+### 4. 配置与编译
 
 先配置和编译 `Google` 的 `abseil-cpp` 库：
 
@@ -127,17 +127,25 @@ cmake -DABSL_BUILD_TESTING=OFF -DABSL_USE_GOOGLETEST_HEAD=OFF -DABSL_PROPAGATE_C
 make
 ```
 
-### 4. 更新到最新版本
+### 5. 编译 benchmark
 
-如果你已经成功编译了 `abseil-cpp` 和 `hashmap-benchmark` ，并且想更新到本仓库的最新代码，你可以使用如下命令：
+如果你已经成功编译了 `abseil-cpp`，返回本仓库的根目录，然后执行下列命令：
 
 ```bash
-git pull && git submodule update --remote --recursive
+# 创建 build 目录
+mkdir build
+cd build
 
+# 生成 CMake makefile
+cmake ..
+
+# 编译
 make
 ```
 
-### 5. 运行 benchmark
+### 6. 运行 benchmark
+
+请在 ./build 目录下执行下列命令：
 
 ```bash
 # 跟 Google sprasehash 开源库类似的测试（新版，推荐）
@@ -162,7 +170,7 @@ make
 ./bin/benchmark ./data/Maven.keys.txt
 ```
 
-### 6. 其他脚本
+### 7. 其他脚本
 
 ```bash
 # 清理 cmake 的缓存和编译结果（便于重新配置和编译）
