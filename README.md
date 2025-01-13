@@ -38,13 +38,31 @@
 
     [https://github.com/martinus/unordered_dense](https://github.com/martinus/unordered_dense)
 
+### 第三方库更新记录
+
+2025-01-13 更新：
+
+- 我自己的 `jstd::robin_hash_map`：更新至最新版，并添加新的 `jstd::cluster_flat_map` 。
+
+- Google [abseil-cpp] 的 `absl::flat_hash_map`：更新至最新版，最新 tag：20240722.rc2
+
+- [ktprime] 的 `emhash`：更新至最新版
+
+- [Tessil] 的 `tsl::robin_map`：更新至最新，最新 tag：1.3.0
+
+- [martinus] 的 `ankerl::unordered_dense::map`：更新至最新版，最新 tag：4.5.0
+
+- [martinus] 的 `robin_hood::unordered_flat_map`：更新至最新版，最新 tag：3.11.5
+
+- [skarupke] 的 `aka::flat_hash_map`：无更新。
+
 ### 镜像与修复
 
 由于 `github` 访问比较困难，使用的是 `gitee` 的镜像。
 
 `flat_hash_map` 国内的镜像修改版：[https://gitee.com/shines77/flat_hash_map](https://gitee.com/shines77/flat_hash_map)
 
-`abseil-cpp` 国内的镜像：[https://gitee.com/arjing/abseil-cpp](https://gitee.com/arjing/abseil-cpp)
+`abseil-cpp` 国内的镜像：[https://gitee.com/shines77/abseil-cpp](https://gitee.com/shines77/abseil-cpp)
 
 本人对 `flat_hash_map` 做了一些修改，并修复了一些 `bug`，以便能过在本测试代码中正常使用。
 
