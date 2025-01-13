@@ -81,7 +81,7 @@
 #include <algorithm>
 
 #define USE_STD_HASH_MAP                0
-#define USE_STD_UNORDERED_MAP           1
+#define USE_STD_UNORDERED_MAP           0
 #define USE_JSTD_ROBIN_HASH_MAP         1
 #define USE_SKA_FLAT_HASH_MAP           1
 #define USE_SKA_BYTELL_HASH_MAP         0
@@ -1576,8 +1576,8 @@ int main(int argc, char * argv[])
     jtest::CPU::warm_up(1000);
 
     if (1) { std_hash_test(); }
-    if (1) { need_store_hash_test(); }
-    if (1) { is_compatible_layout_test(); }
+    if (0) { need_store_hash_test(); }
+    if (0) { is_compatible_layout_test(); }
 
     if (name == "") {
         printf("---------------------- benchmark_all_hashmaps (iters = %u) ----------------------\n\n",
