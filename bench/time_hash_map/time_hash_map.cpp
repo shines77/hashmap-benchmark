@@ -85,8 +85,6 @@
 
 #define USE_STD_HASH_MAP                0
 #define USE_STD_UNORDERED_MAP           1
-#define USE_JSTD_FLAT16_HASH_MAP        0
-#define USE_JSTD_ROBIN16_HASH_MAP       1
 #define USE_JSTD_ROBIN_HASH_MAP         1
 #define USE_SKA_FLAT_HASH_MAP           1
 #define USE_SKA_BYTELL_HASH_MAP         0
@@ -147,12 +145,6 @@
 #include <unordered_map>
 #endif
 
-#if USE_JSTD_FLAT16_HASH_MAP
-#include <jstd/hashmap/flat16_hash_map.h>
-#endif
-#if USE_JSTD_ROBIN16_HASH_MAP
-#include <jstd/hashmap/robin16_hash_map.h>
-#endif
 #if USE_JSTD_ROBIN_HASH_MAP
 #include <jstd/hashmap/robin_hash_map.h>
 #endif
@@ -1568,30 +1560,6 @@ static void test_all_hashmaps(std::size_t obj_size, std::size_t iters) {
                         HashFn<typename HashObj::key_type, false, HashObj::cSize, HashObj::cHashSize>>
                         >(
             "std::unordered_map<K, V>", obj_size, iters, has_stress_hash_function);
-    }
-#endif
-
-#if USE_JSTD_FLAT16_HASH_MAP
-    if (1) {
-        measure_hashmap<jstd::flat16_hash_map<HashObj, Value,
-                        HashFn<typename HashObj::key_type, false, HashObj::cSize, HashObj::cHashSize>,
-                        HashEqualTo<typename HashObj::key_type, HashObj::cSize, HashObj::cHashSize>>,
-                        jstd::flat16_hash_map<HashObj *, Value,
-                        HashFn<typename HashObj::key_type, false, HashObj::cSize, HashObj::cHashSize>>
-                        >(
-            "jstd::flat16_hash_map<K, V>", obj_size, iters, has_stress_hash_function);
-    }
-#endif
-
-#if USE_JSTD_ROBIN16_HASH_MAP
-    if (1) {
-        measure_hashmap<jstd::robin16_hash_map<HashObj, Value,
-                        HashFn<typename HashObj::key_type, false, HashObj::cSize, HashObj::cHashSize>,
-                        HashEqualTo<typename HashObj::key_type, HashObj::cSize, HashObj::cHashSize>>,
-                        jstd::robin16_hash_map<HashObj *, Value,
-                        HashFn<typename HashObj::key_type, false, HashObj::cSize, HashObj::cHashSize>>
-                        >(
-            "jstd::robin16_hash_map<K, V>", obj_size, iters, has_stress_hash_function);
     }
 #endif
 
