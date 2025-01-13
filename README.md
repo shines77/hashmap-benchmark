@@ -48,6 +48,12 @@
 
 - 新增了 [boost::unordered](https://github.com/boostorg/unordered) library [v1.85.0](https://github.com/boostorg/unordered) 的 [boost::unordered::unordered_flat_map](https://github.com/MikePopoloski/boost_unordered) (非官方库) 。
 
+    请使用下面的命令单独更新 [boost::unordered] 库：
+
+    ```bash
+    git submodule update --init --recursive ./3rd_party/boost_unordered
+    ```
+
 - 我自己的 `jstd::robin_hash_map`：更新至最新版，并添加新的 `jstd::cluster_flat_map` 。
 
 - Google [abseil-cpp] 的 `absl::flat_hash_map`：更新至最新版，最新 tag：20240722.rc2
@@ -104,10 +110,11 @@ git submodule update --init --recursive
 
 ```shell
 # 更新全部 submodule
-git submodule update --remote --recursive
+git submodule update --init --recursive
 
 # 单独更新某个 submodule
-git submodule update --remote --recursive -- "3rd_party/flat_hash_map"
+git submodule update --init --recursive ./3rd_party/flat_hash_map
+git submodule update --init --recursive ./3rd_party/boost_unordered
 ```
 
 ### 4. 配置与编译

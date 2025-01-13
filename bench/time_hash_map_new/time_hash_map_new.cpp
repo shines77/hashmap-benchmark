@@ -865,10 +865,10 @@ void test_hashmap_by_name(const std::string & name, std::size_t obj_size, std::s
 #endif
 
 #if USE_BOOST_UNORDERED_FLAT_MAP
-    if (name == "boost::unordeded_flat_map") {
-        measure_hashmap<boost::unordeded::unordeded_flat_map<Key,   Value, HASH_MAP_FUNCTION<Key>>,
-                        boost::unordeded::unordeded_flat_map<Key *, Value, HASH_MAP_FUNCTION<Key *>>>
-            ("boost::unordeded_flat_map", obj_size, iters, has_stress_hash_function);
+    if (name == "boost::unordered_flat_map") {
+        measure_hashmap<boost::unordered::unordered_flat_map<Key,   Value, HASH_MAP_FUNCTION<Key>>,
+                        boost::unordered::unordered_flat_map<Key *, Value, HASH_MAP_FUNCTION<Key *>>>
+            ("boost::unordered_flat_map", obj_size, iters, has_stress_hash_function);
     }
 #endif
 
@@ -978,9 +978,9 @@ void test_all_hashmaps(std::size_t obj_size, std::size_t iters)
 
 #if USE_BOOST_UNORDERED_FLAT_MAP
     if (1) {
-        measure_hashmap<boost::unordeded::unordeded_flat_map<Key,   Value, HASH_MAP_FUNCTION<Key>>,
-                        boost::unordeded::unordeded_flat_map<Key *, Value, HASH_MAP_FUNCTION<Key *>>>
-            ("boost::unordeded_flat_map", obj_size, iters, has_stress_hash_function);
+        measure_hashmap<boost::unordered::unordered_flat_map<Key,   Value, HASH_MAP_FUNCTION<Key>>,
+                        boost::unordered::unordered_flat_map<Key *, Value, HASH_MAP_FUNCTION<Key *>>>
+            ("boost::unordered_flat_map", obj_size, iters, has_stress_hash_function);
     }
 #endif
 
@@ -1084,9 +1084,9 @@ void test_hashmap_by_name_for_string(const std::string & name, std::size_t obj_s
 #endif
 
 #if USE_BOOST_UNORDERED_FLAT_MAP
-    if (name == "boost::unordeded_flat_map") {
-        measure_string_hashmap<boost::unordeded::unordeded_flat_map<Key, Value>>
-            ("boost::unordeded_flat_map", obj_size, iters);
+    if (name == "boost::unordered_flat_map") {
+        measure_string_hashmap<boost::unordered::unordered_flat_map<Key, Value>>
+            ("boost::unordered_flat_map", obj_size, iters);
     }
 #endif
 
@@ -1187,8 +1187,8 @@ void test_all_hashmaps_for_string(std::size_t obj_size, std::size_t iters)
 
 #if USE_BOOST_UNORDERED_FLAT_MAP
     if (1) {
-        measure_string_hashmap<boost::unordeded::unordeded_flat_map<Key, Value>>
-            ("boost::unordeded_flat_map", obj_size, iters);
+        measure_string_hashmap<boost::unordered::unordered_flat_map<Key, Value>>
+            ("boost::unordered_flat_map", obj_size, iters);
     }
 #endif
 
