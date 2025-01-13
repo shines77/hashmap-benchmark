@@ -83,7 +83,6 @@
 #define USE_STD_HASH_MAP                0
 #define USE_STD_UNORDERED_MAP           1
 #define USE_JSTD_ROBIN_HASH_MAP         1
-#define USE_JSTD_CLUSTER_FLAT_MAP       1
 #define USE_SKA_FLAT_HASH_MAP           1
 #define USE_SKA_BYTELL_HASH_MAP         0
 #define USE_EMHASH5_HASH_MAP            0
@@ -91,11 +90,13 @@
 #define USE_EMHASH8_HASH_MAP            1
 #define USE_ABSL_FLAT_HASH_MAP          1
 #define USE_ABSL_NODE_HASH_MAP          0
-#define USE_BOOST_UNORDERED_FLAT_MAP    1
 
 #define USE_TSL_ROBIN_HOOD              1
 #define USE_ROBIN_HOOD_UNORDERED_MAP    1
 #define USE_ANKERL_UNORDERED_DENSE      1
+
+#define USE_JSTD_CLUSTER_FLAT_MAP       1
+#define USE_BOOST_UNORDERED_FLAT_MAP    1
 
 #ifdef _MSC_VER
 #undef USE_ABSL_FLAT_HASH_MAP
@@ -150,9 +151,6 @@
 #if USE_JSTD_ROBIN_HASH_MAP
 #include <jstd/hashmap/robin_hash_map.h>
 #endif
-#if USE_JSTD_CLUSTER_FLAT_MAP
-#include <jstd/hashmap/cluster_flat_map.hpp>
-#endif
 #if USE_SKA_FLAT_HASH_MAP
 #include <flat_hash_map/flat_hash_map.hpp>
 #endif
@@ -182,6 +180,9 @@
 #endif
 #if USE_ANKERL_UNORDERED_DENSE
 #include <ankerl/unordered_dense.h>
+#endif
+#if USE_JSTD_CLUSTER_FLAT_MAP
+#include <jstd/hashmap/cluster_flat_map.hpp>
 #endif
 #if USE_BOOST_UNORDERED_FLAT_MAP
 #include <boost/unordered/unordered_flat_map.hpp>
@@ -864,6 +865,14 @@ void test_hashmap_by_name(const std::string & name, std::size_t obj_size, std::s
     }
 #endif
 
+#if USE_TSL_ROBIN_HOOD
+    if (name == "") {
+        measure_hashmap<tsl::robin_map<Key,   Value, HASH_MAP_FUNCTION<Key>>,
+                        tsl::robin_map<Key *, Value, HASH_MAP_FUNCTION<Key *>>>
+            ("tsl::robin_map", obj_size, iters, has_stress_hash_function);
+    }
+#endif
+
 #if USE_BOOST_UNORDERED_FLAT_MAP
     if (name == "boost::unordered_flat_map") {
         measure_hashmap<boost::unordered::unordered_flat_map<Key,   Value, HASH_MAP_FUNCTION<Key>>,
@@ -920,14 +929,6 @@ void test_hashmap_by_name(const std::string & name, std::size_t obj_size, std::s
     }
 #endif
 
-#if USE_TSL_ROBIN_HOOD
-    if (name == "") {
-        measure_hashmap<tsl::robin_map<Key,   Value, HASH_MAP_FUNCTION<Key>>,
-                        tsl::robin_map<Key *, Value, HASH_MAP_FUNCTION<Key *>>>
-            ("tsl::robin_map", obj_size, iters, has_stress_hash_function);
-    }
-#endif
-
 #if USE_ROBIN_HOOD_UNORDERED_MAP
 #if 0
     if (name == "robin_hood::unordered_map") {
@@ -973,6 +974,14 @@ void test_all_hashmaps(std::size_t obj_size, std::size_t iters)
         measure_hashmap<jstd::robin_hash_map<Key,   Value, HASH_MAP_FUNCTION<Key>>,
                         jstd::robin_hash_map<Key *, Value, HASH_MAP_FUNCTION<Key *>>>
             ("jstd::robin_hash_map", obj_size, iters, has_stress_hash_function);
+    }
+#endif
+
+#if USE_TSL_ROBIN_HOOD
+    if (1) {
+        measure_hashmap<tsl::robin_map<Key,   Value, HASH_MAP_FUNCTION<Key>>,
+                        tsl::robin_map<Key *, Value, HASH_MAP_FUNCTION<Key *>>>
+            ("tsl::robin_map", obj_size, iters, has_stress_hash_function);
     }
 #endif
 
@@ -1032,14 +1041,6 @@ void test_all_hashmaps(std::size_t obj_size, std::size_t iters)
     }
 #endif
 
-#if USE_TSL_ROBIN_HOOD
-    if (1) {
-        measure_hashmap<tsl::robin_map<Key,   Value, HASH_MAP_FUNCTION<Key>>,
-                        tsl::robin_map<Key *, Value, HASH_MAP_FUNCTION<Key *>>>
-            ("tsl::robin_map", obj_size, iters, has_stress_hash_function);
-    }
-#endif
-
 #if USE_ROBIN_HOOD_UNORDERED_MAP
 #if 0
     if (1) {
@@ -1080,6 +1081,13 @@ void test_hashmap_by_name_for_string(const std::string & name, std::size_t obj_s
     if (name == "jstd::robin_hash_map") {
         measure_string_hashmap<jstd::robin_hash_map<Key, Value>>
             ("jstd::robin_hash_map", obj_size, iters);
+    }
+#endif
+
+#if USE_TSL_ROBIN_HOOD
+    if (name == "tsl::robin_map") {
+        measure_string_hashmap<tsl::robin_map<Key, Value>>
+            ("tsl::robin_map", obj_size, iters);
     }
 #endif
 
@@ -1139,13 +1147,6 @@ void test_hashmap_by_name_for_string(const std::string & name, std::size_t obj_s
     }
 #endif
 
-#if USE_TSL_ROBIN_HOOD
-    if (name == "tsl::robin_map") {
-        measure_string_hashmap<tsl::robin_map<Key, Value>>
-            ("tsl::robin_map", obj_size, iters);
-    }
-#endif
-
 #if USE_ROBIN_HOOD_UNORDERED_MAP
     if (name == "robin_hood::unordered_map") {
         measure_string_hashmap<robin_hood::unordered_map<Key, Value>>
@@ -1182,6 +1183,13 @@ void test_all_hashmaps_for_string(std::size_t obj_size, std::size_t iters)
     if (1) {
         measure_string_hashmap<jstd::robin_hash_map<Key, Value>>
             ("jstd::robin_hash_map", obj_size, iters);
+    }
+#endif
+
+#if USE_TSL_ROBIN_HOOD
+    if (1) {
+        measure_string_hashmap<tsl::robin_map<Key, Value>>
+            ("tsl::robin_map", obj_size, iters);
     }
 #endif
 
@@ -1238,13 +1246,6 @@ void test_all_hashmaps_for_string(std::size_t obj_size, std::size_t iters)
     if (1) {
         measure_string_hashmap<absl::node_hash_map<Key, Value>>
             ("absl::node_hash_map", obj_size, iters);
-    }
-#endif
-
-#if USE_TSL_ROBIN_HOOD
-    if (1) {
-        measure_string_hashmap<tsl::robin_map<Key, Value>>
-            ("tsl::robin_map", obj_size, iters);
     }
 #endif
 

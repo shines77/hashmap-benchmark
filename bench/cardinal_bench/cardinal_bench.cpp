@@ -94,6 +94,9 @@
 #define USE_ROBIN_HOOD_UNORDERED_MAP    0
 #define USE_ANKERL_UNORDERED_DENSE      1
 
+#define USE_JSTD_CLUSTER_FLAT_MAP       1
+#define USE_BOOST_UNORDERED_FLAT_MAP    1
+
 #ifdef _MSC_VER
 #undef USE_ABSL_FLAT_HASH_MAP
 #undef USE_ABSL_NODE_HASH_MAP
@@ -103,6 +106,7 @@
 #undef USE_TSL_ROBIN_HOOD
 #undef USE_ROBIN_HOOD_UNORDERED_MAP
 #undef USE_ANKERL_UNORDERED_DENSE
+#undef USE_BOOST_UNORDERED_FLAT_MAP
 #endif
 
 #ifdef __SSE4_2__
@@ -162,6 +166,12 @@
 #endif
 #if USE_ANKERL_UNORDERED_DENSE
 #include <ankerl/unordered_dense.h>
+#endif
+#if USE_JSTD_CLUSTER_FLAT_MAP
+#include <jstd/hashmap/cluster_flat_map.hpp>
+#endif
+#if USE_BOOST_UNORDERED_FLAT_MAP
+#include <boost/unordered/unordered_flat_map.hpp>
 #endif
 #include <jstd/hashmap/hashmap_analyzer.h>
 #include <jstd/hasher/hashes.h>
@@ -526,6 +536,14 @@ void benchmark_insert_random_impl()
     run_insert_random<ankerl::unordered_dense::map<Key, Value>>
         ("ankerl::unordered_dense::map", keys, Cardinal);
 #endif
+#if USE_JSTD_CLUSTER_FLAT_MAP
+    run_insert_random<jstd::cluster_flat_map<Key, Value>>
+        ("jstd::cluster_flat_map", keys, Cardinal);
+#endif
+#if USE_BOOST_UNORDERED_FLAT_MAP
+    run_insert_random<boost::unordered::unordered_flat_map<Key, Value>>
+        ("boost::unordered_flat_map", keys, Cardinal);
+#endif
 }
 
 template <typename Key, typename Value>
@@ -624,6 +642,14 @@ void benchmark_MumHash_insert_random_impl()
 #if USE_ANKERL_UNORDERED_DENSE
     run_insert_random<ankerl::unordered_dense::map<Key, Value, test::MumHash<Key>>>
         ("ankerl::unordered_dense::map", keys, Cardinal);
+#endif
+#if USE_JSTD_CLUSTER_FLAT_MAP
+    run_insert_random<jstd::cluster_flat_map<Key, Value>>
+        ("jstd::cluster_flat_map", keys, Cardinal);
+#endif
+#if USE_BOOST_UNORDERED_FLAT_MAP
+    run_insert_random<boost::unordered::unordered_flat_map<Key, Value>>
+        ("boost::unordered_flat_map", keys, Cardinal);
 #endif
 }
 

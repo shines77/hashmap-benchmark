@@ -130,8 +130,8 @@ git submodule update --init --recursive
 git submodule update --remote --recursive
 
 # 单独更新某个 submodule
-git submodule update --init --recursive ./3rd_party/flat_hash_map
-git submodule update --remote --recursive ./3rd_party/flat_hash_map
+git submodule update --init --recursive ./3rd_party/jstd_hashmap
+git submodule update --remote --recursive ./3rd_party/jstd_hashmap
 
 git submodule update --init --recursive ./3rd_party/boost_unordered
 git submodule update --remote --recursive ./3rd_party/boost_unordered
