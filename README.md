@@ -118,28 +118,23 @@ make
 make install
 ```
 
-再配置和编译 `hashmap-benchmark`：
+### 5. 编译 benchmark
+
+如果你已经成功编译了 `abseil-cpp`，再配置和编译 `hashmap-benchmark`：
+
 
 ```bash
 # 从 ./3rd_party/abseil-cpp/build 切换回 hashmap-benchmark 根目录
 cd ../../../
-cmake -DABSL_BUILD_TESTING=OFF -DABSL_USE_GOOGLETEST_HEAD=OFF -DABSL_PROPAGATE_CXX_STD=ON -DCMAKE_PREFIX_PATH=./install .
-make
-```
 
-### 5. 编译 benchmark
-
-如果你已经成功编译了 `abseil-cpp`，返回本仓库的根目录，然后执行下列命令：
-
-```bash
 # 创建 build 目录
 mkdir build
 cd build
 
 # 生成 CMake makefile
-cmake ..
+cmake -DABSL_BUILD_TESTING=OFF -DABSL_USE_GOOGLETEST_HEAD=OFF -DABSL_PROPAGATE_CXX_STD=ON -DCMAKE_PREFIX_PATH=./install ..
 
-# 编译
+# 编译 benchmark
 make
 ```
 
