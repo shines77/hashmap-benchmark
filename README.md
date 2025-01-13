@@ -115,9 +115,17 @@ git submodule update --remote --recursive -- "3rd_party/flat_hash_map"
 先配置和编译 `Google` 的 `abseil-cpp` 库：
 
 ```shell
+# 切换到 abseil-cpp 根目录
 cd ./3rd_party/abseil-cpp
-mkdir build && cd build
+
+# 创建 build 目录
+mkdir build
+cd build
+
+# 生成 CMake makefile
 cmake -DABSL_BUILD_TESTING=OFF -DABSL_USE_GOOGLETEST_HEAD=OFF -DABSL_ENABLE_INSTALL=ON -DCMAKE_CXX_STANDARD=17 -DABSL_PROPAGATE_CXX_STD=ON -DCMAKE_INSTALL_PREFIX=../../../install ..
+
+# 编译和安装
 make
 make install
 ```
@@ -171,10 +179,12 @@ make
 
 ### 7. 其他脚本
 
+以下脚本在根目录下：
+
 ```bash
 # 清理 cmake 的缓存和编译结果（便于重新配置和编译）
 ./cmake-clean.sh
 
-# 重新执行本仓库的 cmake 配置，建议先执行 cmake-clean.sh
+# 重新执行本仓库的 cmake 配置，建议先执行 cmake-clean.sh，默认会创建 build 目录
 ./cmake-config.sh
 ```
