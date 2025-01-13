@@ -134,7 +134,6 @@ make install
 
 如果你已经成功编译了 `abseil-cpp`，再配置和编译 `hashmap-benchmark`：
 
-
 ```bash
 # 从 ./3rd_party/abseil-cpp/build 切换回 hashmap-benchmark 根目录
 cd ../../../
@@ -149,6 +148,8 @@ cmake -DABSL_BUILD_TESTING=OFF -DABSL_USE_GOOGLETEST_HEAD=OFF -DABSL_PROPAGATE_C
 # 编译 benchmark
 make
 ```
+
+如果 CMake 有缓存文件，请使用根目录下的 `./cmake-clean.sh` 脚本清理 CMake 有缓存文件。
 
 ### 6. 运行 benchmark
 
@@ -182,9 +183,11 @@ make
 以下脚本在根目录下：
 
 ```bash
-# 清理 cmake 的缓存和编译结果（便于重新配置和编译）
+# 清理 cmake 的缓存和编译结果（便于重新配置和编译 benchmark），
+# 不会删除 abseil-cpp 的安装目录 ./install
 ./cmake-clean.sh
 
-# 重新执行本仓库的 cmake 配置，建议先执行 cmake-clean.sh，默认会创建 build 目录
+# 重新执行本仓库的 cmake 配置，生成 makefile，
+# 建议先执行 cmake-clean.sh，默认会创建 build 目录
 ./cmake-config.sh
 ```
