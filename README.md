@@ -52,6 +52,7 @@
 
     ```bash
     git submodule update --init --recursive ./3rd_party/boost_unordered
+    git submodule update --remote --recursive ./3rd_party/boost_unordered
     ```
 
 - 我自己的 `jstd::robin_hash_map`：更新至最新版，并添加新的 `jstd::cluster_flat_map` 。
@@ -110,11 +111,17 @@ git submodule update --init --recursive
 
 ```shell
 # 更新全部 submodule
+# 保证已经初始化
 git submodule update --init --recursive
+# 从远端更新
+git submodule update --remote --recursive
 
 # 单独更新某个 submodule
 git submodule update --init --recursive ./3rd_party/flat_hash_map
+git submodule update --remote --recursive ./3rd_party/flat_hash_map
+
 git submodule update --init --recursive ./3rd_party/boost_unordered
+git submodule update --remote --recursive ./3rd_party/boost_unordered
 ```
 
 ### 4. 配置与编译
