@@ -170,9 +170,10 @@ message("")
 ## https://abseil.io/docs/cpp/tools/cmake-installs
 ##
 
-# Abseil currently supports C++11, C++14, and C++17.
-set(CMAKE_CXX_STANDARD 17)
+# Abseil currently supports C++11, C++14, C++17, and C++20.
+set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
 if (CMAKE_VERSION VERSION_GREATER_EQUAL "3.8")
     set(ABSL_PROPAGATE_CXX_STD ON)
 endif()
