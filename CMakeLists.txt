@@ -281,6 +281,7 @@ include_directories(3rd_party/emhash)
 include_directories(3rd_party/robin-hood-hashing/src/include)
 include_directories(3rd_party/unordered_dens/include)
 include_directories(3rd_party/robin-map/include)
+include_directories(3rd_party/boost_unordered/include)
 include_directories(install/include)
 ## include_directories(3rd_party/abseil-cpp)
 
