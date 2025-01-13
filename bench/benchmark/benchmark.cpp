@@ -78,8 +78,6 @@
 #define USE_JSTD_HASH_TABLE         0
 #define USE_JSTD_DICTIONARY         0
 
-#define USE_JSTD_FLAT16_HASH_MAP    1
-#define USE_JSTD_ROBIN16_HASH_MAP   0
 #define USE_JSTD_ROBIN_HASH_MAP     1
 #define USE_SKA_FLAT_HASH_MAP       1
 #define USE_SKA_BYTELL_HASH_MAP     0
@@ -116,12 +114,6 @@
 
 #include <unordered_map>
 
-#if USE_JSTD_FLAT16_HASH_MAP
-#include <jstd/hashmap/flat16_hash_map.h>
-#endif
-#if USE_JSTD_ROBIN16_HASH_MAP
-#include <jstd/hashmap/robin16_hash_map.h>
-#endif
 #if USE_JSTD_ROBIN_HASH_MAP
 #include <jstd/hashmap/robin_hash_map.h>
 #endif
@@ -2162,22 +2154,6 @@ int main(int argc, char * argv[])
     }
 
     jtest::CPU::warm_up(1000);
-
-#if USE_JSTD_FLAT16_HASH_MAP
-    if (1)
-    {
-        jstd_flat16_hash_map_benchmark();
-        jstd::Console::ReadKey();
-    }
-#endif
-
-#if USE_JSTD_ROBIN16_HASH_MAP
-    if (1)
-    {
-        jstd_robin16_hash_map_benchmark();
-        jstd::Console::ReadKey();
-    }
-#endif
 
 #if USE_JSTD_ROBIN_HASH_MAP
     if (1)
