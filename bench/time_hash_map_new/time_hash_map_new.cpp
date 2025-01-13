@@ -3,7 +3,7 @@
 
   CC BY-SA 4.0 License
 
-  Copyright (c) 2020-2022 XiongHui Guo (gz_shines at msn.com)
+  Copyright (c) 2020-2025 XiongHui Guo (gz_shines at msn.com)
 
   https://github.com/shines77/jstd_hashmap
   https://gitee.com/shines77/jstd_hashmap
@@ -82,16 +82,16 @@
 
 #define USE_STD_HASH_MAP                0
 #define USE_STD_UNORDERED_MAP           1
-#define USE_JSTD_FLAT16_HASH_MAP        0
-#define USE_JSTD_ROBIN16_HASH_MAP       0
 #define USE_JSTD_ROBIN_HASH_MAP         1
+#define USE_JSTD_CLUSTER_FLAT_MAP       1
 #define USE_SKA_FLAT_HASH_MAP           1
 #define USE_SKA_BYTELL_HASH_MAP         0
 #define USE_EMHASH5_HASH_MAP            0
-#define USE_EMHASH7_HASH_MAP            0
+#define USE_EMHASH7_HASH_MAP            1
 #define USE_EMHASH8_HASH_MAP            1
 #define USE_ABSL_FLAT_HASH_MAP          1
 #define USE_ABSL_NODE_HASH_MAP          0
+#define USE_BOOST_UNORDERED_FLAT_MAP    1
 
 #define USE_TSL_ROBIN_HOOD              1
 #define USE_ROBIN_HOOD_UNORDERED_MAP    1
@@ -101,10 +101,12 @@
 #undef USE_ABSL_FLAT_HASH_MAP
 #undef USE_ABSL_NODE_HASH_MAP
 #undef USE_EMHASH7_HASH_MAP
+#undef USE_EMHASH8_HASH_MAP
 
 #undef USE_TSL_ROBIN_HOOD
 #undef USE_ROBIN_HOOD_UNORDERED_MAP
 #undef USE_ANKERL_UNORDERED_DENSE
+#undef USE_BOOST_UNORDERED_FLAT_MAP
 #endif
 
 #ifdef __SSE4_2__
@@ -145,14 +147,11 @@
 #include <unordered_map>
 #endif
 
-#if USE_JSTD_FLAT16_HASH_MAP
-#include <jstd/hashmap/flat16_hash_map.h>
-#endif
-#if USE_JSTD_ROBIN16_HASH_MAP
-#include <jstd/hashmap/robin16_hash_map.h>
-#endif
 #if USE_JSTD_ROBIN_HASH_MAP
 #include <jstd/hashmap/robin_hash_map.h>
+#endif
+#if USE_JSTD_CLUSTER_FLAT_MAP
+#include <jstd/hashmap/cluster_flat_map.hpp>
 #endif
 #if USE_SKA_FLAT_HASH_MAP
 #include <flat_hash_map/flat_hash_map.hpp>
@@ -183,6 +182,9 @@
 #endif
 #if USE_ANKERL_UNORDERED_DENSE
 #include <ankerl/unordered_dense.h>
+#endif
+#if USE_BOOST_UNORDERED_FLAT_MAP
+#include <boost/unordered/unordered_flat_map.hpp>
 #endif
 #include <jstd/hashmap/hashmap_analyzer.h>
 #include <jstd/hasher/hashes.h>
@@ -354,7 +356,7 @@ struct SimpleHash {
     }
 
     template <typename Argument, typename std::enable_if<
-                                  (!std::is_integral<Argument>::value ||
+                                 (!std::is_integral<Argument>::value ||
                                   sizeof(Argument) > 8)>::type * = nullptr>
     result_type operator () (const Argument & value) const
         noexcept(noexcept(std::declval<std::hash<Argument>>()(value))) {
@@ -410,7 +412,7 @@ struct MumHash
     }
 
     template <typename Argument, typename std::enable_if<
-                                  (!std::is_integral<Argument>::value ||
+                                 (!std::is_integral<Argument>::value ||
                                   sizeof(Argument) > 8)>::type * = nullptr>
     result_type operator () (const Argument & value) const
         noexcept(noexcept(std::declval<std::hash<Argument>>()(value))) {
@@ -854,27 +856,19 @@ void test_hashmap_by_name(const std::string & name, std::size_t obj_size, std::s
     }
 #endif
 
-#if USE_JSTD_FLAT16_HASH_MAP
-    if (name == "jstd::flat16_hash_map") {
-        measure_hashmap<jstd::flat16_hash_map<Key,   Value, HASH_MAP_FUNCTION<Key>>,
-                        jstd::flat16_hash_map<Key *, Value, HASH_MAP_FUNCTION<Key *>>>
-            ("jstd::flat16_hash_map", obj_size, iters, has_stress_hash_function);
-    }
-#endif
-
-#if USE_JSTD_ROBIN16_HASH_MAP
-    if (name == "jstd::robin16_hash_map") {
-        measure_hashmap<jstd::robin16_hash_map<Key,   Value, HASH_MAP_FUNCTION<Key>>,
-                        jstd::robin16_hash_map<Key *, Value, HASH_MAP_FUNCTION<Key *>>>
-            ("jstd::robin16_hash_map", obj_size, iters, has_stress_hash_function);
-    }
-#endif
-
 #if USE_JSTD_ROBIN_HASH_MAP
     if (name == "jstd::robin_hash_map") {
         measure_hashmap<jstd::robin_hash_map<Key,   Value, HASH_MAP_FUNCTION<Key>>,
                         jstd::robin_hash_map<Key *, Value, HASH_MAP_FUNCTION<Key *>>>
             ("jstd::robin_hash_map", obj_size, iters, has_stress_hash_function);
+    }
+#endif
+
+#if USE_BOOST_UNORDERED_FLAT_MAP
+    if (name == "boost::unordeded_flat_map") {
+        measure_hashmap<boost::unordeded::unordeded_flat_map<Key,   Value, HASH_MAP_FUNCTION<Key>>,
+                        boost::unordeded::unordeded_flat_map<Key *, Value, HASH_MAP_FUNCTION<Key *>>>
+            ("boost::unordeded_flat_map", obj_size, iters, has_stress_hash_function);
     }
 #endif
 
@@ -974,27 +968,19 @@ void test_all_hashmaps(std::size_t obj_size, std::size_t iters)
     }
 #endif
 
-#if USE_JSTD_FLAT16_HASH_MAP
-    if (1) {
-        measure_hashmap<jstd::flat16_hash_map<Key,   Value, HASH_MAP_FUNCTION<Key>>,
-                        jstd::flat16_hash_map<Key *, Value, HASH_MAP_FUNCTION<Key *>>>
-            ("jstd::flat16_hash_map", obj_size, iters, has_stress_hash_function);
-    }
-#endif
-
-#if USE_JSTD_ROBIN16_HASH_MAP
-    if (1) {
-        measure_hashmap<jstd::robin16_hash_map<Key,   Value, HASH_MAP_FUNCTION<Key>>,
-                        jstd::robin16_hash_map<Key *, Value, HASH_MAP_FUNCTION<Key *>>>
-            ("jstd::robin16_hash_map", obj_size, iters, has_stress_hash_function);
-    }
-#endif
-
 #if USE_JSTD_ROBIN_HASH_MAP
     if (1) {
         measure_hashmap<jstd::robin_hash_map<Key,   Value, HASH_MAP_FUNCTION<Key>>,
                         jstd::robin_hash_map<Key *, Value, HASH_MAP_FUNCTION<Key *>>>
             ("jstd::robin_hash_map", obj_size, iters, has_stress_hash_function);
+    }
+#endif
+
+#if USE_BOOST_UNORDERED_FLAT_MAP
+    if (1) {
+        measure_hashmap<boost::unordeded::unordeded_flat_map<Key,   Value, HASH_MAP_FUNCTION<Key>>,
+                        boost::unordeded::unordeded_flat_map<Key *, Value, HASH_MAP_FUNCTION<Key *>>>
+            ("boost::unordeded_flat_map", obj_size, iters, has_stress_hash_function);
     }
 #endif
 
@@ -1090,24 +1076,17 @@ void test_hashmap_by_name_for_string(const std::string & name, std::size_t obj_s
     }
 #endif
 
-#if USE_JSTD_FLAT16_HASH_MAP
-    if (name == "jstd::flat16_hash_map") {
-        measure_string_hashmap<jstd::flat16_hash_map<Key, Value>>
-            ("jstd::flat16_hash_map", obj_size, iters);
-    }
-#endif
-
-#if USE_JSTD_ROBIN16_HASH_MAP
-    if (name == "jstd::robin16_hash_map") {
-        measure_string_hashmap<jstd::robin16_hash_map<Key, Value>>
-            ("jstd::robin16_hash_map", obj_size, iters);
-    }
-#endif
-
 #if USE_JSTD_ROBIN_HASH_MAP
     if (name == "jstd::robin_hash_map") {
         measure_string_hashmap<jstd::robin_hash_map<Key, Value>>
             ("jstd::robin_hash_map", obj_size, iters);
+    }
+#endif
+
+#if USE_BOOST_UNORDERED_FLAT_MAP
+    if (name == "boost::unordeded_flat_map") {
+        measure_string_hashmap<boost::unordeded::unordeded_flat_map<Key, Value>>
+            ("boost::unordeded_flat_map", obj_size, iters);
     }
 #endif
 
@@ -1199,24 +1178,17 @@ void test_all_hashmaps_for_string(std::size_t obj_size, std::size_t iters)
     }
 #endif
 
-#if USE_JSTD_FLAT16_HASH_MAP
-    if (1) {
-        measure_string_hashmap<jstd::flat16_hash_map<Key, Value>>
-            ("jstd::flat16_hash_map", obj_size, iters);
-    }
-#endif
-
-#if USE_JSTD_ROBIN16_HASH_MAP
-    if (1) {
-        measure_string_hashmap<jstd::robin16_hash_map<Key, Value>>
-            ("jstd::robin16_hash_map", obj_size, iters);
-    }
-#endif
-
 #if USE_JSTD_ROBIN_HASH_MAP
     if (1) {
         measure_string_hashmap<jstd::robin_hash_map<Key, Value>>
             ("jstd::robin_hash_map", obj_size, iters);
+    }
+#endif
+
+#if USE_BOOST_UNORDERED_FLAT_MAP
+    if (1) {
+        measure_string_hashmap<boost::unordeded::unordeded_flat_map<Key, Value>>
+            ("boost::unordeded_flat_map", obj_size, iters);
     }
 #endif
 
@@ -1428,10 +1400,10 @@ void need_store_hash_test()
 }
 
 template <typename Key, typename Value>
-bool is_compatible_layout_pair()
+bool is_layout_compatible_pair()
 {
     static constexpr bool isCompatibleLayout =
-        jstd::is_compatible_pair_layout<std::pair<const Key, Value>, std::pair<Key, Value>>::value;
+        jstd::is_layout_compatible_pair<std::pair<const Key, Value>, std::pair<Key, Value>>::value;
     return isCompatibleLayout;
 }
 
@@ -1442,12 +1414,12 @@ void is_compatible_layout_ex_test(const std::string & key, const std::string & v
     static constexpr bool isStandardLayoutPair = std::is_standard_layout<std::pair<Key, Value>>::value;
     static constexpr bool isStandardLayoutConstPair = std::is_standard_layout<std::pair<const Key, Value>>::value;
 
-    static constexpr bool isCompatiblePairLayout =
-        jstd::is_compatible_kv_layout<Key, Value>::template isCompatiblePairLayout<std::pair<Key, Value>>();
-    static constexpr bool isCompatibleConstPairLayout =
-        jstd::is_compatible_kv_layout<Key, Value>::template isCompatiblePairLayout<std::pair<const Key, Value>>();
+    static constexpr bool isLayoutCompatiblePair =
+        jstd::is_layout_compatible_kv<Key, Value>::template isLayoutCompatible<std::pair<Key, Value>>();
+    static constexpr bool isLayoutCompatibleConstPair =
+        jstd::is_layout_compatible_kv<Key, Value>::template isLayoutCompatible<std::pair<const Key, Value>>();
 
-    static constexpr bool isCompatibleKVLayoutKey = jstd::is_compatible_kv_layout<Key, Value>::value;
+    static constexpr bool isLayoutCompatibleKV = jstd::is_layout_compatible_kv<Key, Value>::value;
 
     printf("jstd::is_standard_layout<%s>::value = %s\n",
            key.c_str(), (isStandardLayoutKey ? "True" : "False"));
@@ -1456,53 +1428,53 @@ void is_compatible_layout_ex_test(const std::string & key, const std::string & v
     printf("jstd::is_standard_layout<std::pair<const %s, %s>>::value = %s\n",
            key.c_str(), value.c_str(), (isStandardLayoutConstPair ? "True" : "False"));
 
-    printf("jstd::is_compatible_kv_layout::isCompatiblePairLayout<std::pair<%s, %s>>() = %s\n",
-           key.c_str(), value.c_str(), (isCompatiblePairLayout ? "True" : "False"));
-    printf("jstd::is_compatible_kv_layout::isCompatiblePairLayout<std::pair<const %s, %s>>() = %s\n",
-           key.c_str(), value.c_str(), (isCompatibleConstPairLayout ? "True" : "False"));
+    printf("jstd::is_layout_compatible_kv::isLayoutCompatible<std::pair<%s, %s>>() = %s\n",
+           key.c_str(), value.c_str(), (isLayoutCompatiblePair ? "True" : "False"));
+    printf("jstd::is_layout_compatible_kv::isLayoutCompatible<std::pair<const %s, %s>>() = %s\n",
+           key.c_str(), value.c_str(), (isLayoutCompatibleConstPair ? "True" : "False"));
 
-    printf("jstd::is_compatible_kv_layout<%s, %s>::value = %s\n",
-           key.c_str(), value.c_str(), (isCompatibleKVLayoutKey ? "True" : "False"));
+    printf("jstd::is_layout_compatible_kv<%s, %s>::value = %s\n",
+           key.c_str(), value.c_str(), (isLayoutCompatibleKV ? "True" : "False"));
     printf("\n");
 }
 
 void is_compatible_layout_test()
 {
-    bool isCompatibleKVLayout, isCompatiblePairLayout;
+    bool isLayoutCompatibleKV, isLayoutCompatiblePair;
 
-    isCompatibleKVLayout = jstd::is_compatible_kv_layout<int, int>::value;
-    isCompatiblePairLayout = is_compatible_layout_pair<int, int>();
-    printf("jstd::is_compatible_kv_layout<int, int> = %s\n",
-            (isCompatibleKVLayout ? "True" : "False"));
-    printf("jstd::is_compatible_pair_layout<int, int> = %s\n",
-            (isCompatiblePairLayout ? "True" : "False"));
+    isLayoutCompatibleKV = jstd::is_layout_compatible_kv<int, int>::value;
+    isLayoutCompatiblePair = is_layout_compatible_pair<int, int>();
+    printf("jstd::is_layout_compatible_kv<int, int> = %s\n",
+            (isLayoutCompatibleKV ? "True" : "False"));
+    printf("jstd::is_layout_compatible_pair<int, int> = %s\n",
+            (isLayoutCompatiblePair ? "True" : "False"));
     printf("\n");
 
-    isCompatibleKVLayout = jstd::is_compatible_kv_layout<size_t, size_t>::value;
-    isCompatiblePairLayout = is_compatible_layout_pair<size_t, size_t>();
-    printf("jstd::is_compatible_kv_layout<size_t, size_t> = %s\n",
-            (isCompatibleKVLayout ? "True" : "False"));
-    printf("jstd::is_compatible_pair_layout<size_t, size_t> = %s\n",
-            (isCompatiblePairLayout ? "True" : "False"));
+    isLayoutCompatibleKV = jstd::is_layout_compatible_kv<size_t, size_t>::value;
+    isLayoutCompatiblePair = is_layout_compatible_pair<size_t, size_t>();
+    printf("jstd::is_layout_compatible_kv<size_t, size_t> = %s\n",
+            (isLayoutCompatibleKV ? "True" : "False"));
+    printf("jstd::is_layout_compatible_pair<size_t, size_t> = %s\n",
+            (isLayoutCompatiblePair ? "True" : "False"));
     printf("\n");
 
-    isCompatibleKVLayout = jstd::is_compatible_kv_layout<std::string, std::string>::value;
-    isCompatiblePairLayout = is_compatible_layout_pair<std::string, std::string>();
-    printf("jstd::is_compatible_kv_layout<std::string, std::string> = %s\n",
-            (isCompatibleKVLayout ? "True" : "False"));
-    printf("jstd::is_compatible_pair_layout<std::string, std::string> = %s\n",
-            (isCompatiblePairLayout ? "True" : "False"));
+    isLayoutCompatibleKV = jstd::is_layout_compatible_kv<std::string, std::string>::value;
+    isLayoutCompatiblePair = is_layout_compatible_pair<std::string, std::string>();
+    printf("jstd::is_layout_compatible_kv<std::string, std::string> = %s\n",
+            (isLayoutCompatibleKV ? "True" : "False"));
+    printf("jstd::is_layout_compatible_pair<std::string, std::string> = %s\n",
+            (isLayoutCompatiblePair ? "True" : "False"));
     printf("\n");
-    if (!isCompatibleKVLayout || !isCompatiblePairLayout) {
+    if (!isLayoutCompatibleKV || !isLayoutCompatiblePair) {
         is_compatible_layout_ex_test<std::string, std::string>("std::string", "std::string");
     }
 
-    isCompatibleKVLayout = jstd::is_compatible_kv_layout<jstd::string_view, jstd::string_view>::value;
-    isCompatiblePairLayout = is_compatible_layout_pair<jstd::string_view, jstd::string_view>();
-    printf("jstd::is_compatible_kv_layout<jstd::string_view, jstd::string_view> = %s\n",
-            (isCompatibleKVLayout ? "True" : "False"));
-    printf("jstd::is_compatible_pair_layout<jstd::string_view, jstd::string_view> = %s\n",
-            (isCompatiblePairLayout ? "True" : "False"));
+    isLayoutCompatibleKV = jstd::is_layout_compatible_kv<jstd::string_view, jstd::string_view>::value;
+    isLayoutCompatiblePair = is_layout_compatible_pair<jstd::string_view, jstd::string_view>();
+    printf("jstd::is_layout_compatible_kv<jstd::string_view, jstd::string_view> = %s\n",
+            (isLayoutCompatibleKV ? "True" : "False"));
+    printf("jstd::is_layout_compatible_pair<jstd::string_view, jstd::string_view> = %s\n",
+            (isLayoutCompatiblePair ? "True" : "False"));
     printf("\n");
 }
 

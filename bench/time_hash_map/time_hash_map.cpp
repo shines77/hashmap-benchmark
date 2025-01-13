@@ -3,7 +3,7 @@
 
   CC BY-SA 4.0 License
 
-  Copyright (c) 2020-2022 XiongHui Guo (gz_shines at msn.com)
+  Copyright (c) 2020-2025 XiongHui Guo (gz_shines at msn.com)
 
   https://github.com/shines77/hashmap-benchmark
   https://gitee.com/shines77/hashmap-benchmark
@@ -92,7 +92,7 @@
 #define USE_SKA_BYTELL_HASH_MAP         0
 #define USE_EMHASH5_HASH_MAP            1
 #define USE_EMHASH7_HASH_MAP            0
-#define USE_EMHASH8_HASH_MAP            1
+#define USE_EMHASH8_HASH_MAP            0
 #define USE_ABSL_FLAT_HASH_MAP          1
 #define USE_ABSL_NODE_HASH_MAP          0
 
