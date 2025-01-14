@@ -268,11 +268,13 @@ struct IntegalHash
     typedef T           argument_type;
     typedef std::size_t result_type;
 
+    using is_avalanching = std::true_type;
+
     template <typename UInt32, typename std::enable_if<
                                 (std::is_integral<UInt32>::value &&
                                 (sizeof(UInt32) <= 4))>::type * = nullptr>
     result_type operator () (UInt32 value) const noexcept {
-        result_type hash = (result_type)(((std::uint64_t)value * 2654435769ul) >> 12);
+        result_type hash = (result_type)(((std::uint64_t)value * 2654435761ul) >> 12);
         return hash;
     }
 
@@ -280,7 +282,7 @@ struct IntegalHash
                                 (std::is_integral<UInt64>::value &&
                                 (sizeof(UInt64) > 4 && sizeof(UInt64) <= 8))>::type * = nullptr>
     result_type operator () (UInt64 value) const noexcept {
-        result_type hash = (result_type)(((std::uint64_t)value * 11400714819323198485ull) >> 28);
+        result_type hash = (result_type)(((std::uint64_t)value * 11400714818402800987ull) >> 28);
         return hash;
     }
 
@@ -300,11 +302,13 @@ struct MumHash
     typedef T           argument_type;
     typedef std::size_t result_type;
 
+    using is_avalanching = std::true_type;
+
     template <typename Integer, typename std::enable_if<
                                 (std::is_integral<Integer>::value &&
                                 (sizeof(Integer) <= 8))>::type * = nullptr>
     result_type operator () (Integer value) const noexcept {
-        result_type hash = (result_type)(jstd::hashes::mum_hash64((std::uint64_t)value, 11400714819323198485ull));
+        result_type hash = (result_type)(jstd::hashes::mum_hash((std::size_t)value));
         return hash;
     }
 
