@@ -372,11 +372,13 @@ struct IntegalHash
     typedef T           argument_type;
     typedef std::size_t result_type;
 
+    using is_avalanching = std::true_type;
+
     template <typename UInt32, typename std::enable_if<
                                 (std::is_integral<UInt32>::value &&
                                 (sizeof(UInt32) <= 4))>::type * = nullptr>
     result_type operator () (UInt32 value) const noexcept {
-        result_type hash = (result_type)(((std::uint64_t)value * 2654435769ul) >> 12);
+        result_type hash = (result_type)(((std::uint64_t)value * 2654435761ul) >> 12);
         return hash;
     }
 
@@ -384,7 +386,7 @@ struct IntegalHash
                                 (std::is_integral<UInt64>::value &&
                                 (sizeof(UInt64) > 4 && sizeof(UInt64) <= 8))>::type * = nullptr>
     result_type operator () (UInt64 value) const noexcept {
-        result_type hash = (result_type)(((std::uint64_t)value * 11400714819323198485ull) >> 28);
+        result_type hash = (result_type)(((std::uint64_t)value * 11400714818402800987ull) >> 28);
         return hash;
     }
 
@@ -404,16 +406,18 @@ struct MumHash
     typedef T           argument_type;
     typedef std::size_t result_type;
 
+    using is_avalanching = std::true_type;
+
     template <typename Integer, typename std::enable_if<
                                 (std::is_integral<Integer>::value &&
                                 (sizeof(Integer) <= 8))>::type * = nullptr>
     result_type operator () (Integer value) const noexcept {
-        result_type hash = (result_type)(jstd::hashes::mum_hash64((std::uint64_t)value, 11400714819323198485ull));
+        result_type hash = (result_type)(jstd::hashes::mum_hash((std::size_t)value));
         return hash;
     }
 
     template <typename Argument, typename std::enable_if<
-                                 (!std::is_integral<Argument>::value ||
+                                  (!std::is_integral<Argument>::value ||
                                   sizeof(Argument) > 8)>::type * = nullptr>
     result_type operator () (const Argument & value) const
         noexcept(noexcept(std::declval<std::hash<Argument>>()(value))) {
@@ -866,10 +870,18 @@ void test_hashmap_by_name(const std::string & name, std::size_t obj_size, std::s
 #endif
 
 #if USE_TSL_ROBIN_HOOD
-    if (name == "") {
+    if (name == "tsl::robin_map") {
         measure_hashmap<tsl::robin_map<Key,   Value, HASH_MAP_FUNCTION<Key>>,
                         tsl::robin_map<Key *, Value, HASH_MAP_FUNCTION<Key *>>>
             ("tsl::robin_map", obj_size, iters, has_stress_hash_function);
+    }
+#endif
+
+#if USE_JSTD_CLUSTER_FLAT_MAP
+    if (name == "jstd::cluster_flat_map") {
+        measure_hashmap<jstd::cluster_flat_map<Key,   Value, HASH_MAP_FUNCTION<Key>>,
+                        jstd::cluster_flat_map<Key *, Value, HASH_MAP_FUNCTION<Key *>>>
+            ("jstd::cluster_flat_map", obj_size, iters, has_stress_hash_function);
     }
 #endif
 
@@ -985,6 +997,14 @@ void test_all_hashmaps(std::size_t obj_size, std::size_t iters)
     }
 #endif
 
+#if USE_JSTD_CLUSTER_FLAT_MAP
+    if (1) {
+        measure_hashmap<jstd::cluster_flat_map<Key,   Value, HASH_MAP_FUNCTION<Key>>,
+                        jstd::cluster_flat_map<Key *, Value, HASH_MAP_FUNCTION<Key *>>>
+            ("jstd::cluster_flat_map", obj_size, iters, has_stress_hash_function);
+    }
+#endif
+
 #if USE_BOOST_UNORDERED_FLAT_MAP
     if (1) {
         measure_hashmap<boost::unordered::unordered_flat_map<Key,   Value, HASH_MAP_FUNCTION<Key>>,
@@ -1091,6 +1111,13 @@ void test_hashmap_by_name_for_string(const std::string & name, std::size_t obj_s
     }
 #endif
 
+#if USE_JSTD_CLUSTER_FLAT_MAP
+    if (name == "jstd::cluster_flat_map") {
+        measure_string_hashmap<jstd::cluster_flat_map<Key, Value>>
+            ("jstd::cluster_flat_map", obj_size, iters);
+    }
+#endif
+
 #if USE_BOOST_UNORDERED_FLAT_MAP
     if (name == "boost::unordered_flat_map") {
         measure_string_hashmap<boost::unordered::unordered_flat_map<Key, Value>>
@@ -1190,6 +1217,13 @@ void test_all_hashmaps_for_string(std::size_t obj_size, std::size_t iters)
     if (1) {
         measure_string_hashmap<tsl::robin_map<Key, Value>>
             ("tsl::robin_map", obj_size, iters);
+    }
+#endif
+
+#if USE_JSTD_CLUSTER_FLAT_MAP
+    if (1) {
+        measure_string_hashmap<jstd::cluster_flat_map<Key, Value>>
+            ("jstd::cluster_flat_map", obj_size, iters);
     }
 #endif
 
