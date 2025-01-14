@@ -132,7 +132,7 @@ static void map_serial_insert(std::size_t iters) {
     std::size_t start = CurrentMemoryUsage();
     MapType hashmap;
 
-    {    
+    {
         jtest::StopWatch sw;
 
         mapped_type max_iters = static_cast<mapped_type>(iters);
@@ -154,7 +154,7 @@ static void map_serial_insert(std::size_t iters) {
 
         double lf = hashmap.load_factor();
         report_result("serial_insert", ut, lf, iters, start, finish);
-    }    
+    }
 }
 
 template <class MapType>
@@ -164,12 +164,12 @@ static void map_serial_insert_predicted(std::size_t iters) {
     std::size_t start = CurrentMemoryUsage();
     MapType hashmap;
 
-    {    
+    {
         jtest::StopWatch sw;
 
         mapped_type max_iters = static_cast<mapped_type>(iters);
 
-        hashmap.rehash(max_iters);
+        hashmap.reserve(max_iters);
 
         reset_counter();
         sw.start();
@@ -232,7 +232,7 @@ static void map_serial_emplace(std::size_t iters) {
     std::size_t start = CurrentMemoryUsage();
     MapType hashmap;
 
-    {        
+    {
         jtest::StopWatch sw;
 
         mapped_type max_iters = static_cast<mapped_type>(iters);
@@ -264,12 +264,12 @@ static void map_serial_emplace_predicted(std::size_t iters) {
     std::size_t start = CurrentMemoryUsage();
     MapType hashmap;
 
-    {        
+    {
         jtest::StopWatch sw;
 
         mapped_type max_iters = static_cast<mapped_type>(iters);
 
-        hashmap.rehash(iters);
+        hashmap.reserve(iters);
 
         reset_counter();
         sw.start();
@@ -332,7 +332,7 @@ static void map_serial_operator(std::size_t iters) {
     std::size_t start = CurrentMemoryUsage();
     MapType hashmap;
 
-    {        
+    {
         jtest::StopWatch sw;
 
         mapped_type max_iters = static_cast<mapped_type>(iters);
@@ -364,12 +364,12 @@ static void map_serial_operator_predicted(std::size_t iters) {
     std::size_t start = CurrentMemoryUsage();
     MapType hashmap;
 
-    {        
+    {
         jtest::StopWatch sw;
 
         mapped_type max_iters = static_cast<mapped_type>(iters);
 
-        hashmap.rehash(max_iters);
+        hashmap.reserve(max_iters);
 
         reset_counter();
         sw.start();
@@ -500,7 +500,7 @@ static void map_serial_toggle(std::size_t iters) {
     std::size_t start = CurrentMemoryUsage();
     MapType hashmap;
 
-    {        
+    {
         jtest::StopWatch sw;
 
         mapped_type max_iters = static_cast<mapped_type>(iters);
@@ -732,7 +732,7 @@ static void map_random_insert_predicted(std::size_t iters, const Vector & indice
 
         mapped_type max_iters = static_cast<mapped_type>(iters);
 
-        hashmap.rehash(max_iters);
+        hashmap.reserve(max_iters);
 
         reset_counter();
         sw.start();
@@ -832,7 +832,7 @@ static void map_random_emplace_predicted(std::size_t iters, const Vector & indic
 
         mapped_type max_iters = static_cast<mapped_type>(iters);
 
-        hashmap.rehash(iters);
+        hashmap.reserve(iters);
 
         reset_counter();
         sw.start();
@@ -932,7 +932,7 @@ static void map_random_operator_predicted(std::size_t iters, const Vector & indi
 
         mapped_type max_iters = static_cast<mapped_type>(iters);
 
-        hashmap.rehash(max_iters);
+        hashmap.reserve(max_iters);
 
         reset_counter();
         sw.start();
