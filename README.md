@@ -4,7 +4,7 @@
 
 ## 简介
 
-几个国内外最优秀的 C++ Hashmap 库的基准测试，包括 `Google abseil-cpp` 的哈希表 `absl::flat_hash_map`，还包括 aka::flat_hash_map、tsl::robin_map、ktprime::emhash7、ankerl::unordered_dense::map 等著名的哈希表，`jstd::robin_hash_map` 均取得了不错的成绩。
+几个国内外最优秀的 C++ Hashmap 库的基准测试，包括 `Google abseil-cpp` 的哈希表 `absl::flat_hash_map`，还包括 `aka::flat_hash_map`、`tsl::robin_map`、`ktprime::emhash7`、`ankerl::unordered_dense::map`、`boost::unordered_flat_map` 等著名的哈希表，`jstd::robin_hash_map` 均取得了不错的成绩。
 
 ### C++ Hashmap
 
@@ -92,11 +92,11 @@
 
 由于 `github` 访问比较困难，使用的是 `gitee` 的镜像。
 
-`flat_hash_map` 国内的镜像修改版：[https://gitee.com/shines77/flat_hash_map](https://gitee.com/shines77/flat_hash_map)
+`aka::flat_hash_map` 国内的镜像修改版：[https://gitee.com/shines77/flat_hash_map](https://gitee.com/shines77/flat_hash_map)
 
 `abseil-cpp` 国内的镜像：[https://gitee.com/shines77/abseil-cpp](https://gitee.com/shines77/abseil-cpp)
 
-本人对 `flat_hash_map` 做了一些修改，并修复了一些 `bug`，以便能过在本测试代码中正常使用。
+本人对 `aka::flat_hash_map` 做了一些修改，并修复了一些 `bug`，以便能过在本测试代码中正常使用。
 
 修改记录：
 

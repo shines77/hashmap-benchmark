@@ -4,7 +4,7 @@
 
 ## Overview
 
-Benchmarking several of the best C++ Hashmap libraries both domestically and internationally, including the hash table from Google abseil cpp `absl:flat_hash_map`， Also includes  Famous hash tables such as aka::flat_cash_map, tsl::robin_map, ktprime::emhash7, ankerl::unordered_deny::map, etc `jstd::robin_hash_map` has achieved good results.
+Benchmarking several of the best C++ Hashmap libraries both domestically and internationally, including the hash table from Google abseil cpp `absl:flat_hash_map`， Also includes  Famous hash tables such as `aka::flat_cash_map`, `tsl::robin_map`, `ktprime::emhash7`, `ankerl::unordered_deny::map` and `boost::unordered_flat_map` etc, `jstd::robin_hash_map` has achieved good results.
 
 ### C++ Hashmap
 
@@ -90,11 +90,11 @@ If you only clone this repository after this update, there is no need to do the 
 
 Because `github` is difficult to access in China, so I use a mirror repository of `gitee.com`.
 
-`flat_hash_map` China mirror and modified version: [https://gitee.com/shines77/flat_hash_map](https://gitee.com/shines77/flat_hash_map)
+`aka::flat_hash_map` China mirror and modified version: [https://gitee.com/shines77/flat_hash_map](https://gitee.com/shines77/flat_hash_map)
 
-`abseil-cpp` China mirror: [https://gitee.com/arjing/abseil-cpp](https://gitee.com/arjing/abseil-cpp)
+`abseil-cpp` China mirror: [https://gitee.com/shines77/abseil-cpp](https://gitee.com/shines77/abseil-cpp)
 
-I made some changes to `flat_hash_map` and fixed some `bugs` so that it can be used normally in this test code.
+I made some changes to `aka::flat_hash_map` and fixed some `bugs` so that it can be used normally in this test code.
 
 ChangeLog:
 
