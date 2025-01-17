@@ -6,6 +6,8 @@
 
 几个国内外最优秀的 C++ Hashmap 库的基准测试，包括 `Google abseil-cpp` 的哈希表 `absl::flat_hash_map`，还包括 `aka::flat_hash_map`、`tsl::robin_map`、`ktprime::emhash7`、`ankerl::unordered_dense::map`、`boost::unordered_flat_map` 等著名的哈希表，`jstd::robin_hash_map` 均取得了不错的成绩。
 
+由于 `boost::unordered_flat_map` 需要 `C++ 20` 才能编译，所以本仓库的 CMake `CMakeFiles.txt` 编译要求升级为 `C++ 20`，自带的 `Visual Studio 2015` 工程只需要 `C++ 11` 即可。
+
 ### C++ Hashmap
 
 对以下 `C++` 开源库做了基准测试：

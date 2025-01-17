@@ -6,6 +6,8 @@
 
 Benchmarking several of the best C++ Hashmap libraries both domestically and internationally, including the hash table from Google abseil cpp `absl:flat_hash_map`， Also includes  Famous hash tables such as `aka::flat_cash_map`, `tsl::robin_map`, `ktprime::emhash7`, `ankerl::unordered_deny::map` and `boost::unordered_flat_map` etc, `jstd::robin_hash_map` has achieved good results.
 
+Due to `boost:unrdered_flat_map` requires 'C++ 20' to compile, so the compilation of the repository's CMakeFiles. txt needs to be upgraded to 'C++ 20'. The built-in `Visual Studio 2015' project only requires 'C++ 11'.
+
 ### C++ Hashmap
 
 The following `C++` open source libraries were benchmade:
