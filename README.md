@@ -141,7 +141,7 @@ git submodule update --init --recursive ./3rd_party/boost_unordered
 
 #### 3.2 更新子模块远端仓库的最新版
 
-这种方式是不推荐的，但是如果上面的命令解决不了问题，可以尝试这个命令，因为本仓库的 submodule 基本是我在 gitee 上做的镜像，都不是官方的仓库，除了我自己写的 jstd_hashmap 之外。
+这种方式是不推荐的，但是如果上面的命令解决不了问题，可以尝试这个命令，因为本仓库的 submodule 基本是我在 gitee 上做的镜像，都不是官方的仓库，除了我自己写的 `jstd_hashmap` 之外。
 
 ```bash
 # 从远端更新, 即这个版本可以比当前仓库里的使用版本更高，不推荐
@@ -191,7 +191,9 @@ cmake -DABSL_BUILD_TESTING=OFF -DABSL_USE_GOOGLETEST_HEAD=OFF -DABSL_PROPAGATE_C
 make
 ```
 
-如果 CMake 有缓存文件，请拷贝根目录下的 `./cmake-clean.sh` 脚本到你的 build 目录，例如：./build。再运行它，清理 CMake 的缓存文件。
+如果 CMake 有缓存文件，请拷贝根目录下的 `./cmake-clean.sh` 脚本到你的 build 目录，例如：`./build`。再运行它，清理 CMake 的缓存文件。
+
+`./cmake-clean.sh` 只会清理 `benchmark` 已生成的文件，不会影响已经编译好的 `abseil-cpp` 库。
 
 ### 6. 更新本仓库到最新版
 

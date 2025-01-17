@@ -168,6 +168,8 @@ make
 
 If there is a cached file in CMake, please copy the `./cmake-clean.sh` script to your build directory, for example: `./build`。Run it again to clean up the cache files of CMake.
 
+`./cmake-clean.sh` only cleans up benchmark files and does not affect the already compiled `abseil-cpp` library.
+
 ### 6. Update to lastest version
 
 If you have compiled `abseil-cpp` and `hashmap-benchmark`, and wanna update to lastest version of this repository.
