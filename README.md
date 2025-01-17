@@ -10,11 +10,13 @@
 
 对以下 `C++` 开源库做了基准测试：
 
+* C++ 标准库 STL 自带的 `std::unordered_map`，这是一个用于比较的基准标准。
+
 * [我自己](https://github.com/shines77) 写的 `jstd::robin_hash_map`：
 
     [https://gitee.com/shines77/jstd_hashmap](https://gitee.com/shines77/jstd_hashmap)
 
-* [boost::unordered](https://github.com/boostorg/unordered) library 的 `boost::unordered::unordered_flat_map`：
+* `新加入` [boost::unordered](https://github.com/boostorg/unordered) library 的 `boost::unordered::unordered_flat_map`：
 
     [boost::unordered::unordered_flat_map](https://github.com/MikePopoloski/boost_unordered)
 
@@ -44,7 +46,11 @@
 
 ### 第三方库更新记录
 
+我已经发现一个可笑的错误，那就是 `/3rd_party` 应该是 `/3rd_part`，为了不影响已经 clone 本仓库的用户使用，我会过一阵子再修改这个错误。
+
 2025-01-13 更新：
+
+如果你这次更新之后才 clone 本仓库，则不必做下面的单独更新的步骤，这是给在这次更新前已经 clone 本仓库的用户使用的。
 
 - 新增了 [boost::unordered](https://github.com/boostorg/unordered) library [v1.85.0](https://github.com/boostorg/unordered) 的 [boost::unordered::unordered_flat_map](https://github.com/MikePopoloski/boost_unordered) (非官方库) 。
 
@@ -55,11 +61,11 @@
     git submodule update --remote --recursive ./3rd_party/boost_unordered
     ```
 
-- 我自己的 `jstd::robin_hash_map`：更新至最新版，并添加新的 `jstd::cluster_flat_map` 。
+- 我自己的 `jstd::robin_hash_map`：更新至最新版，并添加了新的哈希表 `jstd::cluster_flat_map` 。
 
 - Google [abseil-cpp] 的 `absl::flat_hash_map`：更新至最新版，最新 tag：20240722.rc2
 
-    由于我更改了 [abseil-cpp] 仓库的 URL，所以请使用下列的命令更新 submodule ：
+    由于我更改了 [abseil-cpp] 仓库的 URL，如果你在这之前就拉取过 /3rd_party/abseil-cpp，请使用下列的命令更新 submodule ：
 
     ```bash
     # 先删除旧的 /3rd_party/abseil-cpp 目录
@@ -113,27 +119,36 @@ git clone https://github.com/shines77/hashmap-benchmark.git
 
 由于引用了以上 `6` 个开源库，`clone` 完以后必须先初始化 `submodule`：
 
-```shell
+```bash
 git submodule init
 git submodule update --init --recursive
 ```
 
 ### 3. 更新子模块
 
-更新子模块到最新版，如果你需要的话。
+更新子模块分为更新到本仓库定义的最新版，以及更新到子模块远端仓库的最新版两种，两者是有一定的区别的。本仓库定义的最新版的版本可能会比该子模块的最新版的低，当本仓库的 submodule 都是我在 gitee 上做的镜像，所以基本不会出现这种情况，即两者版本基本是一致的。
 
-```shell
-# 更新全部 submodule
-# 保证已经初始化
+#### 3.1 更新子模块到本仓库定义的最新版
+
+```bash
+# 更新全部 submodule, 并保证已经初始化
 git submodule update --init --recursive
-# 从远端更新
-git submodule update --remote --recursive
 
 # 单独更新某个 submodule
 git submodule update --init --recursive ./3rd_party/jstd_hashmap
-git submodule update --remote --recursive ./3rd_party/jstd_hashmap
-
 git submodule update --init --recursive ./3rd_party/boost_unordered
+```
+
+#### 3.2 更新子模块远端仓库的最新版
+
+这种方式是不推荐的，但是如果上面的命令解决不了问题，可以尝试这个命令，因为本仓库的 submodule 基本是我在 gitee 上做的镜像，都不是官方的仓库，除了我自己写的 jstd_hashmap 之外。
+
+```bash
+# 从远端更新, 即这个版本可以比当前仓库里的使用版本更高，不推荐
+git submodule update --remote --recursive
+
+# 单独更新某个 submodule 到该子模块的远端最新版
+git submodule update --remote --recursive ./3rd_party/jstd_hashmap
 git submodule update --remote --recursive ./3rd_party/boost_unordered
 ```
 
@@ -141,7 +156,7 @@ git submodule update --remote --recursive ./3rd_party/boost_unordered
 
 先配置和编译 `Google` 的 `abseil-cpp` 库：
 
-```shell
+```bash
 # 切换到 abseil-cpp 根目录
 cd ./3rd_party/abseil-cpp
 
@@ -176,9 +191,26 @@ cmake -DABSL_BUILD_TESTING=OFF -DABSL_USE_GOOGLETEST_HEAD=OFF -DABSL_PROPAGATE_C
 make
 ```
 
-如果 CMake 有缓存文件，请使用根目录下的 `./cmake-clean.sh` 脚本清理 CMake 有缓存文件。
+如果 CMake 有缓存文件，请拷贝根目录下的 `./cmake-clean.sh` 脚本到你的 build 目录，例如：./build。再运行它，清理 CMake 的缓存文件。
 
-### 6. 运行 benchmark
+### 6. 更新本仓库到最新版
+
+如果你已经编译了 `abseil-cpp` and `hashmap-benchmark`, 并且向更新到本仓库的最新版本。
+
+你可以使用下列的命令：
+
+```bash
+cd build
+
+git pull
+git submodule update --init --recursive
+# or
+git submodule update --init --recursive ../3rd_party/jstd_hashmap
+
+make
+```
+
+### 7. 运行 benchmark
 
 请在 ./build 目录下执行下列命令：
 
@@ -205,7 +237,7 @@ make
 ./bin/benchmark ./data/Maven.keys.txt
 ```
 
-### 7. 其他脚本
+### 8. 其他脚本
 
 以下脚本在根目录下：
 
