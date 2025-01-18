@@ -154,3 +154,36 @@ PUBLIC
     "${CMAKE_CURRENT_LIST_DIR}/../install/include"
     ${EXTRA_INCLUDES}
 )
+
+##
+## jackson_bench
+##
+set(JACKSON_BENCH_SOURCE_FILES
+    ${CMAKE_CURRENT_LIST_DIR}/jackson_bench/jackson_bench.cpp
+)
+
+add_executable(jackson_bench ${JACKSON_BENCH_SOURCE_FILES})
+
+if (NOT MSVC)
+    # For gcc or clang warning setting
+    target_compile_options(jackson_bench
+        PUBLIC
+            -Wall -Wno-unused-function -Wno-deprecated-declarations -Wno-unused-variable -Wno-deprecated
+    )
+else()
+    # Warning level 3 and all warnings as errors
+    target_compile_options(jackson_bench PUBLIC /W3 /WX)
+endif()
+
+target_link_libraries(jackson_bench
+PUBLIC
+    ${EXTRA_LIBS}
+    ${JSTD_HASHMAP_LIBNAME}
+)
+
+target_include_directories(jackson_bench
+PUBLIC
+    "${CMAKE_CURRENT_LIST_DIR}/jackson_bench"
+    "${CMAKE_CURRENT_LIST_DIR}/../src"
+    ${EXTRA_INCLUDES}
+)
