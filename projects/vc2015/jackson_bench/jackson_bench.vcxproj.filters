@@ -1,0 +1,88 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="src">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd;cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="src\blueprints">
+      <UniqueIdentifier>{0826fdf8-96e8-454f-8f90-1d9179fd65c7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\hashmaps">
+      <UniqueIdentifier>{b5123d22-65e1-497b-9749-9fecb5ec4d95}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\blueprints\cstring_uint64_fnv1a">
+      <UniqueIdentifier>{6897cfa0-54b6-45cb-987b-5117fff8e0b1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\blueprints\uint32_uint32_murmur">
+      <UniqueIdentifier>{a166346e-7fdf-4a1a-a6f2-970265510abb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\blueprints\uint64_struct448_murmur">
+      <UniqueIdentifier>{f0bd3864-6412-40c4-b4a1-e4c5f68861aa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\hashmaps\absl_flat_hash_map">
+      <UniqueIdentifier>{d66afe32-33d4-43d2-9412-01eddfcaa7ba}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\hashmaps\ankerl_unordered_dense">
+      <UniqueIdentifier>{d7e8427a-94de-4c1b-9a5e-9dc25a3aa08b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\hashmaps\boost_unordered_flat_map">
+      <UniqueIdentifier>{7d938e54-87f1-41ea-aa43-204ee5d5c8ec}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\hashmaps\emhash">
+      <UniqueIdentifier>{049849b6-11dc-4ef2-9262-7f68dd7053bc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\hashmaps\ska_bytell_hash_map">
+      <UniqueIdentifier>{401c1aed-6d3e-4993-893a-a8bc2ed9a3d1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\hashmaps\std_unordered_map">
+      <UniqueIdentifier>{0195c1fe-52f2-42f6-957a-e5da9ee9abd3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\hashmaps\tsl_robin_map">
+      <UniqueIdentifier>{8cdd4996-3922-4fa2-988c-d53aacad0202}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\hashmaps\ska_flat_hash_map">
+      <UniqueIdentifier>{748b19c4-d79e-4759-b6f7-799bfbb66ff9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\hashmaps\jstd_robin_hash_map">
+      <UniqueIdentifier>{608e22ff-fd63-49c5-9ba7-a137572d2f3b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\hashmaps\jstd_cluster_flat_map">
+      <UniqueIdentifier>{7004dcc9-9895-4447-8dea-a995bc9d5827}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\bench\jackson_bench\jackson_bench.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\bench\jackson_bench\bench_config.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\bench\jackson_bench\blueprints\cstring_uint64_fnv1a\blueprint.h">
+      <Filter>src\blueprints\cstring_uint64_fnv1a</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\bench\jackson_bench\blueprints\uint32_uint32_murmur\blueprint.h">
+      <Filter>src\blueprints\uint32_uint32_murmur</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\bench\jackson_bench\blueprints\uint64_struct448_murmur\blueprint.h">
+      <Filter>src\blueprints\uint64_struct448_murmur</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\bench\jackson_bench\hashmaps\absl_flat_hash_map\hashmap_wrapper.h">
+      <Filter>src\hashmaps\absl_flat_hash_map</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\bench\jackson_bench\hashmaps\ankerl_unordered_dense\hashmap_wrapper.h">
+      <Filter>src\hashmaps\ankerl_unordered_dense</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\bench\jackson_bench\hashmaps\jstd_cluster_flat_map\hashmap_wrapper.h">
+      <Filter>src\hashmaps\jstd_cluster_flat_map</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\bench\jackson_bench\hashmaps\jstd_robin_hash_map\hashmap_wrapper.h">
+      <Filter>src\hashmaps\jstd_robin_hash_map</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\bench\jackson_bench\hashmaps\std_unordered_map\hashmap_wrapper.h">
+      <Filter>src\hashmaps\std_unordered_map</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

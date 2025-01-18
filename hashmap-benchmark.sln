@@ -11,6 +11,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "cardinal_bench", "projects\
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "time_hash_map_new", "projects\vc2015\time_hash_map_new\time_hash_map_new.vcxproj", "{A9E988F9-5D9E-4EBF-ADBD-DC8E579A27FC}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "jackson_bench", "projects\vc2015\jackson_bench\jackson_bench.vcxproj", "{E3DA9E37-DC5E-4569-8B7F-436FC657A5FD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -51,6 +53,14 @@ Global
 		{A9E988F9-5D9E-4EBF-ADBD-DC8E579A27FC}.Release|x64.Build.0 = Release|x64
 		{A9E988F9-5D9E-4EBF-ADBD-DC8E579A27FC}.Release|x86.ActiveCfg = Release|Win32
 		{A9E988F9-5D9E-4EBF-ADBD-DC8E579A27FC}.Release|x86.Build.0 = Release|Win32
+		{E3DA9E37-DC5E-4569-8B7F-436FC657A5FD}.Debug|x64.ActiveCfg = Debug|x64
+		{E3DA9E37-DC5E-4569-8B7F-436FC657A5FD}.Debug|x64.Build.0 = Debug|x64
+		{E3DA9E37-DC5E-4569-8B7F-436FC657A5FD}.Debug|x86.ActiveCfg = Debug|Win32
+		{E3DA9E37-DC5E-4569-8B7F-436FC657A5FD}.Debug|x86.Build.0 = Debug|Win32
+		{E3DA9E37-DC5E-4569-8B7F-436FC657A5FD}.Release|x64.ActiveCfg = Release|x64
+		{E3DA9E37-DC5E-4569-8B7F-436FC657A5FD}.Release|x64.Build.0 = Release|x64
+		{E3DA9E37-DC5E-4569-8B7F-436FC657A5FD}.Release|x86.ActiveCfg = Release|Win32
+		{E3DA9E37-DC5E-4569-8B7F-436FC657A5FD}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

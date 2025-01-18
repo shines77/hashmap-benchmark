@@ -19,9 +19,9 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{F51205BE-49BF-4814-9CFD-0443F28CBD33}</ProjectGuid>
+    <ProjectGuid>{E3DA9E37-DC5E-4569-8B7F-436FC657A5FD}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <RootNamespace>cardinal_bench</RootNamespace>
+    <RootNamespace>jackson_bench</RootNamespace>
     <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -96,8 +96,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)bench\cardinal_bench;..\..\..\bench\cardinal_bench;$(SolutionDir)3rd_party\jstd_hashmap\src;..\..\..\3rd_party\jstd_hashmap\src;$(SolutionDir)3rd_party\abseil-cpp;..\..\..\3rd_party\abseil-cpp;$(SolutionDir)3rd_party\emhash;..\..\..\3rd_party\emhash;$(SolutionDir)3rd_party\robin-hood-hashing\src\include;..\..\..\3rd_party\robin-hood-hashing\src\include;$(SolutionDir)3rd_party\robin-map\include;..\..\..\3rd_party\robin-map\include;$(SolutionDir)3rd_party\unordered_dense\include;..\..\..\3rd_party\unordered_dense\include;$(SolutionDir)3rd_party\boost_unordered\include;..\..\..\3rd_party\boost_unordered\include;$(SolutionDir)3rd_party;..\..\..\3rd_party;$(SolutionDir)src;..\..\..\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
+      <AdditionalIncludeDirectories>$(SolutionDir)bench\jackson_bench;..\..\..\bench\jackson_bench;$(SolutionDir)3rd_party\jstd_hashmap\src;..\..\..\3rd_party\jstd_hashmap\src;$(SolutionDir)3rd_party\abseil-cpp;..\..\..\3rd_party\abseil-cpp;$(SolutionDir)3rd_party\emhash;..\..\..\3rd_party\emhash;$(SolutionDir)3rd_party\robin-hood-hashing\src\include;..\..\..\3rd_party\robin-hood-hashing\src\include;$(SolutionDir)3rd_party\robin-map\include;..\..\..\3rd_party\robin-map\include;$(SolutionDir)3rd_party\unordered_dense\include;..\..\..\3rd_party\unordered_dense\include;$(SolutionDir)3rd_party\boost_unordered\include;..\..\..\3rd_party\boost_unordered\include;$(SolutionDir)3rd_party;..\..\..\3rd_party;$(SolutionDir)src;..\..\..\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -111,8 +110,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)bench\cardinal_bench;..\..\..\bench\cardinal_bench;$(SolutionDir)3rd_party\jstd_hashmap\src;..\..\..\3rd_party\jstd_hashmap\src;$(SolutionDir)3rd_party\abseil-cpp;..\..\..\3rd_party\abseil-cpp;$(SolutionDir)3rd_party\emhash;..\..\..\3rd_party\emhash;$(SolutionDir)3rd_party\robin-hood-hashing\src\include;..\..\..\3rd_party\robin-hood-hashing\src\include;$(SolutionDir)3rd_party\robin-map\include;..\..\..\3rd_party\robin-map\include;$(SolutionDir)3rd_party\unordered_dense\include;..\..\..\3rd_party\unordered_dense\include;$(SolutionDir)3rd_party\boost_unordered\include;..\..\..\3rd_party\boost_unordered\include;$(SolutionDir)3rd_party;..\..\..\3rd_party;$(SolutionDir)src;..\..\..\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
+      <AdditionalIncludeDirectories>$(SolutionDir)bench\jackson_bench;..\..\..\bench\jackson_bench;$(SolutionDir)3rd_party\jstd_hashmap\src;..\..\..\3rd_party\jstd_hashmap\src;$(SolutionDir)3rd_party\abseil-cpp;..\..\..\3rd_party\abseil-cpp;$(SolutionDir)3rd_party\emhash;..\..\..\3rd_party\emhash;$(SolutionDir)3rd_party\robin-hood-hashing\src\include;..\..\..\3rd_party\robin-hood-hashing\src\include;$(SolutionDir)3rd_party\robin-map\include;..\..\..\3rd_party\robin-map\include;$(SolutionDir)3rd_party\unordered_dense\include;..\..\..\3rd_party\unordered_dense\include;$(SolutionDir)3rd_party\boost_unordered\include;..\..\..\3rd_party\boost_unordered\include;$(SolutionDir)3rd_party;..\..\..\3rd_party;$(SolutionDir)src;..\..\..\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -128,8 +126,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)bench\cardinal_bench;..\..\..\bench\cardinal_bench;$(SolutionDir)3rd_party\jstd_hashmap\src;..\..\..\3rd_party\jstd_hashmap\src;$(SolutionDir)3rd_party\abseil-cpp;..\..\..\3rd_party\abseil-cpp;$(SolutionDir)3rd_party\emhash;..\..\..\3rd_party\emhash;$(SolutionDir)3rd_party\robin-hood-hashing\src\include;..\..\..\3rd_party\robin-hood-hashing\src\include;$(SolutionDir)3rd_party\robin-map\include;..\..\..\3rd_party\robin-map\include;$(SolutionDir)3rd_party\unordered_dense\include;..\..\..\3rd_party\unordered_dense\include;$(SolutionDir)3rd_party\boost_unordered\include;..\..\..\3rd_party\boost_unordered\include;$(SolutionDir)3rd_party;..\..\..\3rd_party;$(SolutionDir)src;..\..\..\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
+      <AdditionalIncludeDirectories>$(SolutionDir)bench\jackson_bench;..\..\..\bench\jackson_bench;$(SolutionDir)3rd_party\jstd_hashmap\src;..\..\..\3rd_party\jstd_hashmap\src;$(SolutionDir)3rd_party\abseil-cpp;..\..\..\3rd_party\abseil-cpp;$(SolutionDir)3rd_party\emhash;..\..\..\3rd_party\emhash;$(SolutionDir)3rd_party\robin-hood-hashing\src\include;..\..\..\3rd_party\robin-hood-hashing\src\include;$(SolutionDir)3rd_party\robin-map\include;..\..\..\3rd_party\robin-map\include;$(SolutionDir)3rd_party\unordered_dense\include;..\..\..\3rd_party\unordered_dense\include;$(SolutionDir)3rd_party\boost_unordered\include;..\..\..\3rd_party\boost_unordered\include;$(SolutionDir)3rd_party;..\..\..\3rd_party;$(SolutionDir)src;..\..\..\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -147,8 +144,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)bench\cardinal_bench;..\..\..\bench\cardinal_bench;$(SolutionDir)3rd_party\jstd_hashmap\src;..\..\..\3rd_party\jstd_hashmap\src;$(SolutionDir)3rd_party\abseil-cpp;..\..\..\3rd_party\abseil-cpp;$(SolutionDir)3rd_party\emhash;..\..\..\3rd_party\emhash;$(SolutionDir)3rd_party\robin-hood-hashing\src\include;..\..\..\3rd_party\robin-hood-hashing\src\include;$(SolutionDir)3rd_party\robin-map\include;..\..\..\3rd_party\robin-map\include;$(SolutionDir)3rd_party\unordered_dense\include;..\..\..\3rd_party\unordered_dense\include;$(SolutionDir)3rd_party\boost_unordered\include;..\..\..\3rd_party\boost_unordered\include;$(SolutionDir)3rd_party;..\..\..\3rd_party;$(SolutionDir)src;..\..\..\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
+      <AdditionalIncludeDirectories>$(SolutionDir)bench\jackson_bench;..\..\..\bench\jackson_bench;$(SolutionDir)3rd_party\jstd_hashmap\src;..\..\..\3rd_party\jstd_hashmap\src;$(SolutionDir)3rd_party\abseil-cpp;..\..\..\3rd_party\abseil-cpp;$(SolutionDir)3rd_party\emhash;..\..\..\3rd_party\emhash;$(SolutionDir)3rd_party\robin-hood-hashing\src\include;..\..\..\3rd_party\robin-hood-hashing\src\include;$(SolutionDir)3rd_party\robin-map\include;..\..\..\3rd_party\robin-map\include;$(SolutionDir)3rd_party\unordered_dense\include;..\..\..\3rd_party\unordered_dense\include;$(SolutionDir)3rd_party\boost_unordered\include;..\..\..\3rd_party\boost_unordered\include;$(SolutionDir)3rd_party;..\..\..\3rd_party;$(SolutionDir)src;..\..\..\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -158,7 +154,18 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\bench\cardinal_bench\cardinal_bench.cpp" />
+    <ClCompile Include="..\..\..\bench\jackson_bench\jackson_bench.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\bench\jackson_bench\bench_config.h" />
+    <ClInclude Include="..\..\..\bench\jackson_bench\blueprints\cstring_uint64_fnv1a\blueprint.h" />
+    <ClInclude Include="..\..\..\bench\jackson_bench\blueprints\uint32_uint32_murmur\blueprint.h" />
+    <ClInclude Include="..\..\..\bench\jackson_bench\blueprints\uint64_struct448_murmur\blueprint.h" />
+    <ClInclude Include="..\..\..\bench\jackson_bench\hashmaps\absl_flat_hash_map\hashmap_wrapper.h" />
+    <ClInclude Include="..\..\..\bench\jackson_bench\hashmaps\ankerl_unordered_dense\hashmap_wrapper.h" />
+    <ClInclude Include="..\..\..\bench\jackson_bench\hashmaps\jstd_cluster_flat_map\hashmap_wrapper.h" />
+    <ClInclude Include="..\..\..\bench\jackson_bench\hashmaps\jstd_robin_hash_map\hashmap_wrapper.h" />
+    <ClInclude Include="..\..\..\bench\jackson_bench\hashmaps\std_unordered_map\hashmap_wrapper.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
