@@ -30,6 +30,12 @@
 // This must be a factor of KEY_COUNT.
 #define KEY_COUNT_MEASUREMENT_INTERVAL  500
 
+// The number of erase key.
+#define NUMS_ERASE_KEY      1000
+
+// The number of insert key when test erase().
+#define NUMS_INSERT_KEY     (NUMS_ERASE_KEY * 2)
+
 // The number of times to repeat the benchmarks.
 #define RUN_COUNT   7
 
@@ -39,7 +45,7 @@
 // and highest measurement will be discarded).
 // It should be an even number below RUN_COUNT.
 // This mechanism reduces the impact of background noise interfering with the benchmarks.
-#define DISCARDED_RUNS_COUNT    4
+#define DISCARDED_RUNS_COUNT    2
 
 // The maximum load factor that all shims should, in theory, apply when initializing their maps.
 // In reality, some hash map libraries do not allow custom load factors.
@@ -87,7 +93,7 @@
 #define HASHMAP_1       std_unordered_map
 #endif
 #define HASHMAP_2       jstd_robin_hash_map
-//#define HASHMAP_3       jstd_cluster_flat_map
+#define HASHMAP_3       jstd_cluster_flat_map
 // #define HASHMAP_4
 // #define HASHMAP_5
 // #define HASHMAP_6
