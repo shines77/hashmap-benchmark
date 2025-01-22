@@ -17,14 +17,14 @@ struct uint64_struct448_murmur
     using value_type = struct {
         std::uint64_t dummy[7];
     };
-    using emlment_type = std::pair<const key_type, value_type>;
+    using element_type = std::pair<const key_type, value_type>;
 
     static constexpr const char * name = "uint64_struct448_murmur";
     static constexpr const char * label = "64-bit integer key, 448-bit value";
 
     static constexpr std::size_t get_data_size()
     {
-        return (BENCHMARK_TOTAL_BYTES / (sizeof(emlment_type) + sizeof(key_type) * KEY_ACTUAL));
+        return (BENCHMARK_TOTAL_BYTES / (sizeof(element_type) + sizeof(key_type) * KEY_ACTUAL));
     }
 
     // MurmurHash3’s 64-bit finalizer.

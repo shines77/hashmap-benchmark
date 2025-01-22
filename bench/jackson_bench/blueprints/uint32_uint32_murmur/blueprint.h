@@ -17,14 +17,14 @@ struct uint32_uint32_murmur
 {
     using key_type = std::uint32_t;
     using value_type = std::uint32_t;
-    using emlment_type = std::pair<const key_type, value_type>;
+    using element_type = std::pair<const key_type, value_type>;
 
     static constexpr const char * name = "uint32_uint32_murmur";
     static constexpr const char * label = "32-bit integer key, 32-bit value";
 
     static constexpr std::size_t get_data_size()
     {
-        return (BENCHMARK_TOTAL_BYTES / (sizeof(emlment_type) + sizeof(key_type) * KEY_ACTUAL));
+        return (BENCHMARK_TOTAL_BYTES / (sizeof(element_type) + sizeof(key_type) * KEY_ACTUAL));
     }
 
     // MurmurHash3’s 64-bit finalizer.

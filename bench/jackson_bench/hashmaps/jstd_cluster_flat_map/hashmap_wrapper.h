@@ -2,7 +2,7 @@
 // Copyright (c) 2024 Jackson L. Allan.
 // Distributed under the MIT License (see the accompanying LICENSE file).
 
-#include "jstd/hashmap/cluster_flat_map.hpp"
+#include <jstd/hashmap/cluster_flat_map.hpp>
 
 template <typename BluePrint>
 struct jstd_cluster_flat_map

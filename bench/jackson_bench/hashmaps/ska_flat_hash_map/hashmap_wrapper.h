@@ -1,11 +1,11 @@
-// /jackson_bench/hashmaps/jstd_robin_hash_map/hashmap_wrapper.h
+// /jackson_bench/hashmaps/ska_flat_hash_map/hashmap_wrapper.h
 // Copyright (c) 2024 Jackson L. Allan.
 // Distributed under the MIT License (see the accompanying LICENSE file).
 
-#include <jstd/hashmap/robin_hash_map.h>
+#include <flat_hash_map/flat_hash_map.hpp>
 
 template <typename BluePrint>
-struct jstd_robin_hash_map
+struct ska_flat_hash_map
 {
     using key_type = typename BluePrint::key_type;
     using value_type = typename BluePrint::value_type;
@@ -26,7 +26,7 @@ struct jstd_robin_hash_map
         }
     };
 
-    using table_type = jstd::robin_hash_map<
+    using table_type = ska::flat_hash_map<
         key_type,
         value_type,
         hash,
@@ -90,10 +90,10 @@ struct jstd_robin_hash_map
 };
 
 template <>
-struct jstd_robin_hash_map<void>
+struct ska_flat_hash_map<void>
 {
-    static constexpr const char * name = "jstd::robin_hash_map";
-    static constexpr const char * label = "jstd::robin";
-    static constexpr const char * color = "rgb( 81, 169, 240 )";
+    static constexpr const char * name = "ska::flat_hash_map";
+    static constexpr const char * label = "ska::flat";
+    static constexpr const char * color = "rgb( 170, 112, 235 )";
     static constexpr bool tombstone_like_mechanism = true;
 };

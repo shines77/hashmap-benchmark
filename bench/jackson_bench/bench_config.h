@@ -28,16 +28,20 @@
 
 // The frequency at which to measure and record times.
 // This must be a factor of KEY_COUNT.
-#define KEY_COUNT_MEASUREMENT_INTERVAL  500
+#define KEY_COUNT_MEASUREMENT_INTERVAL  2000
 
 // The number of erase key.
-#define NUMS_ERASE_KEY      1000
+#define NUMS_ERASE_KEY      (KEY_COUNT_MEASUREMENT_INTERVAL / 2)
 
 // The number of insert key when test erase().
-#define NUMS_INSERT_KEY     (NUMS_ERASE_KEY * 2)
+#define NUMS_INSERT_KEY     KEY_COUNT_MEASUREMENT_INTERVAL
 
 // The number of times to repeat the benchmarks.
+#ifndef _DEBUG
 #define RUN_COUNT   7
+#else
+#define RUN_COUNT   3
+#endif
 
 // Each data point in the outputted graphs is the average of the measurements for that point across all runs,
 // excluding the lowest and highest measurements.
@@ -55,10 +59,18 @@
 // and L3 CPU caches.
 // This mechanism is intended to ensure that each map starts the benchmarks under approximately the same
 // condition with regard to whether the keys are cached.
+#ifndef _DEBUG
 #define APPROXIMATE_CACHE_SIZE  (24 * 1024 * 1024)
+#else
+#define APPROXIMATE_CACHE_SIZE  (4 * 1024 * 1024)
+#endif
 
 // The amount of time to sleep between benchmarks, Unit: ms.
+#ifndef _DEBUG
 #define MILLISECOND_COOLDOWN_BETWEEN_BENCHMARKS     1000
+#else
+#define MILLISECOND_COOLDOWN_BETWEEN_BENCHMARKS     200
+#endif
 
 // The specific benchmarks to run (comment them out to disable them).
 #define BENCHMARK_FIND_EXISTING
@@ -92,14 +104,22 @@
 #ifndef _DEBUG
 #define HASHMAP_1       std_unordered_map
 #endif
-#define HASHMAP_2       jstd_robin_hash_map
-#define HASHMAP_3       jstd_cluster_flat_map
-// #define HASHMAP_4
-// #define HASHMAP_5
-// #define HASHMAP_6
-// #define HASHMAP_7
-// #define HASHMAP_8
-// #define HASHMAP_9
+#if !defined(_MSC_VER) || (_MSC_VER >= 2000)
+#define HASHMAP_2       absl_flat_hash_map
+#endif
+#if !defined(_MSC_VER)
+#define HASHMAP_3       tsl_robin_map
+#endif
+#if !defined(_MSC_VER)
+#define HASHMAP_4       ska_bytell_hash_map
+#endif
+#define HASHMAP_5       ska_flat_hash_map
+#define HASHMAP_6       emhash20
+#define HASHMAP_7       jstd_robin_hash_map
+#define HASHMAP_8       jstd_cluster_flat_map
+#if !defined(_MSC_VER) || (_MSC_VER >= 2200)
+#define HASHMAP_9       boost_unordered_flat_map
+#endif
 // #define HASHMAP_10
 // #define HASHMAP_11
 // #define HASHMAP_12

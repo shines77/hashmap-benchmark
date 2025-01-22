@@ -84,5 +84,20 @@
     <ClInclude Include="..\..\..\bench\jackson_bench\hashmaps\std_unordered_map\hashmap_wrapper.h">
       <Filter>src\hashmaps\std_unordered_map</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\bench\jackson_bench\hashmaps\boost_unordered_flat_map\hashmap_wrapper.h">
+      <Filter>src\hashmaps\boost_unordered_flat_map</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\bench\jackson_bench\hashmaps\tsl_robin_map\hashmap_wrapper.h">
+      <Filter>src\hashmaps\tsl_robin_map</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\bench\jackson_bench\hashmaps\ska_flat_hash_map\hashmap_wrapper.h">
+      <Filter>src\hashmaps\ska_flat_hash_map</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\bench\jackson_bench\hashmaps\ska_bytell_hash_map\hashmap_wrapper.h">
+      <Filter>src\hashmaps\ska_bytell_hash_map</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\bench\jackson_bench\hashmaps\emhash\hashmap_wrapper.h">
+      <Filter>src\hashmaps\emhash</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

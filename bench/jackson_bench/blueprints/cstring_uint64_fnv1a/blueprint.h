@@ -17,7 +17,7 @@ struct cstring_uint64_fnv1a
 {
     using key_type = char *;
     using value_type = std::uint64_t;
-    using emlment_type = std::pair<const key_type, value_type>;
+    using element_type = std::pair<const key_type, value_type>;
 
     static constexpr const char * name = "cstring_uint64_fnv1a";
     static constexpr const char * label = "16-char c-string key, 64-bit value";
@@ -26,7 +26,7 @@ struct cstring_uint64_fnv1a
 
     static constexpr std::size_t get_data_size()
     {
-        return (BENCHMARK_TOTAL_BYTES / (sizeof(emlment_type) + sizeof(key_type) * KEY_ACTUAL));
+        return (BENCHMARK_TOTAL_BYTES / (sizeof(element_type) + sizeof(key_type) * KEY_ACTUAL));
     }
 
     // FNV-1a.

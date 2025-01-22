@@ -1,11 +1,15 @@
-// /jackson_bench/hashmaps/jstd_robin_hash_map/hashmap_wrapper.h
+// /jackson_bench/hashmaps/emhash20/hashmap_wrapper.h
 // Copyright (c) 2024 Jackson L. Allan.
 // Distributed under the MIT License (see the accompanying LICENSE file).
 
-#include <jstd/hashmap/robin_hash_map.h>
+#if _WIN32
+#include <intrin.h>
+#endif
+
+#include "emilib2o_modified.hpp"
 
 template <typename BluePrint>
-struct jstd_robin_hash_map
+struct emhash20
 {
     using key_type = typename BluePrint::key_type;
     using value_type = typename BluePrint::value_type;
@@ -26,7 +30,7 @@ struct jstd_robin_hash_map
         }
     };
 
-    using table_type = jstd::robin_hash_map<
+    using table_type = emilib2::HashMap<
         key_type,
         value_type,
         hash,
@@ -90,10 +94,10 @@ struct jstd_robin_hash_map
 };
 
 template <>
-struct jstd_robin_hash_map<void>
+struct emhash20<void>
 {
-    static constexpr const char * name = "jstd::robin_hash_map";
-    static constexpr const char * label = "jstd::robin";
+    static constexpr const char * name = "emhash::emilib2";
+    static constexpr const char * label = "emhash";
     static constexpr const char * color = "rgb( 81, 169, 240 )";
     static constexpr bool tombstone_like_mechanism = true;
 };

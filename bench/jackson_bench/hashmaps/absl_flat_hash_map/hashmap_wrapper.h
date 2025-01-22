@@ -66,7 +66,7 @@ struct absl_flat_hash_map
         table.erase(key);
     }
 
-    static iterator begin_itr(table_type & table)
+    static iterator begin_iter(table_type & table)
     {
         return table.begin();
     }
