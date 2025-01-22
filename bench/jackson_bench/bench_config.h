@@ -105,7 +105,7 @@
 #define HASHMAP_1       std_unordered_map
 #endif
 #if !defined(_MSC_VER) || (_MSC_VER >= 2000)
-#define HASHMAP_2       absl_flat_hash_map
+//#define HASHMAP_2       absl_flat_hash_map
 #endif
 #if !defined(_MSC_VER)
 #define HASHMAP_3       tsl_robin_map
