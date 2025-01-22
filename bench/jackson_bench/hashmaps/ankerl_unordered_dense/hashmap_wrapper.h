@@ -12,6 +12,7 @@ struct ankerl_unordered_dense
 
     struct hash {
         using is_avalanching = void;
+        using argument_type = key_type;
         using result_type = std::size_t;
 
         std::size_t operator () (const key_type & key) const

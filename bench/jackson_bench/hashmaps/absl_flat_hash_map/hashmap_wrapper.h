@@ -2,16 +2,16 @@
 // Copyright (c) 2024 Jackson L. Allan.
 // Distributed under the MIT License (see the accompanying LICENSE file).
 
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wpedantic"
-#pragma GCC diagnostic ignored "-Woverflow"
+//#pragma GCC diagnostic push
+//#pragma GCC diagnostic ignored "-Wpedantic"
+//#pragma GCC diagnostic ignored "-Woverflow"
 //#include <absl/container/internal/raw_hash_set.cc>
 //#include <absl/base/internal/raw_logging.cc>
 //#include <absl/hash/internal/hash.cc>
 //#include <absl/hash/internal/city.cc>
 //#include <absl/hash/internal/low_level_hash.cc>
 #include <absl/container/flat_hash_map.h>
-#pragma GCC diagnostic pop
+//#pragma GCC diagnostic pop
 
 template <typename BluePrint>
 struct absl_flat_hash_map
@@ -21,6 +21,7 @@ struct absl_flat_hash_map
 
     struct hash {
         using is_avalanching = void;
+        using argument_type = key_type;
         using result_type = std::size_t;
 
         std::size_t operator () (const key_type & key) const {
