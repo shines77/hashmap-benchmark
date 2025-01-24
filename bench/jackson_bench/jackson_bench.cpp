@@ -934,10 +934,13 @@ int main(int argc, char * argv[])
 {
     // Get UTC time string with colons replaced by underscores.
     auto utc_time = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
-    std::ostringstream ss;
-    ss << std::put_time(::gmtime(&utc_time), "%Y-%m-%dT%H:%M:%S");
-    auto time_str = ss.str();
+    std::ostringstream startTime;
+    startTime << std::put_time(::gmtime(&utc_time), "%Y-%m-%dT%H:%M:%S");
+    auto time_str = startTime.str();
     std::replace(time_str.begin(), time_str.end(), ':', '_');
+
+    std::cout << std::endl;
+    std::cout << "Start time: " << startTime.str() << std::endl;
 
     jtest::StopWatch sw;
     sw.start();
@@ -993,8 +996,13 @@ int main(int argc, char * argv[])
 
     sw.stop();
 
+    utc_time = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
+    std::ostringstream endTime;
+    endTime << std::put_time(::gmtime(&utc_time), "%Y-%m-%dT%H:%M:%S");
+
     std::cout << std::endl;
-    std::cout << "Start time: " << ss.str() << std::endl;
+    std::cout << "Start time: " << startTime.str() << std::endl;
+    std::cout << "End time  : " << endTime.str() << std::endl;
     std::cout << "Total elapsed time: " << sw.getElapsedSecond() << " Seconds." << std::endl;
     std::cout << "Outputting results." << std::endl;
 
