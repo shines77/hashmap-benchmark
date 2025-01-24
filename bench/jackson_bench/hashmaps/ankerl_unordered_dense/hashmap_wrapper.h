@@ -2,7 +2,7 @@
 // Copyright (c) 2024 Jackson L. Allan.
 // Distributed under the MIT License (see the accompanying LICENSE file).
 
-#include <ankerl_unordered_dense/unordered_dense.h>
+#include <ankerl/unordered_dense.h>
 
 template <typename BluePrint>
 struct ankerl_unordered_dense
