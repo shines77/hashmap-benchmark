@@ -1001,12 +1001,14 @@ int main(int argc, char * argv[])
     endTime << std::put_time(::gmtime(&utc_time), "%Y-%m-%dT%H:%M:%S");
 
     std::cout << std::endl;
-    std::cout << "Start time: " << startTime.str() << std::endl;
-    std::cout << "End time  : " << endTime.str() << std::endl;
-    std::cout << "Total elapsed time: " << sw.getElapsedSecond() << " Seconds." << std::endl;
     std::cout << "Outputting results." << std::endl;
 
     gBenchmarkResults.printResults();
+
+    std::cout << "Start time: " << startTime.str() << std::endl;
+    std::cout << "End time  : " << endTime.str() << std::endl;
+    std::cout << "Total elapsed time: " << sw.getElapsedSecond() << " Seconds." << std::endl;
+    std::cout << std::endl;
 
     //html_out(time_str);
     //csv_out(time_str);
