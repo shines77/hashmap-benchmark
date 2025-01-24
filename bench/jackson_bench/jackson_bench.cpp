@@ -203,7 +203,7 @@ enum benchmark_ids {
     id_find_existing,
     id_find_non_existing,
     id_insert_non_existing,
-    id_insert_existing,    
+    id_insert_existing,
     id_replace_existing,
     id_erase_existing,
     id_erase_non_existing,
@@ -227,7 +227,7 @@ const char * benchmark_labels[] = {
     "Total time to look up 1,000 existing keys with N keys in the table",
     "Total time to look up 1,000 non-existing keys with N keys in the table",
     "Total time to insert N non-existing keys",
-    "Total time to insert N existing keys",    
+    "Total time to insert N existing keys",
     "Total time to replace 1,000 existing keys with N keys in the table",
     "Total time to erase 1,000 existing keys with N keys in the table",
     "Total time to erase 1,000 non-existing keys with N keys in the table",
@@ -238,21 +238,21 @@ const char * get_benchmark_id(std::size_t benchmark_id)
 {
     switch (benchmark_id) {
         case id_find_existing:
-            return "id_find_existing";
+            return "find_existing";
         case id_find_non_existing:
-            return "id_find_non_existing";
+            return "find_non_existing";
         case id_insert_non_existing:
-            return "id_insert_non_existing";
+            return "insert_non_existing";
         case id_insert_existing:
-            return "id_insert_existing";
+            return "insert_existing";
         case id_replace_existing:
-            return "id_replace_existing";
+            return "replace_existing";
         case id_erase_existing:
-            return "id_erase_existing";
+            return "erase_existing";
         case id_erase_non_existing:
-            return "id_erase_non_existing";
+            return "erase_non_existing";
         case id_iteration:
-            return "id_iteration";
+            return "iteration";
         default:
             return "Unknown benchmark id";
     }
@@ -308,6 +308,7 @@ void shuffled_unique_key(std::vector<typename BluePrint::key_type> & keys, std::
 //
 double calc_average_time(double elapsed_times[RUN_COUNT])
 {
+#if RUN_COUNT >= 3
     std::size_t minIndex = 0, maxIndex = 0;
     double minTime = elapsed_times[0];
     double maxTime = elapsed_times[0];
@@ -342,6 +343,19 @@ double calc_average_time(double elapsed_times[RUN_COUNT])
         return (totol_time / total_count);
     else
         return ((minTime + maxTime) / 2.0);
+#else
+    static constexpr const std::size_t total_count = RUN_COUNT;
+
+    double totol_time = 0.0;
+    for (std::size_t i = 0; i < total_count; i++) {
+        totol_time += elapsed_times[i];
+    }
+
+    if (total_count > 0)
+        return (totol_time / total_count);
+    else
+        return 0.0;
+#endif // RUN_COUNT >= 3
 }
 
 //
@@ -402,7 +416,7 @@ void benchmark_find_existing(std::size_t run,
 
     jtest::StopWatch sw;
     std::size_t result_index = 0;
-    
+
     std::size_t insert_begin = 0;
     while (insert_begin < kDataSize) {
         std::size_t insert_end = (std::min)(insert_begin + NUMS_INSERT_KEY, kDataSize);
@@ -453,7 +467,7 @@ void benchmark_find_non_existing(std::size_t run,
 
     jtest::StopWatch sw;
     std::size_t result_index = 0;
-    
+
     std::size_t insert_begin = 0;
     while (insert_begin < kDataSize) {
         std::size_t insert_end = (std::min)(insert_begin + NUMS_INSERT_KEY, kDataSize);
@@ -525,7 +539,7 @@ void benchmark_insert_existing(std::size_t run,
 
     jtest::StopWatch sw;
     std::size_t result_index = 0;
-    
+
     std::size_t insert_begin = 0;
     while (insert_begin < kDataSize) {
         std::size_t insert_end = (std::min)(insert_begin + NUMS_INSERT_KEY, kDataSize);
@@ -580,7 +594,7 @@ void benchmark_erase_existing(std::size_t run,
 
     jtest::StopWatch sw;
     std::size_t result_index = 0;
-    
+
     std::size_t insert_begin = 0;
     while (insert_begin < kDataSize) {
         std::size_t insert_end = (std::min)(insert_begin + NUMS_INSERT_KEY, kDataSize);
@@ -634,7 +648,7 @@ void benchmark_erase_non_existing(std::size_t run,
 
     jtest::StopWatch sw;
     std::size_t result_index = 0;
-    
+
     std::size_t insert_begin = 0;
     while (insert_begin < kDataSize) {
         std::size_t insert_end = (std::min)(insert_begin + NUMS_INSERT_KEY, kDataSize);
@@ -680,7 +694,7 @@ void benchmark_iteration(std::size_t run,
 
     jtest::StopWatch sw;
     std::size_t result_index = 0;
-    
+
     std::size_t insert_begin = 0;
     while (insert_begin < kDataSize) {
         std::size_t insert_end = (std::min)(insert_begin + NUMS_INSERT_KEY, kDataSize);
@@ -705,11 +719,11 @@ void benchmark_iteration(std::size_t run,
             // the keys and/or values actually incur the additional cache misses that they would incur during normal
             // use.
             do_not_optimize += *(unsigned char *)&HashMap<BluePrint>::get_key_from_iter(table, iter);
-            do_not_optimize += *(unsigned char *)&HashMap<BluePrint>::get_value_from_iter(table, iter);
+            //do_not_optimize += *(unsigned char *)&HashMap<BluePrint>::get_value_from_iter(table, iter);
 
             HashMap<BluePrint>::increment_iter(table, iter);
             if (unlikely(HashMap<BluePrint>::is_iter_valid(table, iter))) {
-                iter = HashMap<BluePrint>::begin_iter(table);     
+                iter = HashMap<BluePrint>::begin_iter(table);
             }
         }
         sw.stop();
@@ -771,7 +785,7 @@ void run_benchmark_loop(std::vector<typename BluePrint::key_type> & keys)
     std::cout << std::endl;
     std::cout << "BluePrint: " << BluePrint::name << ", "
               << "Data size: " << jtest::detail::format_integer<3>(kDataSize) << ", "
-              << "Element size: " << sizeof(element_type) << " Bytes" << std::endl;  
+              << "Element size: " << sizeof(element_type) << " Bytes" << std::endl;
     std::cout << HashMap<void>::name << ", "
               << "Benchmark Id: " << get_benchmark_id(BenchmarkId)
               << std::endl;

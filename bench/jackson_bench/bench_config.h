@@ -77,7 +77,7 @@
 #define BENCHMARK_FIND_NON_EXISTING
 #define BENCHMARK_INSERT_EXISTING
 #define BENCHMARK_INSERT_NON_EXISTING
-#define BENCHMARK_REPLACE_EXISTING
+//#define BENCHMARK_REPLACE_EXISTING
 #define BENCHMARK_ERASE_EXISTING
 #define BENCHMARK_ERASE_NON_EXISTING
 #define BENCHMARK_ITERATION
@@ -115,13 +115,17 @@
 #endif
 #define HASHMAP_5       ska_flat_hash_map
 #define HASHMAP_6       emhash20
-#define HASHMAP_7       jstd_robin_hash_map
-#define HASHMAP_8       jstd_cluster_flat_map
+#define HASHMAP_7       ankerl_unordered_dense
+#define HASHMAP_8       jstd_robin_hash_map
+#define HASHMAP_9       jstd_cluster_flat_map
 #if !defined(_MSC_VER) || (_MSC_VER >= 2200)
-#define HASHMAP_9       boost_unordered_flat_map
+#define HASHMAP_10       boost_unordered_flat_map
 #endif
-// #define HASHMAP_10
 // #define HASHMAP_11
 // #define HASHMAP_12
+// #define HASHMAP_13
+// #define HASHMAP_14
+// #define HASHMAP_15
+// #define HASHMAP_16
 
 #endif // JSTD_BENCH_JACKSON_BENCH_CONFIG_H
