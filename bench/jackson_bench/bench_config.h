@@ -38,9 +38,9 @@
 
 // The number of times to repeat the benchmarks.
 #ifndef _DEBUG
-#define RUN_COUNT   7
+#define RUN_COUNT   5
 #else
-#define RUN_COUNT   3
+#define RUN_COUNT   1
 #endif
 
 // Each data point in the outputted graphs is the average of the measurements for that point across all runs,

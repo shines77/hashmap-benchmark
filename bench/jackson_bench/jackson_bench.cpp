@@ -401,7 +401,7 @@ void flush_cache_and_sleep()
     flush_cache();
     std::cout << "flush_cache(), sleep(" << MILLISECOND_COOLDOWN_BETWEEN_BENCHMARKS << "ms)";
     std::this_thread::sleep_for(std::chrono::milliseconds(MILLISECOND_COOLDOWN_BETWEEN_BENCHMARKS));
-    std::cout << "..., ";
+    std::cout << "... ";
 }
 
 template <template <typename> typename HashMap, typename BluePrint, std::size_t kDataSize>
@@ -782,25 +782,29 @@ void run_benchmark_loop(std::vector<typename BluePrint::key_type> & keys)
 {
     using element_type = typename BluePrint::element_type;
 
-    std::cout << std::endl;
-    std::cout << "BluePrint: " << BluePrint::name << ", "
-              << "Data size: " << jtest::detail::format_integer<3>(kDataSize) << ", "
-              << "Element size: " << sizeof(element_type) << " Bytes" << std::endl;
-    std::cout << HashMap<void>::name << ", "
-              << "Benchmark Id: " << get_benchmark_id(BenchmarkId)
-              << std::endl;
-    std::cout << std::endl;
-
     jtest::BenchmarkCategory * category = nullptr;
+    std::string strBluePrintId;
 
     jtest::BenchmarkBluePrint * blueprint = gBenchmarkResults.getBluePrint(BluePrint::name);
     if (blueprint != nullptr) {
+        strBluePrintId = "(";
+        strBluePrintId += std::to_string(blueprint->Id());
+        strBluePrintId += ")";
         jtest::BenchmarkHashmap * hashmap = blueprint->getHashmap(HashMap<void>::name);
         if (hashmap != nullptr) {
             category = hashmap->addCategory(BenchmarkId, get_benchmark_name(BenchmarkId),
                                                          get_benchmark_label(BenchmarkId));
         }
     }
+
+    std::cout << std::endl;
+    std::cout << "BluePrint: " << BluePrint::name << strBluePrintId << ", "
+              << "Data size: " << jtest::detail::format_integer<3>(kDataSize) << ", "
+              << "Element size: " << sizeof(element_type) << " Bytes" << std::endl;
+    std::cout << HashMap<void>::name << ", "
+              << "Benchmark Id: " << get_benchmark_id(BenchmarkId)
+              << std::endl;
+    std::cout << std::endl;
 
     double elapsed_time = 0.0;
     double elapsed_times[RUN_COUNT] = { 0.0 };
