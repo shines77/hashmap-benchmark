@@ -939,6 +939,9 @@ int main(int argc, char * argv[])
     auto time_str = ss.str();
     std::replace(time_str.begin(), time_str.end(), ':', '_');
 
+    jtest::StopWatch sw;
+    sw.start();
+
 #ifdef BLUEPRINT_1
     run_blueprint_benchmarks<BLUEPRINT_1>();
 #endif
@@ -987,8 +990,12 @@ int main(int argc, char * argv[])
 #ifdef BLUEPRINT_16
     run_blueprint_benchmarks<BLUEPRINT_16>();
 #endif
+
+    sw.stop();
+
     std::cout << std::endl;
-    std::cout << "Time: " << ss.str() << std::endl;
+    std::cout << "Start time: " << ss.str() << std::endl;
+    std::cout << "Total elapsed time: " << sw.getElapsedSecond() << " Seconds." << std::endl;
     std::cout << "Outputting results." << std::endl;
 
     gBenchmarkResults.printResults();
