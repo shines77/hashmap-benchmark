@@ -104,22 +104,23 @@
 #ifndef _DEBUG
 #define HASHMAP_1       std_unordered_map
 #endif
+#if !defined(_MSC_VER)
+#define HASHMAP_2       ska_bytell_hash_map
+#endif
+#define HASHMAP_3       ska_flat_hash_map
+#if !defined(_MSC_VER)
+#define HASHMAP_4       tsl_robin_map
+#endif
+#define HASHMAP_5       jstd_robin_hash_map
+#define HASHMAP_6       ankerl_unordered_dense
 #if !defined(_MSC_VER) || (_MSC_VER >= 2000)
-//#define HASHMAP_2       absl_flat_hash_map
+#define HASHMAP_7       absl_flat_hash_map
 #endif
-#if !defined(_MSC_VER)
-#define HASHMAP_3       tsl_robin_map
-#endif
-#if !defined(_MSC_VER)
-#define HASHMAP_4       ska_bytell_hash_map
-#endif
-#define HASHMAP_5       ska_flat_hash_map
-#define HASHMAP_6       emhash20
-#define HASHMAP_7       ankerl_unordered_dense
-#define HASHMAP_8       jstd_robin_hash_map
+#define HASHMAP_8       emhash20
+
 #define HASHMAP_9       jstd_cluster_flat_map
 #if !defined(_MSC_VER) || (_MSC_VER >= 2200)
-#define HASHMAP_10       boost_unordered_flat_map
+#define HASHMAP_10      boost_unordered_flat_map
 #endif
 // #define HASHMAP_11
 // #define HASHMAP_12
