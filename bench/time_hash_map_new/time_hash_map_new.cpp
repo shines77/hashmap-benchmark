@@ -167,10 +167,28 @@
 #include <emhash/hash_table8.hpp>
 #endif
 #if USE_ABSL_FLAT_HASH_MAP
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wpedantic"
+#pragma GCC diagnostic ignored "-Woverflow"
+#include <absl/container/internal/raw_hash_set.cc>
+#include <absl/base/internal/raw_logging.cc>
+#include <absl/hash/internal/hash.cc>
+#include <absl/hash/internal/city.cc>
+#include <absl/hash/internal/low_level_hash.cc>
 #include <absl/container/flat_hash_map.h>
+#pragma GCC diagnostic pop
 #endif
 #if USE_ABSL_NODE_HASH_MAP
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wpedantic"
+#pragma GCC diagnostic ignored "-Woverflow"
+#include <absl/container/internal/raw_hash_set.cc>
+#include <absl/base/internal/raw_logging.cc>
+#include <absl/hash/internal/hash.cc>
+#include <absl/hash/internal/city.cc>
+#include <absl/hash/internal/low_level_hash.cc>
 #include <absl/container/node_hash_map.h>
+#pragma GCC diagnostic pop
 #endif
 #if USE_TSL_ROBIN_HOOD
 #include <tsl/robin_map.h>

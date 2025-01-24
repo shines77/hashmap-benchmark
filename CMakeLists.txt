@@ -6,7 +6,7 @@ CMAKE_MINIMUM_REQUIRED(VERSION 3.5)
 
 set(PROJECT_MAJOR_VERSION "1")
 set(PROJECT_MINOR_VERSION "0")
-set(PROJECT_PATCH_VERSION "0")
+set(PROJECT_PATCH_VERSION "1")
 set(PROJECT_VERSION_STRING "${PROJECT_MAJOR_VERSION}.${PROJECT_MINOR_VERSION}.${PROJECT_PATCH_VERSION}")
 
 if (CMAKE_VERSION VERSION_GREATER_EQUAL "3.0")
@@ -179,7 +179,7 @@ if (CMAKE_VERSION VERSION_GREATER_EQUAL "3.8")
 endif()
 
 # Import Abseil's CMake targets
-find_package(absl REQUIRED)
+## find_package(absl REQUIRED)
 
 if (NOT MSVC)
     ## For C_FLAGS
@@ -283,11 +283,11 @@ include_directories(3rd_party/robin-hood-hashing/src/include)
 include_directories(3rd_party/unordered_dens/include)
 include_directories(3rd_party/robin-map/include)
 include_directories(3rd_party/boost_unordered/include)
-include_directories(install/include)
-## include_directories(3rd_party/abseil-cpp)
+## include_directories(install/include)
+include_directories(3rd_party/abseil-cpp)
 
 # Process Abseil's CMake build system
-add_subdirectory(3rd_party/abseil-cpp)
+## add_subdirectory(3rd_party/abseil-cpp)
 
 set(JSTD_SOURCE_FILES
     3rd_party/jstd_hashmap/src/jstd/dll_main.cpp
