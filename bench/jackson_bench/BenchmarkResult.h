@@ -34,9 +34,9 @@ protected:
     std::string label_;
 
 public:
-    BenchmarkBase() : id_(size_type(-1)) {}
-    BenchmarkBase(const std::string & name, const std::string & label = "")
-        : id_(size_type(-1)), name_(name), label_(label) {}
+    BenchmarkBase(size_type id = size_type(-1)) : id_(id) {}
+    BenchmarkBase(size_type id, const std::string & name, const std::string & label = "")
+        : id_(id), name_(name), label_(label) {}
 
     BenchmarkBase(const BenchmarkBase & src)
         : id_(src.id()),
@@ -335,7 +335,7 @@ public:
             return { static_cast<size_type>(id), true };
         } else {
             ident_type id = static_cast<ident_type>(array_.size());
-            value_type value = detail::construct_if<kValueIsPointer, value_type, element_type>(name, label);
+            value_type value = detail::construct_if<kValueIsPointer, value_type, element_type>(id, name, label);
             if (kValueIsPointer)
                 array_.push_back(value);
             else
@@ -357,7 +357,7 @@ public:
         } else {
             ident_type id = static_cast<ident_type>(array_.size());
             value_type value = detail::construct_if<kValueIsPointer, value_type, element_type>(
-                std::forward<key_type>(name), std::forward<key_type>(label));
+                id, std::forward<key_type>(name), std::forward<key_type>(label));
             if (kValueIsPointer)
                 array_.push_back(value);
             else
@@ -494,7 +494,7 @@ public:
             return { static_cast<size_type>(id), true };
         } else {
             ident_type id = static_cast<ident_type>(array_.size());
-            value_type value = detail::construct_if<kValueIsPointer, value_type, element_type>(name, label);
+            value_type value = detail::construct_if<kValueIsPointer, value_type, element_type>(id, name, label);
             array_.push_back(value);
 
             auto result = hashmap_.emplace(name, id);
@@ -641,10 +641,10 @@ private:
     }
 
 public:
-    BenchmarkCategory() : BenchmarkBase(), ArrayHashmap(), benchmark_id_(size_type(-1)) {}
+    BenchmarkCategory(size_type id = size_type(-1)) : BenchmarkBase(id), ArrayHashmap(), benchmark_id_(size_type(-1)) {}
 
-    BenchmarkCategory(const std::string & name, const std::string & label)
-        : BenchmarkBase(name, label), ArrayHashmap(), benchmark_id_(size_type(-1)) {}
+    BenchmarkCategory(size_type id, const std::string & name, const std::string & label)
+        : BenchmarkBase(id, name, label), ArrayHashmap(), benchmark_id_(size_type(-1)) {}
 
     ~BenchmarkCategory() {
         destroy();
@@ -711,10 +711,10 @@ class BenchmarkHashmap : public BenchmarkBase,
 public:
     typedef std::size_t size_type;
 
-    BenchmarkHashmap() : BenchmarkBase(), ArrayHashmap() {}
+    BenchmarkHashmap(size_type id = size_type(-1)) : BenchmarkBase(id), ArrayHashmap() {}
 
-    BenchmarkHashmap(const std::string & name, const std::string & label)
-        : BenchmarkBase(name, label), ArrayHashmap() {}
+    BenchmarkHashmap(size_type id, const std::string & name, const std::string & label)
+        : BenchmarkBase(id, name, label), ArrayHashmap() {}
 
     ~BenchmarkHashmap() {
         destroy();
@@ -782,11 +782,11 @@ private:
     size_type element_size_;
 
 public:
-    BenchmarkBluePrint() : BenchmarkBase(), ArrayHashmap(),
+    BenchmarkBluePrint(size_type id = size_type(-1)) : BenchmarkBase(id), ArrayHashmap(),
         data_size_(0), element_size_(0) {}
 
-    BenchmarkBluePrint(const std::string & name, const std::string & label)
-        : BenchmarkBase(name, label), ArrayHashmap(),
+    BenchmarkBluePrint(size_type id, const std::string & name, const std::string & label)
+        : BenchmarkBase(id, name, label), ArrayHashmap(),
           data_size_(0), element_size_(0) {}
 
     ~BenchmarkBluePrint() {
@@ -863,10 +863,10 @@ private:
     //*/
 
 public:
-    BenchmarkResults() : BenchmarkBase(), ArrayHashmap() {}
+    BenchmarkResults(size_type id = size_type(-1)) : BenchmarkBase(id), ArrayHashmap() {}
 
-    BenchmarkResults(const std::string & name, const std::string & label)
-        : BenchmarkBase(name, label), ArrayHashmap() {}
+    BenchmarkResults(size_type id, const std::string & name, const std::string & label)
+        : BenchmarkBase(id, name, label), ArrayHashmap() {}
 
     ~BenchmarkResults() {
         destroy();
