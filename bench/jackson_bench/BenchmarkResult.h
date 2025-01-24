@@ -226,7 +226,7 @@ public:
     using key_type = Key;
     using value_type = Value;
     using element_type = typename std::remove_pointer<Value>::type;
-    using ident_type = size_type; 
+    using ident_type = size_type;
 
     using array_type = std::vector<value_type>;
     using hashmap_type = std::unordered_map<key_type, ident_type>;
@@ -235,7 +235,7 @@ public:
     using const_iterator = typename hashmap_type::const_iterator;
 
     static constexpr const size_type npos = static_cast<size_type>(-1);
-    static constexpr const bool kValueIsPointer = std::is_pointer<value_type>::value; 
+    static constexpr const bool kValueIsPointer = std::is_pointer<value_type>::value;
 
 protected:
     array_type   array_;
@@ -387,7 +387,7 @@ public:
     using key_type = Key;
     using value_type = Value;
     using element_type = typename std::remove_pointer<Value>::type;
-    using ident_type = size_type; 
+    using ident_type = size_type;
 
     using array_type = std::vector<value_type>;
     using hashmap_type = std::unordered_map<key_type, ident_type>;
@@ -396,7 +396,7 @@ public:
     using const_iterator = typename hashmap_type::const_iterator;
 
     static constexpr const size_type npos = static_cast<size_type>(-1);
-    static constexpr const bool kValueIsPointer = std::is_pointer<value_type>::value; 
+    static constexpr const bool kValueIsPointer = std::is_pointer<value_type>::value;
 
 protected:
     array_type   array_;
@@ -935,10 +935,15 @@ public:
                 printf(" BluePrint: %-25s     Data size: %-11s    Element size: %" PRIuPTR " bytes\n",
                        blueprint->name().c_str(), detail::format_integer<3>(dataSize).c_str(), elementSize);
                 printf("\n");
+#ifdef BENCHMARK_REPLACE_EXISTING
                 printf("-------------------------------------------------------------------------------------------------------------------------------------\n");
                 printf(" Hashmap                    | find.exist |  find.non  | insert.non |insert.exist|   replace  | erase.exist|  erase.non |  iteration |\n");
                 printf("----------------------------+------------+------------+------------+------------+------------+------------+------------+------------+\n");
-
+#else
+                printf("------------------------------------------------------------------------------------------------------------------------\n");
+                printf(" Hashmap                    | find.exist |  find.non  | insert.non |insert.exist| erase.exist|  erase.non |  iteration |\n");
+                printf("----------------------------+------------+------------+------------+------------+------------+------------+------------+\n");
+#endif
                 size_type hashmap_count = blueprint->size();
                 for (size_type hashmap_id = 0; hashmap_id < hashmap_count; hashmap_id++) {
                     const BenchmarkHashmap * hashmap = blueprint->getHashmap(hashmap_id);
@@ -955,7 +960,11 @@ public:
                     printf("\n");
                 }
 
+#ifdef BENCHMARK_REPLACE_EXISTING
                 printf("-------------------------------------------------------------------------------------------------------------------------------------\n");
+#else
+                printf("------------------------------------------------------------------------------------------------------------------------\n");
+#endif
             }
         }
 
