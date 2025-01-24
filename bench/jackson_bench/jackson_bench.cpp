@@ -788,7 +788,7 @@ void run_benchmark_loop(std::vector<typename BluePrint::key_type> & keys)
     jtest::BenchmarkBluePrint * blueprint = gBenchmarkResults.getBluePrint(BluePrint::name);
     if (blueprint != nullptr) {
         strBluePrintId = "(";
-        strBluePrintId += std::to_string(blueprint->Id());
+        strBluePrintId += std::to_string(blueprint->id());
         strBluePrintId += ")";
         jtest::BenchmarkHashmap * hashmap = blueprint->getHashmap(HashMap<void>::name);
         if (hashmap != nullptr) {
