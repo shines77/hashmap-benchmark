@@ -915,6 +915,58 @@ public:
         return addBluePrint<BluePrint>("_blank", "_blank");
     }
 
+    std::string buildTableHeader(const BenchmarkBluePrint * blueprint, size_type & short_name_len) const {
+        std::vector<std::string> bench_short_names;
+
+        if (blueprint != nullptr) {
+            const BenchmarkHashmap * hashmap = blueprint->getHashmap(0);
+            if (hashmap != nullptr) {
+                size_type category_count = hashmap->size();
+                for (size_type category_id = 0; category_id < category_count; category_id++) {
+                    const BenchmarkCategory * category = hashmap->getCategory(category_id);
+                    if (category != nullptr) {
+                        std::string short_name = get_benchmark_short_name(category->getBenchmarkId());
+                        bench_short_names.push_back(short_name);
+                    }
+                }
+            }
+        }
+
+        short_name_len = bench_short_names.size();
+
+        std::string strHeader;
+        // Line 1
+        strHeader = "-----------------------------";
+        for (size_type i = 0; i < short_name_len; i++) {
+            strHeader += "-------------";
+        }
+        strHeader += "\n";
+        // Line 2
+        strHeader += " Hashmap                    |";
+        for (size_type i = 0; i < short_name_len; i++) {
+            strHeader += bench_short_names[i];
+            strHeader += "|";
+        }
+        strHeader += "\n";
+        // Line 3
+        strHeader += "----------------------------+";
+        for (size_type i = 0; i < short_name_len; i++) {
+            strHeader += "------------+";
+        }
+        strHeader += "\n";
+        return strHeader;
+    }
+
+    std::string buildTableFooter(size_type short_name_len) const {
+        std::string strHeader;
+        strHeader = "-----------------------------";
+        for (size_type i = 0; i < short_name_len; i++) {
+            strHeader += "-------------";
+        }
+        strHeader += "\n";
+        return strHeader;
+    }
+
     /**************************************************************************************************************************************
        BluePrint: uint32_uint32_murmur          Data size: 123,456,789        Element size: 16 bytes
       -------------------------------------------------------------------------------------------------------------------------------------
@@ -924,7 +976,7 @@ public:
        jstd::robin_hash_map       | 1234.00 ms | 1234.00 ms | 1234.00 ms | 1234.00 ms | 1234.00 ms | 1234.00 ms | 1234.00 ms | 1234.00 ms |
        jstd::cluster_flat_map     | 1234.00 ms | 1234.00 ms | 1234.00 ms | 1234.00 ms | 1234.00 ms | 1234.00 ms | 1234.00 ms | 1234.00 ms |
       -------------------------------------------------------------------------------------------------------------------------------------
-    *******************************************************************************************************/
+     **************************************************************************************************************************************/
     void printResults() const {
         for (size_type blueprintId = 0; blueprintId < size(); blueprintId++) {
             const BenchmarkBluePrint * blueprint = getBluePrint(blueprintId);
@@ -935,36 +987,41 @@ public:
                 printf(" BluePrint: %-25s     Data size: %-11s    Element size: %" PRIuPTR " bytes\n",
                        blueprint->name().c_str(), detail::format_integer<3>(dataSize).c_str(), elementSize);
                 printf("\n");
-#ifdef BENCHMARK_REPLACE_EXISTING
-                printf("-------------------------------------------------------------------------------------------------------------------------------------\n");
-                printf(" Hashmap                    | find.exist |  find.non  | insert.non |insert.exist|   replace  | erase.exist|  erase.non |  iteration |\n");
-                printf("----------------------------+------------+------------+------------+------------+------------+------------+------------+------------+\n");
-#else
-                printf("------------------------------------------------------------------------------------------------------------------------\n");
-                printf(" Hashmap                    | find.exist |  find.non  | insert.non |insert.exist| erase.exist|  erase.non |  iteration |\n");
-                printf("----------------------------+------------+------------+------------+------------+------------+------------+------------+\n");
-#endif
+
+                // Table header
+                // "-------------------------------------------------------------------------------------------------------------------------------------\n"
+                // " Hashmap                    | find.exist |  find.non  | insert.non |insert.exist|   replace  | erase.exist|  erase.non |  iteration |\n"
+                // "----------------------------+------------+------------+------------+------------+------------+------------+------------+------------+\n"
+                size_type short_name_len = 0;
+                std::string strHeader = buildTableHeader(blueprint, short_name_len);
+                printf("%s", strHeader.c_str());
+
                 size_type hashmap_count = blueprint->size();
                 for (size_type hashmap_id = 0; hashmap_id < hashmap_count; hashmap_id++) {
                     const BenchmarkHashmap * hashmap = blueprint->getHashmap(hashmap_id);
-                    printf(" %-26s |", hashmap->name().c_str());
-                    size_type category_count = hashmap->size();
-                    for (size_type category_id = 0; category_id < category_count; category_id++) {
-                        const BenchmarkCategory * category = hashmap->getCategory(category_id);
-                        size_type rusult_count = category->size();
-                        for (size_type rusult_id = 0; rusult_id < rusult_count; rusult_id++) {
-                            const BenchmarkResult * result = category->getResult(rusult_id);
-                            printf(" %11s|", detail::formatMsTime(result->average_time).c_str());
+                    if (hashmap != nullptr) {
+                        printf(" %-26s |", hashmap->name().c_str());
+                        size_type category_count = hashmap->size();
+                        for (size_type category_id = 0; category_id < category_count; category_id++) {
+                            const BenchmarkCategory * category = hashmap->getCategory(category_id);
+                            if (category != nullptr) {
+                                size_type rusult_count = category->size();
+                                for (size_type rusult_id = 0; rusult_id < rusult_count; rusult_id++) {
+                                    const BenchmarkResult * result = category->getResult(rusult_id);
+                                    if (result != nullptr) {
+                                        printf(" %11s|", detail::formatMsTime(result->average_time).c_str());
+                                    }
+                                }
+                            }
                         }
+                        printf("\n");
                     }
-                    printf("\n");
                 }
 
-#ifdef BENCHMARK_REPLACE_EXISTING
-                printf("-------------------------------------------------------------------------------------------------------------------------------------\n");
-#else
-                printf("------------------------------------------------------------------------------------------------------------------------\n");
-#endif
+                // Table footer
+                // "-------------------------------------------------------------------------------------------------------------------------------------\n"
+                std::string strFooter = buildTableFooter(short_name_len);
+                printf("%s", strFooter.c_str());
             }
         }
 

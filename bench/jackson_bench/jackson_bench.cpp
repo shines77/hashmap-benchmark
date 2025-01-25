@@ -30,16 +30,12 @@
 #include "jstd/test/StopWatch.h"
 #include "jstd/system/Console.h"
 
-#include "BenchmarkResult.h"
-
 //
 // Variable printed before the program closes to prevent compiler from optimizing out function calls during the
 // benchmarks.
 // This approach proved to be more reliable than local volatile variables.
 //
 std::size_t do_not_optimize = 0;
-
-jtest::BenchmarkResults gBenchmarkResults;
 
 // Standard stringification macro, used to form the file paths of the blueprints and shims.
 #define STRINGIFY_(x)   #x
@@ -207,7 +203,8 @@ enum benchmark_ids {
     id_replace_existing,
     id_erase_existing,
     id_erase_non_existing,
-    id_iteration
+    id_iteration,
+    Max_Benchmark_Id
 };
 
 // Benchmark names used in the heatmap.
@@ -220,6 +217,18 @@ const char * benchmark_names[] = {
     "Erase existing",
     "Erase non-existing",
     "Iterate"
+};
+
+// Benchmark short names used in BenchmarkResult.h, the short name length must be 12 chars.
+const char * benchmark_short_names[] = {
+    " find.exist ",
+    "  find.non  ",
+    " insert.non ",
+    "insert.exist",
+    "   replace  ",
+    " erase.exist",
+    "  erase.non ",
+    "  iteration "
 };
 
 // Benchmark names used in the graphs.
@@ -267,6 +276,16 @@ const char * get_benchmark_name(std::size_t benchmark_id)
         return "Unknown benchmark name";
 }
 
+// The short name length must be 12 chars.
+const char * get_benchmark_short_name(std::size_t benchmark_id)
+{
+    std::size_t max_id = jstd_countof(benchmark_short_names);
+    if (benchmark_id < max_id)
+        return benchmark_short_names[benchmark_id];
+    else
+        return "Unknown name";
+}
+
 const char * get_benchmark_label(std::size_t benchmark_id)
 {
     std::size_t max_id = jstd_countof(benchmark_labels);
@@ -275,6 +294,13 @@ const char * get_benchmark_label(std::size_t benchmark_id)
     else
         return "Unknown benchmark label";
 }
+
+//
+// The value of benchmark_short_names[] needs to be used in the BenchmarkResult.h file.
+//
+#include "BenchmarkResult.h"
+
+jtest::BenchmarkResults gBenchmarkResults;
 
 namespace detail {
 
