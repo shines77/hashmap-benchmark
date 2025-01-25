@@ -99,5 +99,8 @@
     <ClInclude Include="..\..\..\bench\jackson_bench\hashmaps\emhash20\hashmap_wrapper.h">
       <Filter>src\hashmaps\emhash20</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\bench\jackson_bench\hashmaps\jstd_group16_flat_map\hashmap_wrapper.h">
+      <Filter>src\hashmaps\jstd_group16_flat_map</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
