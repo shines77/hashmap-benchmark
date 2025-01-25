@@ -94,7 +94,7 @@
 #define USE_ROBIN_HOOD_UNORDERED_MAP    0
 #define USE_ANKERL_UNORDERED_DENSE      1
 
-#define USE_JSTD_CLUSTER_FLAT_MAP       1
+#define USE_JSTD_GROUP16_FALT_MAP       1
 #define USE_BOOST_UNORDERED_FLAT_MAP    1
 
 #ifdef _MSC_VER
@@ -185,8 +185,8 @@
 #if USE_ANKERL_UNORDERED_DENSE
 #include <ankerl/unordered_dense.h>
 #endif
-#if USE_JSTD_CLUSTER_FLAT_MAP
-#include <jstd/hashmap/cluster_flat_map.hpp>
+#if USE_JSTD_GROUP16_FALT_MAP
+#include <jstd/hashmap/group16_flat_map.hpp>
 #endif
 #if USE_BOOST_UNORDERED_FLAT_MAP
 #include <boost/unordered/unordered_flat_map.hpp>
@@ -558,9 +558,9 @@ void benchmark_insert_random_impl()
     run_insert_random<ankerl::unordered_dense::map<Key, Value>>
         ("ankerl::unordered_dense::map", keys, Cardinal);
 #endif
-#if USE_JSTD_CLUSTER_FLAT_MAP
-    run_insert_random<jstd::cluster_flat_map<Key, Value>>
-        ("jstd::cluster_flat_map", keys, Cardinal);
+#if USE_JSTD_GROUP16_FALT_MAP
+    run_insert_random<jstd::group16_flat_map<Key, Value>>
+        ("jstd::group16_flat_map", keys, Cardinal);
 #endif
 #if USE_BOOST_UNORDERED_FLAT_MAP
     run_insert_random<boost::unordered::unordered_flat_map<Key, Value>>
@@ -665,9 +665,9 @@ void benchmark_MumHash_insert_random_impl()
     run_insert_random<ankerl::unordered_dense::map<Key, Value, test::MumHash<Key>>>
         ("ankerl::unordered_dense::map", keys, Cardinal);
 #endif
-#if USE_JSTD_CLUSTER_FLAT_MAP
-    run_insert_random<jstd::cluster_flat_map<Key, Value>>
-        ("jstd::cluster_flat_map", keys, Cardinal);
+#if USE_JSTD_GROUP16_FALT_MAP
+    run_insert_random<jstd::group16_flat_map<Key, Value>>
+        ("jstd::group16_flat_map", keys, Cardinal);
 #endif
 #if USE_BOOST_UNORDERED_FLAT_MAP
     run_insert_random<boost::unordered::unordered_flat_map<Key, Value>>

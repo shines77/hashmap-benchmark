@@ -14,8 +14,8 @@
 	path = 3rd_party/emhash
 	url = https://gitee.com/shines77/emhash.git
 	branch = master
-[submodule "3rd_party/unordered_dens"]
-	path = 3rd_party/unordered_dens
+[submodule "3rd_party/unordered_dense"]
+	path = 3rd_party/unordered_dense
 	url = https://gitee.com/shines77/unordered_dense.git
 	branch = main
 [submodule "3rd_party/robin-hood-hashing"]

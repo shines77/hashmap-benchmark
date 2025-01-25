@@ -166,7 +166,6 @@
     <ClInclude Include="..\..\..\bench\jackson_bench\hashmaps\boost_unordered_flat_map\hashmap_wrapper.h" />
     <ClInclude Include="..\..\..\bench\jackson_bench\hashmaps\emhash20\emilib2o_modified.hpp" />
     <ClInclude Include="..\..\..\bench\jackson_bench\hashmaps\emhash20\hashmap_wrapper.h" />
-    <ClInclude Include="..\..\..\bench\jackson_bench\hashmaps\jstd_cluster_flat_map\hashmap_wrapper.h" />
     <ClInclude Include="..\..\..\bench\jackson_bench\hashmaps\jstd_robin_hash_map\hashmap_wrapper.h" />
     <ClInclude Include="..\..\..\bench\jackson_bench\hashmaps\ska_bytell_hash_map\hashmap_wrapper.h" />
     <ClInclude Include="..\..\..\bench\jackson_bench\hashmaps\ska_flat_hash_map\hashmap_wrapper.h" />

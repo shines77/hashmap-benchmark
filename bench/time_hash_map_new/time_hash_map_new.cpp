@@ -95,7 +95,7 @@
 #define USE_ROBIN_HOOD_UNORDERED_MAP    1
 #define USE_ANKERL_UNORDERED_DENSE      1
 
-#define USE_JSTD_CLUSTER_FLAT_MAP       1
+#define USE_JSTD_GROUP16_FALT_MAP       1
 #define USE_BOOST_UNORDERED_FLAT_MAP    1
 
 #ifdef _MSC_VER
@@ -199,8 +199,8 @@
 #if USE_ANKERL_UNORDERED_DENSE
 #include <ankerl/unordered_dense.h>
 #endif
-#if USE_JSTD_CLUSTER_FLAT_MAP
-#include <jstd/hashmap/cluster_flat_map.hpp>
+#if USE_JSTD_GROUP16_FALT_MAP
+#include <jstd/hashmap/group16_flat_map.hpp>
 #endif
 #if USE_BOOST_UNORDERED_FLAT_MAP
 #include <boost/unordered/unordered_flat_map.hpp>
@@ -961,11 +961,11 @@ void test_hashmap_by_name(const std::string & name, std::size_t obj_size, std::s
     }
 #endif
 
-#if USE_JSTD_CLUSTER_FLAT_MAP
-    if (name == "jstd::cluster_flat_map") {
-        measure_hashmap<jstd::cluster_flat_map<Key,   Value, HASH_MAP_FUNCTION<Key>>,
-                        jstd::cluster_flat_map<Key *, Value, HASH_MAP_FUNCTION<Key *>>>
-            ("jstd::cluster_flat_map", obj_size, iters, has_stress_hash_function);
+#if USE_JSTD_GROUP16_FALT_MAP
+    if (name == "jstd::group16_flat_map") {
+        measure_hashmap<jstd::group16_flat_map<Key,   Value, HASH_MAP_FUNCTION<Key>>,
+                        jstd::group16_flat_map<Key *, Value, HASH_MAP_FUNCTION<Key *>>>
+            ("jstd::group16_flat_map", obj_size, iters, has_stress_hash_function);
     }
 #endif
 
@@ -1081,11 +1081,11 @@ void test_all_hashmaps(std::size_t obj_size, std::size_t iters)
     }
 #endif
 
-#if USE_JSTD_CLUSTER_FLAT_MAP
+#if USE_JSTD_GROUP16_FALT_MAP
     if (1) {
-        measure_hashmap<jstd::cluster_flat_map<Key,   Value, HASH_MAP_FUNCTION<Key>>,
-                        jstd::cluster_flat_map<Key *, Value, HASH_MAP_FUNCTION<Key *>>>
-            ("jstd::cluster_flat_map", obj_size, iters, has_stress_hash_function);
+        measure_hashmap<jstd::group16_flat_map<Key,   Value, HASH_MAP_FUNCTION<Key>>,
+                        jstd::group16_flat_map<Key *, Value, HASH_MAP_FUNCTION<Key *>>>
+            ("jstd::group16_flat_map", obj_size, iters, has_stress_hash_function);
     }
 #endif
 
@@ -1192,10 +1192,10 @@ void test_hashmap_by_name_for_string(const std::string & name, std::size_t obj_s
     }
 #endif
 
-#if USE_JSTD_CLUSTER_FLAT_MAP
-    if (name == "jstd::cluster_flat_map") {
-        measure_string_hashmap<jstd::cluster_flat_map<Key, Value>>
-            ("jstd::cluster_flat_map", obj_size, iters);
+#if USE_JSTD_GROUP16_FALT_MAP
+    if (name == "jstd::group16_flat_map") {
+        measure_string_hashmap<jstd::group16_flat_map<Key, Value>>
+            ("jstd::group16_flat_map", obj_size, iters);
     }
 #endif
 
@@ -1301,10 +1301,10 @@ void test_all_hashmaps_for_string(std::size_t obj_size, std::size_t iters)
     }
 #endif
 
-#if USE_JSTD_CLUSTER_FLAT_MAP
+#if USE_JSTD_GROUP16_FALT_MAP
     if (1) {
-        measure_string_hashmap<jstd::cluster_flat_map<Key, Value>>
-            ("jstd::cluster_flat_map", obj_size, iters);
+        measure_string_hashmap<jstd::group16_flat_map<Key, Value>>
+            ("jstd::group16_flat_map", obj_size, iters);
     }
 #endif
 
