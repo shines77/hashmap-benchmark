@@ -1033,6 +1033,7 @@ int main(int argc, char * argv[])
 
     std::cout << "Start time: " << startTime.str() << std::endl;
     std::cout << "End time  : " << endTime.str() << std::endl;
+    std::cout << std::endl;
     std::cout << "Total elapsed time: " << sw.getElapsedSecond() << " Seconds." << std::endl;
     std::cout << std::endl;
 
