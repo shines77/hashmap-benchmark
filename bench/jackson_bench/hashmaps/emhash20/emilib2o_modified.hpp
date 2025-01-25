@@ -1,4 +1,4 @@
-// hash_map_benchmarks/shims/emilib2O/emilib2o_modified.h
+// /bench/jackson_bench/hashmaps/emhash20/emilib2o_modified.h
 // Copyright (c) 2024 Jackson L. Allan.
 // This version of stb_ds has been minimally modified to interface with c_cpp_hash_tables_benchmark.
 // Distributed under the Public Domain license (see below).
