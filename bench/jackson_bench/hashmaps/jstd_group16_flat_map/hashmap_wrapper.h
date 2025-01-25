@@ -94,7 +94,7 @@ template <>
 struct jstd_group16_flat_map<void>
 {
     static constexpr const char * name = "jstd::group16_flat_map";
-    static constexpr const char * label = "jstd::cluster";
+    static constexpr const char * label = "jstd::group16";
     static constexpr const char * color = "rgb( 81, 169, 240 )";
     static constexpr bool tombstone_like_mechanism = true;
 };
