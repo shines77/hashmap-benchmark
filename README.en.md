@@ -64,6 +64,7 @@ If you only clone this repository after this update, there is no need to do the 
 git pull
 git submodule sync
 git submodule update --init --recursive
+rm -rf ./3rd_party
 ```
 
 01/13/2025 update:

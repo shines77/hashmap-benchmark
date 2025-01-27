@@ -64,6 +64,7 @@
 git pull
 git submodule sync
 git submodule update --init --recursive
+rm -rf ./3rd_party
 ```
 
 2025-01-13 更新：
