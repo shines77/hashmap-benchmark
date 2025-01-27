@@ -54,7 +54,7 @@
 
 - 原 `./3rd_party/unordered_dens` 路径更正为 `./3rd_part/unordered_dense`；
 
-- 修正 `CMakeLists.txt` 文件中的 `./3rd_party` 路径。
+- 修正 `CMakeLists.txt` 文件中的 `./3rd_party` 路径；
 
 - 修正 `.gitmodules` 文件中的 `./3rd_party` 路径。
 
