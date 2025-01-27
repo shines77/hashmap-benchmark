@@ -50,8 +50,6 @@ The following `C++` open source libraries were benchmade:
 
 01/27/2025 update:
 
-If you only clone this repository after this update, there is no need to do the following separate update steps.
-
 - Original path `/ 3rd-party ` is corrected to `/ 3rd_part`;
 
 - Original path `/ 3rd-party/unodered_dons' is corrected to '/ 3rd_part/unordered_dense`;
@@ -59,6 +57,14 @@ If you only clone this repository after this update, there is no need to do the 
 - Fix the `/ 3rd_party ` path in `CMakeLists.txt` file；
 
 - Fix the `/ 3rd_party ` path in `.gitmodules` file.
+
+If you only clone this repository after this update, there is no need to do the following separate update steps.
+
+```bash
+git pull
+git submodule sync
+git submodule update --init --recursive
+```
 
 01/13/2025 update:
 

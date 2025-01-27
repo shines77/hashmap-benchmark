@@ -50,8 +50,6 @@
 
 2025-01-27 更新：
 
-如果你这次更新之后才 clone 本仓库，则不必做下面的步骤。
-
 - 原 `./3rd_party` 路径更正为 `./3rd_part`；
 
 - 原 `./3rd_party/unordered_dens` 路径更正为 `./3rd_part/unordered_dense`；
@@ -59,6 +57,14 @@
 - 修正 `CMakeLists.txt` 文件中的 `./3rd_party` 路径。
 
 - 修正 `.gitmodules` 文件中的 `./3rd_party` 路径。
+
+如果你这次更新之后才 clone 本仓库，则不必做下面的步骤。
+
+```bash
+git pull
+git submodule sync
+git submodule update --init --recursive
+```
 
 2025-01-13 更新：
 
