@@ -1,31 +1,31 @@
-[submodule "3rd_party/jstd_hashmap"]
-	path = 3rd_party/jstd_hashmap
+[submodule "3rd_part/jstd_hashmap"]
+	path = 3rd_part/jstd_hashmap
 	url = https://gitee.com/shines77/jstd_hashmap.git
 	branch = master
-[submodule "3rd_party/flat_hash_map"]
-	path = 3rd_party/flat_hash_map
+[submodule "3rd_part/flat_hash_map"]
+	path = 3rd_part/flat_hash_map
 	url = https://gitee.com/shines77/flat_hash_map.git
 	branch = master
-[submodule "3rd_party/abseil-cpp"]
-    path = 3rd_party/abseil-cpp
+[submodule "3rd_part/abseil-cpp"]
+	path = 3rd_part/abseil-cpp
     url = https://gitee.com/shines77/abseil-cpp.git
     branch = master
-[submodule "3rd_party/emhash"]
-	path = 3rd_party/emhash
+[submodule "3rd_part/emhash"]
+	path = 3rd_part/emhash
 	url = https://gitee.com/shines77/emhash.git
 	branch = master
-[submodule "3rd_party/unordered_dense"]
-	path = 3rd_party/unordered_dense
+[submodule "3rd_part/unordered_dense"]
+	path = 3rd_part/unordered_dense
 	url = https://gitee.com/shines77/unordered_dense.git
 	branch = main
-[submodule "3rd_party/robin-hood-hashing"]
-	path = 3rd_party/robin-hood-hashing
+[submodule "3rd_part/robin-hood-hashing"]
+	path = 3rd_part/robin-hood-hashing
 	url = https://gitee.com/shines77/robin-hood-hashing.git
 	branch = master
-[submodule "3rd_party/robin-map"]
-	path = 3rd_party/robin-map
+[submodule "3rd_part/robin-map"]
+	path = 3rd_part/robin-map
 	url = https://gitee.com/shines77/robin-map.git
 	branch = master
-[submodule "3rd_party/boost_unordered"]
-	path = 3rd_party/boost_unordered
+[submodule "3rd_part/boost_unordered"]
+	path = 3rd_part/boost_unordered
 	url = https://gitee.com/shines77/boost_unordered.git

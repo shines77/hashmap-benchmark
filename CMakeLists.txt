@@ -276,21 +276,21 @@ endif()
 include_directories(include)
 include_directories(src)
 include_directories(test)
-include_directories(3rd_party)
-include_directories(3rd_party/jstd_hashmap/src)
-include_directories(3rd_party/emhash)
-include_directories(3rd_party/robin-hood-hashing/src/include)
-include_directories(3rd_party/unordered_dense/include)
-include_directories(3rd_party/robin-map/include)
-include_directories(3rd_party/boost_unordered/include)
+include_directories(3rd_part)
+include_directories(3rd_part/jstd_hashmap/src)
+include_directories(3rd_part/emhash)
+include_directories(3rd_part/robin-hood-hashing/src/include)
+include_directories(3rd_part/unordered_dense/include)
+include_directories(3rd_part/robin-map/include)
+include_directories(3rd_part/boost_unordered/include)
 ## include_directories(install/include)
-include_directories(3rd_party/abseil-cpp)
+include_directories(3rd_part/abseil-cpp)
 
 # Process Abseil's CMake build system
-## add_subdirectory(3rd_party/abseil-cpp)
+## add_subdirectory(3rd_part/abseil-cpp)
 
 set(JSTD_SOURCE_FILES
-    3rd_party/jstd_hashmap/src/jstd/dll_main.cpp
+    3rd_part/jstd_hashmap/src/jstd/dll_main.cpp
 )
 
 # add_subdirectory(main EXCLUDE_FROM_ALL src/main/asm)

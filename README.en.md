@@ -48,34 +48,46 @@ The following `C++` open source libraries were benchmade:
 
 ### Third party library update
 
+01/27/2025 update:
+
+If you only clone this repository after this update, there is no need to do the following separate update steps.
+
+- Original path `/ 3rd-party ` is corrected to `/ 3rd_part`;
+
+- Original path `/ 3rd-party/unodered_dons' is corrected to '/ 3rd_part/unordered_dense`;
+
+- Fix the `/ 3rd_party ` path in `CMakeLists.txt` file；
+
+- Fix the `/ 3rd_party ` path in `.gitmodules` file.
+
 01/13/2025 update:
 
-If you only clone this repository after this update, there is no need to do the following separate update steps. This is for users who have already cloned this repository before this update.
+If you only clone this repository after this update, there is no need to do the following separate update steps.
 
 - Added new [boost::unordered](https://github.com/boostorg/unordered) library [v1.85.0](https://github.com/boostorg/unordered) 's [boost::unordered::unordered_flat_map](https://github.com/MikePopoloski/boost_unordered) (Unofficial Library) .
 
     Please use the following command to update the [boost::unordered] library separately:
 
     ```bash
-    git submodule update --init --recursive ./3rd_party/boost_unordered
-    git submodule update --remote --recursive ./3rd_party/boost_unordered
+    git submodule update --init --recursive ./3rd_part/boost_unordered
+    git submodule update --remote --recursive ./3rd_part/boost_unordered
     ```
 
 - Myself `jstd::robin_hash_map`: Update to the latest version，and added new hashmap `jstd::cluster_flat_map` .
 
 - Google [abseil-cpp] 的 `absl::flat_hash_map`: Update to the latest version, lastest tag: 20240722.rc2
 
-    Since I have changed the URL of the [abseil cpp] repository, if you have previously pulled /3d_marty/abseil-cpp, please use the following command to update the submodule:
+    Since I have changed the URL of the [abseil cpp] repository, if you have previously pulled /3rd_part/abseil-cpp, please use the following command to update the submodule:
 
     ```bash
-    # First, delete the old /3d_marty/abseil-cpp directory
-    cd ./3rd_party
+    # First, delete the old /3rd_part/abseil-cpp directory
+    cd ./3rd_part
     rm -rf ./abseil-cpp
 
     # Use the sync command to synchronize to a new URL, and reinitialize abseil-cpp
-    git config -f .gitmodules submodule.3rd_party/abseil-cpp.branch master
+    git config -f .gitmodules submodule.3rd_part/abseil-cpp.branch master
     git submodule sync
-    git submodule update --init --recursive 3rd_party/abseil-cpp
+    git submodule update --init --recursive 3rd_part/abseil-cpp
     ```
 
 - [ktprime] 的 `emhash`: Update to the latest version
@@ -136,8 +148,8 @@ git submodule update --remote --recursive
 
 ```bash
 # Update a submodule separately
-git submodule update --init --recursive ./3rd_party/jstd_hashmap
-git submodule update --init --recursive ./3rd_party/boost_unordered
+git submodule update --init --recursive ./3rd_part/jstd_hashmap
+git submodule update --init --recursive ./3rd_part/boost_unordered
 ````
 
 ### 4. Configure and Compile
@@ -145,7 +157,7 @@ git submodule update --init --recursive ./3rd_party/boost_unordered
 First, configure and compile `abseil-cpp`:
 
 ```bash
-cd ./3rd_party/abseil-cpp
+cd ./3rd_part/abseil-cpp
 mkdir build
 cd build
 
@@ -159,7 +171,7 @@ make install
 And then, Configure and compile `hashmap-benchmark`:
 
 ```bash
-# Switch from ./3rd_party/abseil-cpp/build to hashmap-benchmark root dir
+# Switch from ./3rd_part/abseil-cpp/build to hashmap-benchmark root dir
 cd ../../../
 mkdir build
 cd build
@@ -184,12 +196,14 @@ cd build
 git pull
 git submodule update --init --recursive
 # or
-git submodule update --init --recursive ../3rd_party/jstd_hashmap
+git submodule update --init --recursive ../3rd_part/jstd_hashmap
 
 make
 ```
 
 ### 7. Run benchmark
+
+Please go to your build directory, for example `./build`, execute the following command:
 
 ```bash
 # like Google sprasehash benchmark code (New version, recommend)
