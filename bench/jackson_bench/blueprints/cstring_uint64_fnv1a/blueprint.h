@@ -1,4 +1,4 @@
-// /jackson_bench/blueprints/cstring_uint64_fnv1a/blueprint.h
+// /bench/jackson_bench/blueprints/cstring_uint64_fnv1a/blueprint.h
 // Copyright (c) 2024 Jackson L. Allan.
 // Distributed under the MIT License (see the accompanying LICENSE file).
 

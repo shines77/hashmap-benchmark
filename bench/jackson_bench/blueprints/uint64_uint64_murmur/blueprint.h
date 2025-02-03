@@ -1,4 +1,4 @@
-// /bench/jackson_bench/blueprints/uint32_uint32_murmur/blueprint.h
+// /bench/jackson_bench/blueprints/uint64_uint64_murmur/blueprint.h
 // Copyright (c) 2024 Jackson L. Allan.
 // Distributed under the MIT License (see the accompanying LICENSE file).
 
@@ -11,16 +11,16 @@
 
 #include "bench_config.h"
 
-#define UINT32_UINT32_MURMUR_ENABLED
+#define UINT64_UINT64_MURMUR_ENABLED
 
-struct uint32_uint32_murmur
+struct uint64_uint64_murmur
 {
-    using key_type = std::uint32_t;
-    using value_type = std::uint32_t;
+    using key_type = std::uint64_t;
+    using value_type = std::uint64_t;
     using element_type = std::pair<const key_type, value_type>;
 
-    static constexpr const char * name = "uint32_uint32_murmur";
-    static constexpr const char * label = "32-bit integer key, 32-bit value";
+    static constexpr const char * name = "uint64_uint64_murmur";
+    static constexpr const char * label = "64-bit integer key, 64-bit value";
 
     static constexpr std::size_t get_data_size()
     {

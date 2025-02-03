@@ -1,11 +1,15 @@
-// /bench/jackson_ben/hashmaps/ankerl_unordered_dense/hashmap_wrapper.h
+// /bench/jackson_bench/hashmaps/emilib2o/hashmap_wrapper.h
 // Copyright (c) 2024 Jackson L. Allan.
 // Distributed under the MIT License (see the accompanying LICENSE file).
 
-#include <ankerl/unordered_dense.h>
+#if _WIN32
+#include <intrin.h>
+#endif
+
+#include "emilib2o_modified.hpp"
 
 template <typename BluePrint>
-struct ankerl_unordered_dense
+struct emilib2o
 {
     using key_type = typename BluePrint::key_type;
     using value_type = typename BluePrint::value_type;
@@ -15,20 +19,18 @@ struct ankerl_unordered_dense
         using argument_type = key_type;
         using result_type = std::size_t;
 
-        std::size_t operator () (const key_type & key) const
-        {
+        std::size_t operator () (const key_type & key) const {
             return BluePrint::hash_key(key);
         }
     };
 
     struct cmpr {
-        bool operator () (const key_type & key_1, const key_type & key_2) const
-        {
+        bool operator () (const key_type & key_1, const key_type & key_2) const {
             return BluePrint::cmpr_keys(key_1, key_2);
         }
     };
 
-    using table_type = ankerl::unordered_dense::map<
+    using table_type = emilib2::HashMap<
         key_type,
         value_type,
         hash,
@@ -93,10 +95,10 @@ struct ankerl_unordered_dense
 };
 
 template <>
-struct ankerl_unordered_dense<void>
+struct emilib2o<void>
 {
-    static constexpr const char * name = "ankerl::unordered_dense";
-    static constexpr const char * label = "ankerl";
-    static constexpr const char * color = "rgb( 241, 199, 78 )";
-    static constexpr bool tombstone_like_mechanism = false;
+    static constexpr const char * name = "emilib2o";
+    static constexpr const char * label = "emilib2o";
+    static constexpr const char * color = "rgb( 81, 169, 240 )";
+    static constexpr bool tombstone_like_mechanism = true;
 };

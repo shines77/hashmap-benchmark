@@ -1,15 +1,11 @@
-// /jackson_bench/hashmaps/emhash20/hashmap_wrapper.h
+// /bench/jackson_bench/hashmaps/jstd_group15_flat_map/hashmap_wrapper.h
 // Copyright (c) 2024 Jackson L. Allan.
 // Distributed under the MIT License (see the accompanying LICENSE file).
 
-#if _WIN32
-#include <intrin.h>
-#endif
-
-#include "emilib2o_modified.hpp"
+#include "jstd/hashmap/group15_flat_map.hpp"
 
 template <typename BluePrint>
-struct emhash20
+struct jstd_group15_flat_map
 {
     using key_type = typename BluePrint::key_type;
     using value_type = typename BluePrint::value_type;
@@ -30,7 +26,7 @@ struct emhash20
         }
     };
 
-    using table_type = emilib2::HashMap<
+    using table_type = jstd::group15_flat_map<
         key_type,
         value_type,
         hash,
@@ -54,7 +50,8 @@ struct emhash20
 
     static void insert(table_type & table, const key_type & key)
     {
-        table[key] = value_type();
+        //table[key] = value_type();
+        table.emplace(key, value_type());
     }
 
     static void erase(table_type & table, const key_type & key)
@@ -94,10 +91,10 @@ struct emhash20
 };
 
 template <>
-struct emhash20<void>
+struct jstd_group15_flat_map<void>
 {
-    static constexpr const char * name = "emhash::emilib2";
-    static constexpr const char * label = "emhash";
+    static constexpr const char * name = "jstd::group15_flat_map";
+    static constexpr const char * label = "jstd::group15";
     static constexpr const char * color = "rgb( 81, 169, 240 )";
     static constexpr bool tombstone_like_mechanism = true;
 };

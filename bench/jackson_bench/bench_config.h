@@ -8,13 +8,15 @@
 
 #pragma once
 
+#include <jstd/basic/stddef.h>
+
 //
 // Total benchmark data size (bytes) of key and value, for any key type and any value type.
 //
 #ifndef _DEBUG
 #define BENCHMARK_TOTAL_BYTES  (64 * 1024 * 1024)
 #else
-#define BENCHMARK_TOTAL_BYTES  (512 * 1024)
+#define BENCHMARK_TOTAL_BYTES  (1024 * 1024)
 #endif
 
 // The randomize test keys actual usage length.
@@ -69,7 +71,7 @@
 #ifndef _DEBUG
 #define MILLISECOND_COOLDOWN_BETWEEN_BENCHMARKS     1000
 #else
-#define MILLISECOND_COOLDOWN_BETWEEN_BENCHMARKS     200
+#define MILLISECOND_COOLDOWN_BETWEEN_BENCHMARKS     100
 #endif
 
 // The specific benchmarks to run (comment them out to disable them).
@@ -84,9 +86,9 @@
 
 // Blueprint slots.
 #define BLUEPRINT_1         uint32_uint32_murmur
-#define BLUEPRINT_2         uint64_struct448_murmur
-#define BLUEPRINT_3         cstring_uint64_fnv1a
-// #define BLUEPRINT_4
+#define BLUEPRINT_2         uint64_uint64_murmur
+#define BLUEPRINT_3         uint64_struct448_murmur
+#define BLUEPRINT_4         cstring_uint64_fnv1a
 // #define BLUEPRINT_5
 // #define BLUEPRINT_6
 // #define BLUEPRINT_7
@@ -102,10 +104,10 @@
 
 // Hashmap slots.
 #ifndef _DEBUG
-#define HASHMAP_1       std_unordered_map
+//#define HASHMAP_1       std_unordered_map
 #endif
 #if !defined(_MSC_VER)
-#define HASHMAP_2       ska_bytell_hash_map
+//#define HASHMAP_2       ska_bytell_hash_map
 #endif
 #define HASHMAP_3       ska_flat_hash_map
 #if !defined(_MSC_VER)
@@ -115,16 +117,15 @@
 #if !defined(_MSC_VER) || (_MSC_VER >= 2000)
 #define HASHMAP_6       ankerl_unordered_dense
 #endif
-#if !defined(_MSC_VER) || (_MSC_VER >= 2000)
+#if (jstd_cplusplus >= 2017L)
 #define HASHMAP_7       absl_flat_hash_map
 #endif
-#define HASHMAP_8       emhash20
-
+#define HASHMAP_8       emilib2o
 #define HASHMAP_9       jstd_group16_flat_map
-#if !defined(_MSC_VER) || (_MSC_VER >= 2200)
-#define HASHMAP_10      boost_unordered_flat_map
+#define HASHMAP_10      jstd_group15_flat_map
+#if (jstd_cplusplus >= 2020L)
+#define HASHMAP_11      boost_unordered_flat_map
 #endif
-// #define HASHMAP_11
 // #define HASHMAP_12
 // #define HASHMAP_13
 // #define HASHMAP_14

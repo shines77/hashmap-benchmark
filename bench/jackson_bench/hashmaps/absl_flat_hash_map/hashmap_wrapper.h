@@ -1,4 +1,4 @@
-// /jackson_ben/hashmaps/absl_flat_hash_map/hashmap_wrapper.h
+// /bench//jackson_ben/hashmaps/absl_flat_hash_map/hashmap_wrapper.h
 // Copyright (c) 2024 Jackson L. Allan.
 // Distributed under the MIT License (see the accompanying LICENSE file).
 
@@ -59,7 +59,8 @@ struct absl_flat_hash_map
 
     static void insert(table_type & table, const key_type & key)
     {
-        table[key] = value_type();
+        //table[key] = value_type();
+        table.emplace(key, value_type());
     }
 
     static void erase(table_type & table, const key_type & key)

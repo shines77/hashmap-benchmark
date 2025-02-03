@@ -60,6 +60,8 @@
 // For avoid the MSVC stdext::hasp_map<K,V>'s deprecation warnings.
 #define _SILENCE_STDEXT_HASH_DEPRECATION_WARNINGS
 
+#include <jstd/basic/stddef.h>
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <stdint.h>
@@ -96,7 +98,11 @@
 #define USE_ANKERL_UNORDERED_DENSE      1
 
 #define USE_JSTD_GROUP16_FALT_MAP       1
+#define USE_JSTD_GROUP15_FALT_MAP       1
+#if (jstd_cplusplus >= 2020L)
+// Need C++ 20
 #define USE_BOOST_UNORDERED_FLAT_MAP    1
+#endif
 
 #ifdef _MSC_VER
 #undef USE_ABSL_FLAT_HASH_MAP
@@ -107,7 +113,6 @@
 #undef USE_TSL_ROBIN_HOOD
 #undef USE_ROBIN_HOOD_UNORDERED_MAP
 #undef USE_ANKERL_UNORDERED_DENSE
-#undef USE_BOOST_UNORDERED_FLAT_MAP
 #endif
 
 #ifdef __SSE4_2__
@@ -201,6 +206,9 @@
 #endif
 #if USE_JSTD_GROUP16_FALT_MAP
 #include <jstd/hashmap/group16_flat_map.hpp>
+#endif
+#if USE_JSTD_GROUP15_FALT_MAP
+#include <jstd/hashmap/group15_flat_map.hpp>
 #endif
 #if USE_BOOST_UNORDERED_FLAT_MAP
 #include <boost/unordered/unordered_flat_map.hpp>
@@ -969,6 +977,14 @@ void test_hashmap_by_name(const std::string & name, std::size_t obj_size, std::s
     }
 #endif
 
+#if USE_JSTD_GROUP15_FALT_MAP
+    if (name == "jstd::group15_flat_map") {
+        measure_hashmap<jstd::group15_flat_map<Key,   Value, HASH_MAP_FUNCTION<Key>>,
+                        jstd::group15_flat_map<Key *, Value, HASH_MAP_FUNCTION<Key *>>>
+            ("jstd::group15_flat_map", obj_size, iters, has_stress_hash_function);
+    }
+#endif
+
 #if USE_BOOST_UNORDERED_FLAT_MAP
     if (name == "boost::unordered_flat_map") {
         measure_hashmap<boost::unordered::unordered_flat_map<Key,   Value, HASH_MAP_FUNCTION<Key>>,
@@ -1089,6 +1105,14 @@ void test_all_hashmaps(std::size_t obj_size, std::size_t iters)
     }
 #endif
 
+#if USE_JSTD_GROUP15_FALT_MAP
+    if (1) {
+        measure_hashmap<jstd::group15_flat_map<Key,   Value, HASH_MAP_FUNCTION<Key>>,
+                        jstd::group15_flat_map<Key *, Value, HASH_MAP_FUNCTION<Key *>>>
+            ("jstd::group15_flat_map", obj_size, iters, has_stress_hash_function);
+    }
+#endif
+
 #if USE_BOOST_UNORDERED_FLAT_MAP
     if (1) {
         measure_hashmap<boost::unordered::unordered_flat_map<Key,   Value, HASH_MAP_FUNCTION<Key>>,
@@ -1199,6 +1223,13 @@ void test_hashmap_by_name_for_string(const std::string & name, std::size_t obj_s
     }
 #endif
 
+#if USE_JSTD_GROUP15_FALT_MAP
+    if (name == "jstd::group15_flat_map") {
+        measure_string_hashmap<jstd::group15_flat_map<Key, Value>>
+            ("jstd::group15_flat_map", obj_size, iters);
+    }
+#endif
+
 #if USE_BOOST_UNORDERED_FLAT_MAP
     if (name == "boost::unordered_flat_map") {
         measure_string_hashmap<boost::unordered::unordered_flat_map<Key, Value>>
@@ -1305,6 +1336,13 @@ void test_all_hashmaps_for_string(std::size_t obj_size, std::size_t iters)
     if (1) {
         measure_string_hashmap<jstd::group16_flat_map<Key, Value>>
             ("jstd::group16_flat_map", obj_size, iters);
+    }
+#endif
+
+#if USE_JSTD_GROUP15_FALT_MAP
+    if (1) {
+        measure_string_hashmap<jstd::group15_flat_map<Key, Value>>
+            ("jstd::group15_flat_map", obj_size, iters);
     }
 #endif
 

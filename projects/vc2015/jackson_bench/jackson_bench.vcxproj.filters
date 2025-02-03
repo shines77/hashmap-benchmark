@@ -44,11 +44,17 @@
     <Filter Include="src\hashmaps\jstd_robin_hash_map">
       <UniqueIdentifier>{608e22ff-fd63-49c5-9ba7-a137572d2f3b}</UniqueIdentifier>
     </Filter>
-    <Filter Include="src\hashmaps\emhash20">
-      <UniqueIdentifier>{de3f8209-08db-46e7-80ca-13ac5dc4d583}</UniqueIdentifier>
-    </Filter>
     <Filter Include="src\hashmaps\jstd_group16_flat_map">
       <UniqueIdentifier>{7004dcc9-9895-4447-8dea-a995bc9d5827}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\blueprints\uint64_uint64_murmur">
+      <UniqueIdentifier>{b9327992-5e50-46dd-8dd2-129dbca95999}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\hashmaps\jstd_group15_flat_map">
+      <UniqueIdentifier>{a172be9c-3aa1-4e62-a241-5afd00f9b987}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\hashmaps\emilib2o">
+      <UniqueIdentifier>{de3f8209-08db-46e7-80ca-13ac5dc4d583}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -93,14 +99,20 @@
     <ClInclude Include="..\..\..\bench\jackson_bench\hashmaps\ska_bytell_hash_map\hashmap_wrapper.h">
       <Filter>src\hashmaps\ska_bytell_hash_map</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\bench\jackson_bench\hashmaps\emhash20\emilib2o_modified.hpp">
-      <Filter>src\hashmaps\emhash20</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\bench\jackson_bench\hashmaps\emhash20\hashmap_wrapper.h">
-      <Filter>src\hashmaps\emhash20</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\bench\jackson_bench\hashmaps\jstd_group16_flat_map\hashmap_wrapper.h">
       <Filter>src\hashmaps\jstd_group16_flat_map</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\bench\jackson_bench\blueprints\uint64_uint64_murmur\blueprint.h">
+      <Filter>src\blueprints\uint64_uint64_murmur</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\bench\jackson_bench\hashmaps\jstd_group15_flat_map\hashmap_wrapper.h">
+      <Filter>src\hashmaps\jstd_group15_flat_map</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\bench\jackson_bench\hashmaps\emilib2o\emilib2o_modified.hpp">
+      <Filter>src\hashmaps\emilib2o</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\bench\jackson_bench\hashmaps\emilib2o\hashmap_wrapper.h">
+      <Filter>src\hashmaps\emilib2o</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

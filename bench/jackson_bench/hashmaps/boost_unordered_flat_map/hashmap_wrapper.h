@@ -1,4 +1,4 @@
-// /jackson_bench/hashmaps/boost_unordered_flat_map/hashmap_wrapper.h
+// /bench/jackson_bench/hashmaps/boost_unordered_flat_map/hashmap_wrapper.h
 // Copyright (c) 2024 Jackson L. Allan.
 // Distributed under the MIT License (see the accompanying LICENSE file).
 
@@ -50,7 +50,8 @@ struct boost_unordered_flat_map
 
     static void insert(table_type & table, const key_type & key)
     {
-        table[key] = value_type();
+        //table[key] = value_type();
+        table.emplace(key, value_type());
     }
 
     static void erase(table_type & table, const key_type & key)

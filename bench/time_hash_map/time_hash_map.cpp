@@ -60,6 +60,8 @@
 // For avoid the MSVC stdext::hasp_map<K,V>'s deprecation warnings.
 #define _SILENCE_STDEXT_HASH_DEPRECATION_WARNINGS
 
+#include <jstd/basic/stddef.h>
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <stdint.h>
@@ -97,6 +99,13 @@
 #define USE_TSL_ROBIN_HOOD              1
 #define USE_ROBIN_HOOD_UNORDERED_MAP    0
 #define USE_ANKERL_UNORDERED_DENSE      1
+
+#define USE_JSTD_GROUP16_FALT_MAP       1
+#define USE_JSTD_GROUP15_FALT_MAP       1
+#if (jstd_cplusplus >= 2020L)
+// Need C++ 20
+#define USE_BOOST_UNORDERED_FLAT_MAP    1
+#endif
 
 #ifdef _MSC_VER
 #undef USE_ABSL_FLAT_HASH_MAP
@@ -195,6 +204,15 @@
 #endif
 #if USE_ANKERL_UNORDERED_DENSE
 #include <ankerl/unordered_dense.h>
+#endif
+#if USE_JSTD_GROUP16_FALT_MAP
+#include <jstd/hashmap/group16_flat_map.hpp>
+#endif
+#if USE_JSTD_GROUP15_FALT_MAP
+#include <jstd/hashmap/group15_flat_map.hpp>
+#endif
+#if USE_BOOST_UNORDERED_FLAT_MAP
+#include <boost/unordered/unordered_flat_map.hpp>
 #endif
 #include <jstd/hashmap/hashmap_analyzer.h>
 #include <jstd/hasher/hashes.h>
@@ -1712,6 +1730,42 @@ static void test_all_hashmaps(std::size_t obj_size, std::size_t iters) {
                         HashFn<typename HashObj::key_type, false, HashObj::cSize, HashObj::cHashSize>>
                         >(
             "ankerl::unordered_dense::map<K, V>", obj_size, iters, has_stress_hash_function);
+    }
+#endif
+
+#if USE_JSTD_GROUP16_FALT_MAP
+    if (1) {
+        measure_hashmap<jstd::group16_flat_map<HashObj, Value,
+                        HashFn<typename HashObj::key_type, false, HashObj::cSize, HashObj::cHashSize>,
+                        HashEqualTo<typename HashObj::key_type, HashObj::cSize, HashObj::cHashSize>>,
+                        jstd::group16_flat_map<HashObj *, Value,
+                        HashFn<typename HashObj::key_type, false, HashObj::cSize, HashObj::cHashSize>>
+                        >(
+            "jstd::group16_flat_map<K, V>", obj_size, iters, has_stress_hash_function);
+    }
+#endif
+
+#if USE_JSTD_GROUP15_FALT_MAP
+    if (1) {
+        measure_hashmap<jstd::group15_flat_map<HashObj, Value,
+                        HashFn<typename HashObj::key_type, false, HashObj::cSize, HashObj::cHashSize>,
+                        HashEqualTo<typename HashObj::key_type, HashObj::cSize, HashObj::cHashSize>>,
+                        jstd::group15_flat_map<HashObj *, Value,
+                        HashFn<typename HashObj::key_type, false, HashObj::cSize, HashObj::cHashSize>>
+                        >(
+            "jstd::group15_flat_map<K, V>", obj_size, iters, has_stress_hash_function);
+    }
+#endif
+
+#if USE_BOOST_UNORDERED_FLAT_MAP
+    if (1) {
+        measure_hashmap<boost::unordered::unordered_flat_map<HashObj, Value,
+                        HashFn<typename HashObj::key_type, false, HashObj::cSize, HashObj::cHashSize>,
+                        HashEqualTo<typename HashObj::key_type, HashObj::cSize, HashObj::cHashSize>>,
+                        boost::unordered::unordered_flat_map<HashObj *, Value,
+                        HashFn<typename HashObj::key_type, false, HashObj::cSize, HashObj::cHashSize>>
+                        >(
+            "boost::unordered_flat_map<K, V>", obj_size, iters, has_stress_hash_function);
     }
 #endif
 }

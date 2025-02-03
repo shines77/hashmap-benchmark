@@ -56,6 +56,8 @@
 #endif
 #endif
 
+#include <jstd/basic/stddef.h>
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <stdint.h>
@@ -95,7 +97,11 @@
 #define USE_ANKERL_UNORDERED_DENSE      1
 
 #define USE_JSTD_GROUP16_FALT_MAP       1
+#define USE_JSTD_GROUP15_FALT_MAP       1
+#if (jstd_cplusplus >= 2020L)
+// Need C++ 20
 #define USE_BOOST_UNORDERED_FLAT_MAP    1
+#endif
 
 #ifdef _MSC_VER
 #undef USE_ABSL_FLAT_HASH_MAP
@@ -106,7 +112,6 @@
 #undef USE_TSL_ROBIN_HOOD
 #undef USE_ROBIN_HOOD_UNORDERED_MAP
 #undef USE_ANKERL_UNORDERED_DENSE
-#undef USE_BOOST_UNORDERED_FLAT_MAP
 #endif
 
 #ifdef __SSE4_2__
@@ -187,6 +192,9 @@
 #endif
 #if USE_JSTD_GROUP16_FALT_MAP
 #include <jstd/hashmap/group16_flat_map.hpp>
+#endif
+#if USE_JSTD_GROUP15_FALT_MAP
+#include <jstd/hashmap/group15_flat_map.hpp>
 #endif
 #if USE_BOOST_UNORDERED_FLAT_MAP
 #include <boost/unordered/unordered_flat_map.hpp>
@@ -562,6 +570,10 @@ void benchmark_insert_random_impl()
     run_insert_random<jstd::group16_flat_map<Key, Value>>
         ("jstd::group16_flat_map", keys, Cardinal);
 #endif
+#if USE_JSTD_GROUP15_FALT_MAP
+    run_insert_random<jstd::group15_flat_map<Key, Value>>
+        ("jstd::group15_flat_map", keys, Cardinal);
+#endif
 #if USE_BOOST_UNORDERED_FLAT_MAP
     run_insert_random<boost::unordered::unordered_flat_map<Key, Value>>
         ("boost::unordered_flat_map", keys, Cardinal);
@@ -668,6 +680,10 @@ void benchmark_MumHash_insert_random_impl()
 #if USE_JSTD_GROUP16_FALT_MAP
     run_insert_random<jstd::group16_flat_map<Key, Value>>
         ("jstd::group16_flat_map", keys, Cardinal);
+#endif
+#if USE_JSTD_GROUP15_FALT_MAP
+    run_insert_random<jstd::group15_flat_map<Key, Value>>
+        ("jstd::group15_flat_map", keys, Cardinal);
 #endif
 #if USE_BOOST_UNORDERED_FLAT_MAP
     run_insert_random<boost::unordered::unordered_flat_map<Key, Value>>

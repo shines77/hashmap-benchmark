@@ -1,4 +1,4 @@
-// /bench/jackson_bench/hashmaps/emhash20/emilib2o_modified.h
+// /bench/jackson_bench/hashmaps/emilib2o/emilib2o_modified.h
 // Copyright (c) 2024 Jackson L. Allan.
 // This version of stb_ds has been minimally modified to interface with c_cpp_hash_tables_benchmark.
 // Distributed under the Public Domain license (see below).
@@ -21,10 +21,10 @@
 #if !defined(__clang__) && !defined(_MSC_VER)
 #  include <zmmintrin.h>
 #endif
-#elif __x86_64__ 
+#elif __x86_64__
 #  include <x86intrin.h>
 #else
-# include "sse2neon.h" 
+# include "sse2neon.h"
 #endif
 
 #undef EMH_LIKELY
