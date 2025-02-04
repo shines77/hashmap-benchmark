@@ -898,6 +898,9 @@ void run_benchmarks()
 #ifdef BENCHMARK_ITERATION
     run_benchmark_loop<HashMap, BluePrint, id_iteration, kDataSize>(unique_keys);
 #endif
+
+    // Display results when a hashmap all benchmark id done.
+    gBenchmarkResults.printResults();
 }
 
 // Function for benchmarking a hashmap against all blueprints.
