@@ -983,9 +983,13 @@ public:
             if (blueprint != nullptr) {
                 std::size_t dataSize = blueprint->getDataSize();
                 size_type elementSize = blueprint->getElementSize();
+                std::string blueprintName = blueprint->name();
+                blueprintName += " (";
+                blueprintName += std::to_string(blueprint->id());
+                blueprintName += ")";
                 printf("\n");
-                printf(" BluePrint: %-25s (%" PRIuPTR ")     Data size: %-11s    Element size: %" PRIuPTR " bytes\n",
-                       blueprint->name().c_str(), blueprint->id(), detail::format_integer<3>(dataSize).c_str(), elementSize);
+                printf(" BluePrint: %-27s      Data size: %-11s    Element size: %" PRIuPTR " bytes\n",
+                       blueprintName.c_str(), detail::format_integer<3>(dataSize).c_str(), elementSize);
                 printf("\n");
 
                 // Table header
