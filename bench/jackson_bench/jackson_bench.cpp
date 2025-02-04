@@ -225,7 +225,7 @@ const char * benchmark_short_names[] = {
     "  find.non  ",
     " insert.non ",
     "insert.exist",
-    "   replace  ",
+    "replace.exis",
     " erase.exist",
     "  erase.non ",
     "  iteration "
