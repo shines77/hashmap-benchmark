@@ -409,12 +409,12 @@ void flush_cache()
 {
     static auto buffer = std::vector<std::uint64_t>(APPROXIMATE_CACHE_SIZE / sizeof(std::uint64_t) + 1);
 
-    volatile std::size_t r = 0;
+    //volatile std::size_t r = 0;
     for (auto iter = buffer.begin(); iter != buffer.end(); ++iter) {
-        r += *iter;
+        do_not_optimize += *iter;
     }
 
-    ::srand(static_cast<unsigned int>(r));
+    //::srand(static_cast<unsigned int>(r));
 }
 
 void flush_cache_and_sleep()
