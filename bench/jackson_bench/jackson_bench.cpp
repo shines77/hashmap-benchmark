@@ -748,7 +748,7 @@ void benchmark_iteration(std::size_t run,
             //do_not_optimize += *(unsigned char *)&HashMap<BluePrint>::get_value_from_iter(table, iter);
 
             HashMap<BluePrint>::increment_iter(table, iter);
-            if (unlikely(HashMap<BluePrint>::is_iter_valid(table, iter))) {
+            if (unlikely(!HashMap<BluePrint>::is_iter_valid(table, iter))) {
                 iter = HashMap<BluePrint>::begin_iter(table);
             }
         }
@@ -961,7 +961,7 @@ int main(int argc, char * argv[])
     // Get UTC time string with colons replaced by underscores.
     auto utc_time = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
     std::ostringstream startTime;
-    startTime << std::put_time(::gmtime(&utc_time), "%Y-%m-%dT%H:%M:%S");
+    startTime << std::put_time(::gmtime(&utc_time), "%Y-%m-%d %H:%M:%S");
     auto time_str = startTime.str();
     std::replace(time_str.begin(), time_str.end(), ':', '_');
 
@@ -1024,15 +1024,15 @@ int main(int argc, char * argv[])
 
     utc_time = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
     std::ostringstream endTime;
-    endTime << std::put_time(::gmtime(&utc_time), "%Y-%m-%dT%H:%M:%S");
+    endTime << std::put_time(::gmtime(&utc_time), "%Y-%m-%d %H:%M:%S");
 
     std::cout << std::endl;
     std::cout << "Outputting results." << std::endl;
 
     gBenchmarkResults.printResults();
 
-    std::cout << "Start time: " << startTime.str() << std::endl;
-    std::cout << "End time  : " << endTime.str() << std::endl;
+    std::cout << "Start time : " << startTime.str() << std::endl;
+    std::cout << "End time   : " << endTime.str() << std::endl;
     std::cout << std::endl;
     std::cout << "Total elapsed time: " << sw.getElapsedSecond() << " Seconds." << std::endl;
     std::cout << std::endl;
