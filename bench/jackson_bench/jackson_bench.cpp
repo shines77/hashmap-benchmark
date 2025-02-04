@@ -1028,12 +1028,12 @@ int main(int argc, char * argv[])
     utc_time = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
     std::ostringstream endTime;
     endTime << std::put_time(::gmtime(&utc_time), "%Y-%m-%d %H:%M:%S");
-
+#if 0
     std::cout << std::endl;
     std::cout << "Outputting results." << std::endl;
 
     gBenchmarkResults.printResults();
-
+#endif
     std::cout << "Start time : " << startTime.str() << std::endl;
     std::cout << "End time   : " << endTime.str() << std::endl;
     std::cout << std::endl;
