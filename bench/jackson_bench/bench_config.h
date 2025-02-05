@@ -109,9 +109,9 @@
 #if !defined(_MSC_VER)
 //#define HASHMAP_2       ska_bytell_hash_map
 #endif
-#define HASHMAP_3       ska_flat_hash_map
+//#define HASHMAP_3       ska_flat_hash_map
 #if !defined(_MSC_VER)
-#define HASHMAP_4       tsl_robin_map
+//#define HASHMAP_4       tsl_robin_map
 #endif
 #define HASHMAP_5       jstd_robin_hash_map
 #if !defined(_MSC_VER) || (_MSC_VER >= 2000)

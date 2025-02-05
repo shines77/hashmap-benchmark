@@ -15,13 +15,13 @@ struct std_unordered_map
         using argument_type = key_type;
         using result_type = std::size_t;
 
-        std::size_t operator () (const key_type & key) const {
+        inline std::size_t operator () (const key_type & key) const {
             return BluePrint::hash_key(key);
         }
     };
 
     struct cmpr {
-        bool operator () (const key_type & key_1, const key_type & key_2) const {
+        inline bool operator () (const key_type & key_1, const key_type & key_2) const {
             return BluePrint::cmpr_keys(key_1, key_2);
         }
     };
@@ -43,43 +43,43 @@ struct std_unordered_map
         return table;
     }
 
-    static iterator find(table_type & table, const key_type & key)
+    static inline iterator find(table_type & table, const key_type & key)
     {
         return table.find(key);
     }
 
-    static void insert(table_type & table, const key_type & key)
+    static inline void insert(table_type & table, const key_type & key)
     {
         //table[key] = value_type();
         table.emplace(key, value_type());
     }
 
-    static void erase(table_type & table, const key_type & key)
+    static inline void erase(table_type & table, const key_type & key)
     {
         table.erase(key);
     }
 
-    static iterator begin_iter(table_type & table)
+    static inline iterator begin_iter(table_type & table)
     {
         return table.begin();
     }
 
-    static bool is_iter_valid(table_type & table, iterator & iter)
+    static inline bool is_iter_valid(table_type & table, iterator & iter)
     {
         return (iter != table.end());
     }
 
-    static void increment_iter(table_type & table, iterator & iter)
+    static inline void increment_iter(table_type & table, iterator & iter)
     {
         ++iter;
     }
 
-    static const key_type & get_key_from_iter(table_type & table, iterator & iter)
+    static inline const key_type & get_key_from_iter(table_type & table, iterator & iter)
     {
         return iter->first;
     }
 
-    static const value_type & get_value_from_iter(table_type & table, iterator & iter)
+    static inline const value_type & get_value_from_iter(table_type & table, iterator & iter)
     {
         return iter->second;
     }
