@@ -157,6 +157,7 @@
     <ClCompile Include="..\..\..\bench\jackson_bench\jackson_bench.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\..\bench\jackson_bench\BenchmarkResult.h" />
     <ClInclude Include="..\..\..\bench\jackson_bench\bench_config.h" />
     <ClInclude Include="..\..\..\bench\jackson_bench\blueprints\cstring_uint64_fnv1a\blueprint.h" />
     <ClInclude Include="..\..\..\bench\jackson_bench\blueprints\uint32_uint32_murmur\blueprint.h" />

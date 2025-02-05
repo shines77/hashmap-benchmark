@@ -114,5 +114,8 @@
     <ClInclude Include="..\..\..\bench\jackson_bench\hashmaps\emilib2o\hashmap_wrapper.h">
       <Filter>src\hashmaps\emilib2o</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\bench\jackson_bench\BenchmarkResult.h">
+      <Filter>src</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

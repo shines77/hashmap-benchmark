@@ -1418,6 +1418,7 @@ void benchmark_all_hashmaps(std::size_t iters)
 void std_hash_test()
 {
     printf("#define HASH_MAP_FUNCTION = %s\n\n", PRINT_MACRO(HASH_MAP_FUNCTION));
+    printf("sizeof(std::size_t) = %d\n\n", (int)sizeof(std::size_t));
 
 #if (HASH_FUNCTION_ID == ID_STD_HASH)
     printf("std::hash<std::uint32_t>\n\n");
