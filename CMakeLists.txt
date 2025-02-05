@@ -170,7 +170,10 @@ message("")
 ## https://abseil.io/docs/cpp/tools/cmake-installs
 ##
 
-# Abseil currently supports C++11, C++14, C++17, and C++20.
+#
+# Abseil currently supports C++11, C++14, and C++17.
+# Boost::unordered::unordered_flat_map() need C++20.
+#
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)

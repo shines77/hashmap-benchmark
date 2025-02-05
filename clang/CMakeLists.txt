@@ -6,7 +6,7 @@ CMAKE_MINIMUM_REQUIRED(VERSION 3.5)
 
 set(PROJECT_MAJOR_VERSION "1")
 set(PROJECT_MINOR_VERSION "0")
-set(PROJECT_PATCH_VERSION "0")
+set(PROJECT_PATCH_VERSION "1")
 set(PROJECT_VERSION_STRING "${PROJECT_MAJOR_VERSION}.${PROJECT_MINOR_VERSION}.${PROJECT_PATCH_VERSION}")
 
 if (CMAKE_VERSION VERSION_GREATER_EQUAL "3.0")
@@ -175,24 +175,28 @@ message("")
 ## https://abseil.io/docs/cpp/tools/cmake-installs
 ##
 
+#
 # Abseil currently supports C++11, C++14, and C++17.
-set(CMAKE_CXX_STANDARD 17)
+# Boost::unordered::unordered_flat_map() need C++20.
+#
+set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
 if (CMAKE_VERSION VERSION_GREATER_EQUAL "3.8")
     set(ABSL_PROPAGATE_CXX_STD ON)
 endif()
 
 # Import Abseil's CMake targets
-find_package(absl REQUIRED)
+## find_package(absl REQUIRED)
 
 if (NOT MSVC)
     ## For C_FLAGS
     ## -mmmx -msse -msse2 -msse3 -mssse3 -msse4 -msse4a -msse4.1 -msse4.2 -mavx -mavx2 -mavx512vl -mavx512f
     set(CMAKE_C_COMPILER                "/usr/bin/clang")
     if (CMakeIPOEnable)
-        set(CMAKE_C_FLAGS_DEFAULT       "${CMAKE_C_FLAGS} -std=c99 -march=native -finput-charset=utf-8 -flto=thin -fPIC -fpic")
+        set(CMAKE_C_FLAGS_DEFAULT       "${CMAKE_C_FLAGS} -std=c99 -march=native -mtune=native -finput-charset=utf-8 -flto=thin -fPIC -fpic")
     else()
-        set(CMAKE_C_FLAGS_DEFAULT       "${CMAKE_C_FLAGS} -std=c99 -march=native -finput-charset=utf-8 -fPIC -fpic")
+        set(CMAKE_C_FLAGS_DEFAULT       "${CMAKE_C_FLAGS} -std=c99 -march=native -mtune=native -finput-charset=utf-8 -fPIC -fpic")
     endif()
     set(CMAKE_C_FLAGS_RELEASE           "${CMAKE_C_FLAGS_DEFAULT} -O3 -DNDEBUG")
     set(CMAKE_C_FLAGS_DEBUG             "${CMAKE_C_FLAGS_DEFAULT} -g -pg -D_DEBUG")
@@ -205,9 +209,9 @@ if (NOT MSVC)
     # -fexec-charset=gbk -finput-charset=gbk
     set(CMAKE_CXX_COMPILER              "/usr/bin/clang++")
     if (CMakeIPOEnable)
-        set(CMAKE_CXX_FLAGS_DEFAULT     "${CMAKE_CXX_FLAGS} -std=c++17 -stdlib=libstdc++ -march=native -finput-charset=utf-8 -flto=thin -fPIC -fpic")
+        set(CMAKE_CXX_FLAGS_DEFAULT     "${CMAKE_CXX_FLAGS} -std=c++2a -stdlib=libstdc++ -march=native -mtune=native -finput-charset=utf-8 -flto=thin -fPIC -fpic")
     else()
-        set(CMAKE_CXX_FLAGS_DEFAULT     "${CMAKE_CXX_FLAGS} -std=c++17 -stdlib=libstdc++ -march=native -finput-charset=utf-8 -fPIC -fpic")
+        set(CMAKE_CXX_FLAGS_DEFAULT     "${CMAKE_CXX_FLAGS} -std=c++2a -stdlib=libstdc++ -march=native -mtune=native -finput-charset=utf-8 -fPIC -fpic")
     endif()
     set(CMAKE_CXX_FLAGS_RELEASE         "${CMAKE_CXX_FLAGS_DEFAULT} -O3 -DNDEBUG")
     set(CMAKE_CXX_FLAGS_DEBUG           "${CMAKE_CXX_FLAGS_DEFAULT} -g -pg -D_DEBUG")
@@ -311,20 +315,21 @@ endif()
 include_directories(../include)
 include_directories(../src)
 include_directories(../test)
-include_directories(../3rd_party)
-include_directories(../3rd_party/jstd_hashmap/src)
-include_directories(../3rd_party/emhash)
-include_directories(../3rd_party/robin-hood-hashing/src/include)
-include_directories(../3rd_party/unordered_dens/include)
-include_directories(../3rd_party/robin-map/include)
-include_directories(../install/include)
-## include_directories(../3rd_party/abseil-cpp)
+include_directories(../3rd_part)
+include_directories(../3rd_part/jstd_hashmap/src)
+include_directories(../3rd_part/emhash)
+include_directories(../3rd_part/robin-hood-hashing/src/include)
+include_directories(../3rd_part/unordered_dens/include)
+include_directories(../3rd_part/robin-map/include)
+include_directories(3rd_part/boost_unordered/include)
+## include_directories(../install/include)
+include_directories(../3rd_part/abseil-cpp)
 
 # Process Abseil's CMake build system
-add_subdirectory("../3rd_party/abseil-cpp" "${CMAKE_CURRENT_BINARY_DIR}/abseil-cpp")
+## add_subdirectory("../3rd_part/abseil-cpp" "${CMAKE_CURRENT_BINARY_DIR}/abseil-cpp")
 
 set(JSTD_SOURCE_FILES
-    ../3rd_party/jstd_hashmap/src/jstd/dll_main.cpp
+    ../3rd_part/jstd_hashmap/src/jstd/dll_main.cpp
 )
 
 # add_subdirectory(main EXCLUDE_FROM_ALL src/main/asm)
