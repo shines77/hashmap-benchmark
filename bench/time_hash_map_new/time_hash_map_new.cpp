@@ -85,7 +85,7 @@
 #include <algorithm>
 
 #define USE_STD_HASH_MAP                0
-#define USE_STD_UNORDERED_MAP           1
+#define USE_STD_UNORDERED_MAP           0
 #define USE_JSTD_ROBIN_HASH_MAP         1
 #define USE_SKA_FLAT_HASH_MAP           0
 #define USE_SKA_BYTELL_HASH_MAP         0
@@ -1417,8 +1417,8 @@ void benchmark_all_hashmaps(std::size_t iters)
 
 void std_hash_test()
 {
+    printf("sizeof(std::size_t) = %d bytes\n", (int)sizeof(std::size_t));
     printf("#define HASH_MAP_FUNCTION = %s\n\n", PRINT_MACRO(HASH_MAP_FUNCTION));
-    printf("sizeof(std::size_t) = %d\n\n", (int)sizeof(std::size_t));
 
 #if (HASH_FUNCTION_ID == ID_STD_HASH)
     printf("std::hash<std::uint32_t>\n\n");

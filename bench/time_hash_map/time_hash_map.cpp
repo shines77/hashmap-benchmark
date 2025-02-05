@@ -1900,7 +1900,7 @@ int main(int argc, char * argv[])
     jtest::CPU::warm_up(1000);
 
     if (1) { std_hash_test(); }
-    if (1) { need_store_hash_test(); }
+    if (0) { need_store_hash_test(); }
 
     if (1)
     {
