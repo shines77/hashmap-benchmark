@@ -207,11 +207,13 @@ if (NOT MSVC)
     ## -Wall -Werror -Wextra -Wno-format -Wno-unused-function
     ## -mmmx -msse -msse2 -msse3 -mssse3 -msse4 -msse4a -msse4.1 -msse4.2 -mavx -mavx2 -mavx512vl -mavx512f
     # -fexec-charset=gbk -finput-charset=gbk
+
+    ## -stdlib=libstdc++ is from GUNC, -stdlib=libc++ is from clang.
     set(CMAKE_CXX_COMPILER              "/usr/bin/clang++")
     if (CMakeIPOEnable)
-        set(CMAKE_CXX_FLAGS_DEFAULT     "${CMAKE_CXX_FLAGS} -std=c++20 -stdlib=libstdc++ -march=native -mtune=native -finput-charset=utf-8 -flto=thin -fPIC -fpic")
+        set(CMAKE_CXX_FLAGS_DEFAULT     "${CMAKE_CXX_FLAGS} -std=c++2a -stdlib=libc++ -march=native -mtune=native -finput-charset=utf-8 -flto=thin -fPIC -fpic")
     else()
-        set(CMAKE_CXX_FLAGS_DEFAULT     "${CMAKE_CXX_FLAGS} -std=c++20 -stdlib=libstdc++ -march=native -mtune=native -finput-charset=utf-8 -fPIC -fpic")
+        set(CMAKE_CXX_FLAGS_DEFAULT     "${CMAKE_CXX_FLAGS} -std=c++2a -stdlib=libc++ -march=native -mtune=native -finput-charset=utf-8 -fPIC -fpic")
     endif()
     set(CMAKE_CXX_FLAGS_RELEASE         "${CMAKE_CXX_FLAGS_DEFAULT} -O3 -DNDEBUG")
     set(CMAKE_CXX_FLAGS_DEBUG           "${CMAKE_CXX_FLAGS_DEFAULT} -g -pg -D_DEBUG")
@@ -230,7 +232,8 @@ if (NOT MSVC)
     ## Clang C++ lib: libc++
     ## set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -lc++ -stdlib=libc++")
     ## GCC C++ lib: GLibCxx
-    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -lstdc++ -stdlib=libstdc++")
+    ## set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -lstdc++ -stdlib=libstdc++")
+    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -lc++ -stdlib=libc++")
 
     ##
     ## See: https://cloud.tencent.com/developer/ask/101584
