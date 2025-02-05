@@ -41,8 +41,9 @@ static void map_serial_find(char const * title, std::size_t iters,
     ::srand(static_cast<unsigned int>(r));
 
     double lf = hashmap.load_factor();
-    report_result(title, ut, lf, iters, 0, 0);
-    printf("counter_r = %" PRIuPTR "\n", r);
+    char info[128]; info[0] = '\0';
+    ::snprintf(info, sizeof(info), "counter_r = %" PRIuPTR, r);
+    report_result(title, ut, lf, iters, 0, 0, info);
 }
 
 template <class MapType>
@@ -100,8 +101,9 @@ static void map_serial_find_failed(std::size_t iters) {
     ::srand(static_cast<unsigned int>(r));
 
     double lf = hashmap.load_factor();
-    report_result("serial_find_failed", ut, lf, iters, 0, 0);
-    printf("counter_r = %" PRIuPTR "\n", r);
+    char info[128]; info[0] = '\0';
+    ::snprintf(info, sizeof(info), "counter_r = %" PRIuPTR, r);
+    report_result("serial_find_failed", ut, lf, iters, 0, 0, info);
 }
 
 template <class MapType>
@@ -133,8 +135,9 @@ static void map_serial_find_empty(std::size_t iters) {
     ::srand(static_cast<unsigned int>(r));
 
     double lf = hashmap.load_factor();
-    report_result("serial_find_empty", ut, lf, iters, 0, 0);
-    printf("counter_r = %" PRIuPTR "\n", r);
+    char info[128]; info[0] = '\0';
+    ::snprintf(info, sizeof(info), "counter_r = %" PRIuPTR, r);
+    report_result("serial_find_empty", ut, lf, iters, 0, 0, info);
 }
 
 template <class MapType>
@@ -165,8 +168,9 @@ static void map_serial_insert(std::size_t iters) {
         ::srand(static_cast<unsigned int>(hashmap.size()));
 
         double lf = hashmap.load_factor();
-        report_result("serial_insert", ut, lf, iters, start, finish);
-        printf("hashmap.size() = %" PRIuPTR "\n", hashmap.size());
+        char info[128]; info[0] = '\0';
+        ::snprintf(info, sizeof(info), "hashmap.size() = %" PRIuSIZE, hashmap.size());
+        report_result("serial_insert", ut, lf, iters, start, finish, info);
     }
 }
 
@@ -200,8 +204,9 @@ static void map_serial_insert_predicted(std::size_t iters) {
         ::srand(static_cast<unsigned int>(hashmap.size()));
 
         double lf = hashmap.load_factor();
-        report_result("serial_insert_predicted", ut, lf, iters, start, finish);
-        printf("hashmap.size() = %" PRIuPTR "\n", hashmap.size());
+        char info[128]; info[0] = '\0';
+        ::snprintf(info, sizeof(info), "hashmap.size() = %" PRIuSIZE, hashmap.size());
+        report_result("serial_insert_predicted", ut, lf, iters, start, finish, info);
     }
 }
 
@@ -235,8 +240,9 @@ static void map_serial_insert_replace(std::size_t iters) {
         ::srand(static_cast<unsigned int>(hashmap.size()));
 
         double lf = hashmap.load_factor();
-        report_result("serial_insert_replace", ut, lf, iters, start, finish);
-        printf("hashmap.size() = %" PRIuPTR "\n", hashmap.size());
+        char info[128]; info[0] = '\0';
+        ::snprintf(info, sizeof(info), "hashmap.size() = %" PRIuSIZE, hashmap.size());
+        report_result("serial_insert_replace", ut, lf, iters, start, finish, info);
     }
 }
 
@@ -268,8 +274,9 @@ static void map_serial_emplace(std::size_t iters) {
         ::srand(static_cast<unsigned int>(hashmap.size()));
 
         double lf = hashmap.load_factor();
-        report_result("serial_emplace", ut, lf, iters, start, finish);
-        printf("hashmap.size() = %" PRIuPTR "\n", hashmap.size());
+        char info[128]; info[0] = '\0';
+        ::snprintf(info, sizeof(info), "hashmap.size() = %" PRIuSIZE, hashmap.size());
+        report_result("serial_emplace", ut, lf, iters, start, finish, info);
     }
 }
 
@@ -303,8 +310,9 @@ static void map_serial_emplace_predicted(std::size_t iters) {
         ::srand(static_cast<unsigned int>(hashmap.size()));
 
         double lf = hashmap.load_factor();
-        report_result("serial_emplace_predicted", ut, lf, iters, start, finish);
-        printf("hashmap.size() = %" PRIuPTR "\n", hashmap.size());
+        char info[128]; info[0] = '\0';
+        ::snprintf(info, sizeof(info), "hashmap.size() = %" PRIuSIZE, hashmap.size());
+        report_result("serial_emplace_predicted", ut, lf, iters, start, finish, info);
     }
 }
 
@@ -338,8 +346,9 @@ static void map_serial_emplace_replace(std::size_t iters) {
         ::srand(static_cast<unsigned int>(hashmap.size()));
 
         double lf = hashmap.load_factor();
-        report_result("serial_emplace_replace", ut, lf, iters, start, finish);
-        printf("hashmap.size() = %" PRIuPTR "\n", hashmap.size());
+        char info[128]; info[0] = '\0';
+        ::snprintf(info, sizeof(info), "hashmap.size() = %" PRIuSIZE, hashmap.size());
+        report_result("serial_emplace_replace", ut, lf, iters, start, finish, info);
     }
 }
 
@@ -371,8 +380,9 @@ static void map_serial_operator(std::size_t iters) {
         ::srand(static_cast<unsigned int>(hashmap.size()));
 
         double lf = hashmap.load_factor();
-        report_result("serial operator []", ut, lf, iters, start, finish);
-        printf("hashmap.size() = %" PRIuPTR "\n", hashmap.size());
+        char info[128]; info[0] = '\0';
+        ::snprintf(info, sizeof(info), "hashmap.size() = %" PRIuSIZE, hashmap.size());
+        report_result("serial operator []", ut, lf, iters, start, finish, info);
     }
 }
 
@@ -406,8 +416,9 @@ static void map_serial_operator_predicted(std::size_t iters) {
         ::srand(static_cast<unsigned int>(hashmap.size()));
 
         double lf = hashmap.load_factor();
-        report_result("serial operator [] predicted", ut, lf, iters, start, finish);
-        printf("hashmap.size() = %" PRIuPTR "\n", hashmap.size());
+        char info[128]; info[0] = '\0';
+        ::snprintf(info, sizeof(info), "hashmap.size() = %" PRIuSIZE, hashmap.size());
+        report_result("serial operator [] predicted", ut, lf, iters, start, finish, info);
     }
 }
 
@@ -441,8 +452,9 @@ static void map_serial_operator_replace(std::size_t iters) {
         ::srand(static_cast<unsigned int>(hashmap.size()));
 
         double lf = hashmap.load_factor();
-        report_result("serial operator [] replace", ut, lf, iters, start, finish);
-        printf("hashmap.size() = %" PRIuPTR "\n", hashmap.size());
+        char info[128]; info[0] = '\0';
+        ::snprintf(info, sizeof(info), "hashmap.size() = %" PRIuSIZE, hashmap.size());
+        report_result("serial operator [] replace", ut, lf, iters, start, finish, info);
     }
 }
 
@@ -476,8 +488,9 @@ static void map_serial_erase(std::size_t iters) {
         ::srand(static_cast<unsigned int>(hashmap.size()));
 
         double lf = hashmap.load_factor();
-        report_result("serial_erase", ut, lf, iters, start, finish);
-        printf("hashmap.size() = %" PRIuPTR "\n", hashmap.size());
+        char info[128]; info[0] = '\0';
+        ::snprintf(info, sizeof(info), "hashmap.size() = %" PRIuSIZE, hashmap.size());
+        report_result("serial_erase", ut, lf, iters, start, finish, info);
     }
 }
 
@@ -511,8 +524,9 @@ static void map_serial_erase_failed(std::size_t iters) {
         ::srand(static_cast<unsigned int>(hashmap.size()));
 
         double lf = hashmap.load_factor();
-        report_result("serial_erase_failed", ut, lf, iters, start, finish);
-        printf("hashmap.size() = %" PRIuPTR "\n", hashmap.size());
+        char info[128]; info[0] = '\0';
+        ::snprintf(info, sizeof(info), "hashmap.size() = %" PRIuSIZE, hashmap.size());
+        report_result("serial_erase_failed", ut, lf, iters, start, finish, info);
     }
 }
 
@@ -545,8 +559,9 @@ static void map_serial_toggle(std::size_t iters) {
         ::srand(static_cast<unsigned int>(hashmap.size()));
 
         double lf = hashmap.load_factor();
-        report_result("serial_toggle", ut, lf, iters, start, finish);
-        printf("hashmap.size() = %" PRIuPTR "\n", hashmap.size());
+        char info[128]; info[0] = '\0';
+        ::snprintf(info, sizeof(info), "hashmap.size() = %" PRIuSIZE, hashmap.size());
+        report_result("serial_toggle", ut, lf, iters, start, finish, info);
     }
 }
 
@@ -587,8 +602,10 @@ static void map_serial_iterate(std::size_t iters) {
         ::srand(static_cast<unsigned int>(hashmap.size()));
 
         double lf = hashmap.load_factor();
-        report_result("serial_emplace - iterate", ut, lf, iters, start, finish);
-        printf("r = %" PRIuPTR ", hashmap.size() = %" PRIuPTR "\n", std::size_t(r), hashmap.size());
+        char info[128]; info[0] = '\0';
+        ::snprintf(info, sizeof(info), "r = %" PRIuSIZE ", hashmap.size() = %" PRIuSIZE "\n",
+                   std::size_t(r), hashmap.size());
+        report_result("serial_emplace - iterate", ut, lf, iters, start, finish, info);
     }
 }
 
@@ -620,8 +637,9 @@ static void map_random_find(char const * title, std::size_t iters,
     ::srand(static_cast<unsigned int>(r));
 
     double lf = hashmap.load_factor();
-    report_result(title, ut, lf, iters, 0, 0);
-    printf("counter_r = %" PRIuPTR "\n", r);
+    char info[128]; info[0] = '\0';
+    ::snprintf(info, sizeof(info), "counter_r = %" PRIuPTR, r);
+    report_result(title, ut, lf, iters, 0, 0, info);
 }
 
 template <class MapType, class Vector>
@@ -679,8 +697,9 @@ static void map_random_find_failed(std::size_t iters, const Vector & indices) {
     ::srand(static_cast<unsigned int>(r));
 
     double lf = hashmap.load_factor();
-    report_result("random_find_failed", ut, lf, iters, 0, 0);
-    printf("counter_r = %" PRIuPTR "\n", r);
+    char info[128]; info[0] = '\0';
+    ::snprintf(info, sizeof(info), "counter_r = %" PRIuPTR, r);
+    report_result("random_find_failed", ut, lf, iters, 0, 0, info);
 }
 
 template <class MapType, class Vector>
@@ -712,8 +731,9 @@ static void map_random_find_empty(std::size_t iters, const Vector & indices) {
     ::srand(static_cast<unsigned int>(r));
 
     double lf = hashmap.load_factor();
-    report_result("random_find_empty", ut, lf, iters, 0, 0);
-    printf("counter_r = %" PRIuPTR "\n", r);
+    char info[128]; info[0] = '\0';
+    ::snprintf(info, sizeof(info), "counter_r = %" PRIuPTR, r);
+    report_result("random_find_empty", ut, lf, iters, 0, 0, info);
 }
 
 template <class MapType, class Vector>
@@ -744,8 +764,9 @@ static void map_random_insert(std::size_t iters, const Vector & indices) {
         ::srand(static_cast<unsigned int>(hashmap.size()));
 
         double lf = hashmap.load_factor();
-        report_result("random_insert", ut, lf, iters, start, finish);
-        printf("hashmap.size() = %" PRIuPTR "\n", hashmap.size());
+        char info[128]; info[0] = '\0';
+        ::snprintf(info, sizeof(info), "hashmap.size() = %" PRIuSIZE, hashmap.size());
+        report_result("random_insert", ut, lf, iters, start, finish, info);
     }
 }
 
@@ -779,8 +800,9 @@ static void map_random_insert_predicted(std::size_t iters, const Vector & indice
         ::srand(static_cast<unsigned int>(hashmap.size()));
 
         double lf = hashmap.load_factor();
-        report_result("random_insert_predicted", ut, lf, iters, start, finish);
-        printf("hashmap.size() = %" PRIuPTR "\n", hashmap.size());
+        char info[128]; info[0] = '\0';
+        ::snprintf(info, sizeof(info), "hashmap.size() = %" PRIuSIZE, hashmap.size());
+        report_result("random_insert_predicted", ut, lf, iters, start, finish, info);
     }
 }
 
@@ -814,8 +836,9 @@ static void map_random_insert_replace(std::size_t iters, const Vector & indices)
         ::srand(static_cast<unsigned int>(hashmap.size()));
 
         double lf = hashmap.load_factor();
-        report_result("random_insert_replace", ut, lf, iters, start, finish);
-        printf("hashmap.size() = %" PRIuPTR "\n", hashmap.size());
+        char info[128]; info[0] = '\0';
+        ::snprintf(info, sizeof(info), "hashmap.size() = %" PRIuSIZE, hashmap.size());
+        report_result("random_insert_replace", ut, lf, iters, start, finish, info);
     }
 }
 
@@ -847,8 +870,9 @@ static void map_random_emplace(std::size_t iters, const Vector & indices) {
         ::srand(static_cast<unsigned int>(hashmap.size()));
 
         double lf = hashmap.load_factor();
-        report_result("random_emplace", ut, lf, iters, start, finish);
-        printf("hashmap.size() = %" PRIuPTR "\n", hashmap.size());
+        char info[128]; info[0] = '\0';
+        ::snprintf(info, sizeof(info), "hashmap.size() = %" PRIuSIZE, hashmap.size());
+        report_result("random_emplace", ut, lf, iters, start, finish, info);
     }
 }
 
@@ -882,8 +906,9 @@ static void map_random_emplace_predicted(std::size_t iters, const Vector & indic
         ::srand(static_cast<unsigned int>(hashmap.size()));
 
         double lf = hashmap.load_factor();
-        report_result("random_emplace_predicted", ut, lf, iters, start, finish);
-        printf("hashmap.size() = %" PRIuPTR "\n", hashmap.size());
+        char info[128]; info[0] = '\0';
+        ::snprintf(info, sizeof(info), "hashmap.size() = %" PRIuSIZE, hashmap.size());
+        report_result("random_emplace_predicted", ut, lf, iters, start, finish, info);
     }
 }
 
@@ -917,8 +942,9 @@ static void map_random_emplace_replace(std::size_t iters, const Vector & indices
         ::srand(static_cast<unsigned int>(hashmap.size()));
 
         double lf = hashmap.load_factor();
-        report_result("random_emplace_replace", ut, lf, iters, start, finish);
-        printf("hashmap.size() = %" PRIuPTR "\n", hashmap.size());
+        char info[128]; info[0] = '\0';
+        ::snprintf(info, sizeof(info), "hashmap.size() = %" PRIuSIZE, hashmap.size());
+        report_result("random_emplace_replace", ut, lf, iters, start, finish, info);
     }
 }
 
@@ -950,8 +976,9 @@ static void map_random_operator(std::size_t iters, const Vector & indices) {
         ::srand(static_cast<unsigned int>(hashmap.size()));
 
         double lf = hashmap.load_factor();
-        report_result("random operator []", ut, lf, iters, start, finish);
-        printf("hashmap.size() = %" PRIuPTR "\n", hashmap.size());
+        char info[128]; info[0] = '\0';
+        ::snprintf(info, sizeof(info), "hashmap.size() = %" PRIuSIZE, hashmap.size());
+        report_result("random operator []", ut, lf, iters, start, finish, info);
     }
 }
 
@@ -985,8 +1012,9 @@ static void map_random_operator_predicted(std::size_t iters, const Vector & indi
         ::srand(static_cast<unsigned int>(hashmap.size()));
 
         double lf = hashmap.load_factor();
-        report_result("random operator [] predicted", ut, lf, iters, start, finish);
-        printf("hashmap.size() = %" PRIuPTR "\n", hashmap.size());
+        char info[128]; info[0] = '\0';
+        ::snprintf(info, sizeof(info), "hashmap.size() = %" PRIuSIZE, hashmap.size());
+        report_result("random operator [] predicted", ut, lf, iters, start, finish, info);
     }
 }
 
@@ -1021,8 +1049,9 @@ static void map_random_operator_replace(std::size_t iters, const Vector & indice
         ::srand(static_cast<unsigned int>(hashmap.size()));
 
         double lf = hashmap.load_factor();
-        report_result("random operator [] replace", ut, lf, iters, start, finish);
-        printf("hashmap.size() = %" PRIuPTR "\n", hashmap.size());
+        char info[128]; info[0] = '\0';
+        ::snprintf(info, sizeof(info), "hashmap.size() = %" PRIuSIZE, hashmap.size());
+        report_result("random operator [] replace", ut, lf, iters, start, finish, info);
     }
 }
 
@@ -1056,8 +1085,9 @@ static void map_random_erase(std::size_t iters, const Vector & indices) {
         ::srand(static_cast<unsigned int>(hashmap.size()));
 
         double lf = hashmap.load_factor();
-        report_result("random_erase", ut, lf, iters, start, finish);
-        printf("hashmap.size() = %" PRIuPTR "\n", hashmap.size());
+        char info[128]; info[0] = '\0';
+        ::snprintf(info, sizeof(info), "hashmap.size() = %" PRIuSIZE, hashmap.size());
+        report_result("random_erase", ut, lf, iters, start, finish, info);
     }
 }
 
@@ -1091,8 +1121,9 @@ static void map_random_erase_failed(std::size_t iters, const Vector & indices) {
         ::srand(static_cast<unsigned int>(hashmap.size()));
 
         double lf = hashmap.load_factor();
-        report_result("random_erase_failed", ut, lf, iters, start, finish);
-        printf("hashmap.size() = %" PRIuPTR "\n", hashmap.size());
+        char info[128]; info[0] = '\0';
+        ::snprintf(info, sizeof(info), "hashmap.size() = %" PRIuSIZE, hashmap.size());
+        report_result("random_erase_failed", ut, lf, iters, start, finish, info);
     }
 }
 
@@ -1125,8 +1156,9 @@ static void map_random_toggle(std::size_t iters, const Vector & indices) {
         ::srand(static_cast<unsigned int>(hashmap.size()));
 
         double lf = hashmap.load_factor();
-        report_result("random_toggle", ut, lf, iters, start, finish);
-        printf("hashmap.size() = %" PRIuPTR "\n", hashmap.size());
+        char info[128]; info[0] = '\0';
+        ::snprintf(info, sizeof(info), "hashmap.size() = %" PRIuSIZE, hashmap.size());
+        report_result("random_toggle", ut, lf, iters, start, finish, info);
     }
 }
 
@@ -1168,8 +1200,10 @@ static void map_random_iterate(std::size_t iters, const Vector & indices) {
         ::srand(static_cast<unsigned int>(hashmap.size()));
 
         double lf = hashmap.load_factor();
-        report_result("random_emplace - iterate", ut, lf, iters, start, finish);
-        printf("r = %" PRIuPTR ", hashmap.size() = %" PRIuPTR "\n", std::size_t(r), hashmap.size());
+        char info[128]; info[0] = '\0';
+        ::snprintf(info, sizeof(info), "r = %" PRIuSIZE ", hashmap.size() = %" PRIuSIZE "\n",
+                   std::size_t(r), hashmap.size());
+        report_result("random_emplace - iterate", ut, lf, iters, start, finish, info);
     }
 }
 
