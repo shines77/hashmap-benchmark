@@ -15,24 +15,23 @@
 
 template <class MapType, class Vector>
 static void map_serial_find(char const * title, std::size_t iters,
-                            const Vector & indices) {
-    typedef typename MapType::mapped_type mapped_type;
+                            const Vector & indices, const Vector & findIndices) {
+    typedef typename MapType::key_type      key_type;
+    typedef typename MapType::mapped_type   mapped_type;
 
     MapType hashmap;
     jtest::StopWatch sw;
     std::size_t r;
-    mapped_type i;
-    mapped_type max_iters = static_cast<mapped_type>(iters);
 
-    for (i = 0; i < max_iters; i++) {
-        hashmap.emplace(i, i + 1);
+    for (std::size_t i = 0; i < iters; i++) {
+        hashmap.emplace(indices[i], static_cast<mapped_type>(i));
     }
 
-    r = 1;
+    r = 0;
     reset_counter();
     sw.start();
-    for (i = 0; i < max_iters; i++) {
-        r ^= static_cast<std::size_t>(hashmap.find(indices[i]) != hashmap.end());
+    for (std::size_t i = 0; i < iters; i++) {
+        r += static_cast<std::size_t>(hashmap.find(findIndices[i]) != hashmap.end());
     }
     sw.stop();
     double ut = sw.getElapsedSecond();
@@ -42,57 +41,43 @@ static void map_serial_find(char const * title, std::size_t iters,
 
     double lf = hashmap.load_factor();
     char info[128]; info[0] = '\0';
-    ::snprintf(info, sizeof(info), "counter_r = %" PRIuSIZE, r);
+    ::snprintf(info, sizeof(info), "r = %" PRIuSIZE, r);
     report_result(title, ut, lf, iters, 0, 0, info);
 }
 
-template <class MapType>
-static void map_serial_find_success(std::size_t iters) {
-    typedef typename MapType::mapped_type mapped_type;
-
-    mapped_type max_iters = static_cast<mapped_type>(iters);
-    std::vector<mapped_type> v(iters);
-    for (mapped_type i = 0; i < max_iters; i++) {
-        v[i] = i + 1;
-    }
-
-    map_serial_find<MapType>("serial_find_success", iters, v);
+template <class MapType, class Vector>
+static void map_serial_find_success(std::size_t iters, const Vector & indices) {
+    // The order of insert() is same to the order of find().
+    map_serial_find<MapType>("serial_find_success", iters, indices, indices);
 }
 
-template <class MapType>
-static void map_serial_find_random(std::size_t iters) {
-    typedef typename MapType::mapped_type mapped_type;
-
-    mapped_type max_iters = static_cast<mapped_type>(iters);
-    std::vector<mapped_type> v(iters);
-    for (mapped_type i = 0; i < max_iters; i++) {
-        v[i] = i + 1;
-    }
-
-    shuffle_vector(v);
-
-    map_serial_find<MapType>("serial_find_random", iters, v);
+template <class MapType, class Vector>
+static void map_serial_find_random(std::size_t iters, const Vector & indices, const Vector & findIndices) {
+    // Tthe order of find() is randomize.
+    map_serial_find<MapType>("serial_find_random", iters, indices, findIndices);
 }
 
-template <class MapType>
-static void map_serial_find_failed(std::size_t iters) {
-    typedef typename MapType::mapped_type mapped_type;
+template <class MapType, class Vector>
+static void map_serial_find_failed(std::size_t iters, const Vector & indices) {
+    typedef typename MapType::key_type      key_type;
+    typedef typename MapType::mapped_type   mapped_type;
 
     MapType hashmap;
     jtest::StopWatch sw;
-    std::size_t r;
-    mapped_type i;
-    mapped_type max_iters = static_cast<mapped_type>(iters);
+    std::size_t r;  
 
-    for (i = 0; i < max_iters; i++) {
-        hashmap.emplace(i, i + 1);
+    for (std::size_t i = 0; i < iters; i++) {
+        hashmap.emplace(indices[i], static_cast<mapped_type>(i));
     }
 
-    r = 1;
+    r = 0;
     reset_counter();
+    key_type max_iters = static_cast<key_type>(iters);
+    key_type first = static_cast<key_type>(iters * 2);
+    key_type last = first + max_iters;
     sw.start();
-    for (i = max_iters; i < max_iters * 2; i++) {
-        r ^= static_cast<std::size_t>(hashmap.find(i) != hashmap.end());
+    for (key_type i = first; i < last; i++) {
+        r += static_cast<std::size_t>(hashmap.find(i) != hashmap.end());
     }
     sw.stop();
     double ut = sw.getElapsedSecond();
@@ -102,31 +87,31 @@ static void map_serial_find_failed(std::size_t iters) {
 
     double lf = hashmap.load_factor();
     char info[128]; info[0] = '\0';
-    ::snprintf(info, sizeof(info), "counter_r = %" PRIuSIZE, r);
+    ::snprintf(info, sizeof(info), "r = %" PRIuSIZE, r);
     report_result("serial_find_failed", ut, lf, iters, 0, 0, info);
 }
 
-template <class MapType>
-static void map_serial_find_empty(std::size_t iters) {
-    typedef typename MapType::mapped_type mapped_type;
+template <class MapType, class Vector>
+static void map_serial_find_empty(std::size_t iters, const Vector & indices) {
+    typedef typename MapType::key_type      key_type;
+    typedef typename MapType::mapped_type   mapped_type;
 
     MapType hashmap;
     jtest::StopWatch sw;
     std::size_t r;
-    mapped_type i;
-    mapped_type max_iters = static_cast<mapped_type>(iters);
 
-    for (i = 0; i < max_iters; i++) {
-        hashmap.emplace(i, i + 1);
+    for (std::size_t i = 0; i < iters; i++) {
+        hashmap.emplace(indices[i], static_cast<mapped_type>(i));
     }
 
     hashmap.clear();
 
-    r = 1;
+    r = 0;
     reset_counter();
+    key_type max_iters = static_cast<key_type>(iters);
     sw.start();
-    for (i = 0; i < max_iters; i++) {
-        r ^= static_cast<std::size_t>(hashmap.find(i) != hashmap.end());
+    for (std::size_t i = 0; i < iters; i++) {
+        r += static_cast<std::size_t>(hashmap.find(indices[i]) != hashmap.end());
     }
     sw.stop();
     double ut = sw.getElapsedSecond();
@@ -136,12 +121,12 @@ static void map_serial_find_empty(std::size_t iters) {
 
     double lf = hashmap.load_factor();
     char info[128]; info[0] = '\0';
-    ::snprintf(info, sizeof(info), "counter_r = %" PRIuSIZE, r);
+    ::snprintf(info, sizeof(info), "r = %" PRIuSIZE, r);
     report_result("serial_find_empty", ut, lf, iters, 0, 0, info);
 }
 
-template <class MapType>
-static void map_serial_insert(std::size_t iters) {
+template <class MapType, class Vector>
+static void map_serial_insert(std::size_t iters, const Vector & indices) {
     typedef typename MapType::mapped_type mapped_type;
 
     std::size_t start = CurrentMemoryUsage();
@@ -150,12 +135,10 @@ static void map_serial_insert(std::size_t iters) {
     {
         jtest::StopWatch sw;
 
-        mapped_type max_iters = static_cast<mapped_type>(iters);
-
         reset_counter();
         sw.start();
-        for (mapped_type i = 0; i < max_iters; i++) {
-            hashmap.insert(std::make_pair(i, i + 1));
+        for (std::size_t i = 0; i < iters; i++) {
+            hashmap.insert(std::make_pair(indices[i], static_cast<mapped_type>(i)));
         }
         sw.stop();
 
@@ -174,8 +157,8 @@ static void map_serial_insert(std::size_t iters) {
     }
 }
 
-template <class MapType>
-static void map_serial_insert_predicted(std::size_t iters) {
+template <class MapType, class Vector>
+static void map_serial_insert_predicted(std::size_t iters, const Vector & indices) {
     typedef typename MapType::mapped_type mapped_type;
 
     std::size_t start = CurrentMemoryUsage();
@@ -183,15 +166,12 @@ static void map_serial_insert_predicted(std::size_t iters) {
 
     {
         jtest::StopWatch sw;
-
-        mapped_type max_iters = static_cast<mapped_type>(iters);
-
-        hashmap.reserve(max_iters);
+        hashmap.rehash(iters);
 
         reset_counter();
         sw.start();
-        for (mapped_type i = 0; i < max_iters; i++) {
-            hashmap.insert(std::make_pair(i, i + 1));
+        for (std::size_t i = 0; i < iters; i++) {
+            hashmap.insert(std::make_pair(indices[i], static_cast<mapped_type>(i)));
         }
         sw.stop();
 
@@ -210,24 +190,23 @@ static void map_serial_insert_predicted(std::size_t iters) {
     }
 }
 
-template <class MapType>
-static void map_serial_insert_replace(std::size_t iters) {
+template <class MapType, class Vector>
+static void map_serial_insert_replace(std::size_t iters, const Vector & indices) {
     typedef typename MapType::mapped_type mapped_type;
 
     MapType hashmap;
     jtest::StopWatch sw;
 
-    mapped_type max_iters = static_cast<mapped_type>(iters);
-    for (mapped_type i = 0; i < max_iters; i++) {
-        hashmap.insert(std::make_pair(i, i + 1));
+    for (std::size_t i = 0; i < iters; i++) {
+        hashmap.emplace(indices[i], static_cast<mapped_type>(i + 1));
     }
 
     std::size_t start = CurrentMemoryUsage();
     {
         reset_counter();
         sw.start();
-        for (mapped_type i = 0; i < max_iters; i++) {
-            hashmap.insert(std::make_pair(i, i + 2));
+        for (std::size_t i = 0; i < iters; i++) {
+            hashmap.insert(std::make_pair(indices[i], static_cast<mapped_type>(i)));
         }
         sw.stop();
 
@@ -246,8 +225,8 @@ static void map_serial_insert_replace(std::size_t iters) {
     }
 }
 
-template <class MapType>
-static void map_serial_emplace(std::size_t iters) {
+template <class MapType, class Vector>
+static void map_serial_emplace(std::size_t iters, const Vector & indices) {
     typedef typename MapType::mapped_type mapped_type;
 
     std::size_t start = CurrentMemoryUsage();
@@ -256,12 +235,10 @@ static void map_serial_emplace(std::size_t iters) {
     {
         jtest::StopWatch sw;
 
-        mapped_type max_iters = static_cast<mapped_type>(iters);
-
         reset_counter();
         sw.start();
-        for (mapped_type i = 0; i < max_iters; i++) {
-            hashmap.emplace(i, i + 1);
+        for (std::size_t i = 0; i < iters; i++) {
+            hashmap.emplace(indices[i], static_cast<mapped_type>(i));
         }
         sw.stop();
 
@@ -280,8 +257,8 @@ static void map_serial_emplace(std::size_t iters) {
     }
 }
 
-template <class MapType>
-static void map_serial_emplace_predicted(std::size_t iters) {
+template <class MapType, class Vector>
+static void map_serial_emplace_predicted(std::size_t iters, const Vector & indices) {
     typedef typename MapType::mapped_type mapped_type;
 
     std::size_t start = CurrentMemoryUsage();
@@ -289,15 +266,12 @@ static void map_serial_emplace_predicted(std::size_t iters) {
 
     {
         jtest::StopWatch sw;
-
-        mapped_type max_iters = static_cast<mapped_type>(iters);
-
-        hashmap.reserve(iters);
+        hashmap.rehash(iters);
 
         reset_counter();
         sw.start();
-        for (mapped_type i = 0; i < max_iters; i++) {
-            hashmap.emplace(i, i + 1);
+        for (std::size_t i = 0; i < iters; i++) {
+            hashmap.emplace(indices[i], static_cast<mapped_type>(i));
         }
         sw.stop();
 
@@ -316,24 +290,23 @@ static void map_serial_emplace_predicted(std::size_t iters) {
     }
 }
 
-template <class MapType>
-static void map_serial_emplace_replace(std::size_t iters) {
+template <class MapType, class Vector>
+static void map_serial_emplace_replace(std::size_t iters, const Vector & indices) {
     typedef typename MapType::mapped_type mapped_type;
 
     MapType hashmap;
     jtest::StopWatch sw;
 
-    mapped_type max_iters = static_cast<mapped_type>(iters);
-    for (mapped_type i = 0; i < max_iters; i++) {
-        hashmap.emplace(i, i + 1);
+    for (std::size_t i = 0; i < iters; i++) {
+        hashmap.emplace(indices[i], static_cast<mapped_type>(i + 1));
     }
 
     std::size_t start = CurrentMemoryUsage();
     {
         reset_counter();
         sw.start();
-        for (mapped_type i = 0; i < max_iters; i++) {
-            hashmap.emplace(i, i + 2);
+        for (std::size_t i = 0; i < iters; i++) {
+            hashmap.emplace(indices[i], static_cast<mapped_type>(i));
         }
         sw.stop();
 
@@ -352,8 +325,8 @@ static void map_serial_emplace_replace(std::size_t iters) {
     }
 }
 
-template <class MapType>
-static void map_serial_operator(std::size_t iters) {
+template <class MapType, class Vector>
+static void map_serial_operator(std::size_t iters, const Vector & indices) {
     typedef typename MapType::mapped_type mapped_type;
 
     std::size_t start = CurrentMemoryUsage();
@@ -362,12 +335,10 @@ static void map_serial_operator(std::size_t iters) {
     {
         jtest::StopWatch sw;
 
-        mapped_type max_iters = static_cast<mapped_type>(iters);
-
         reset_counter();
         sw.start();
-        for (mapped_type i = 0; i < max_iters; i++) {
-            hashmap[i] = i + 1;
+        for (std::size_t i = 0; i < iters; i++) {
+            hashmap[indices[i]] = static_cast<mapped_type>(i);
         }
         sw.stop();
 
@@ -386,8 +357,8 @@ static void map_serial_operator(std::size_t iters) {
     }
 }
 
-template <class MapType>
-static void map_serial_operator_predicted(std::size_t iters) {
+template <class MapType, class Vector>
+static void map_serial_operator_predicted(std::size_t iters, const Vector & indices) {
     typedef typename MapType::mapped_type mapped_type;
 
     std::size_t start = CurrentMemoryUsage();
@@ -395,15 +366,12 @@ static void map_serial_operator_predicted(std::size_t iters) {
 
     {
         jtest::StopWatch sw;
-
-        mapped_type max_iters = static_cast<mapped_type>(iters);
-
-        hashmap.reserve(max_iters);
+        hashmap.rehash(iters);
 
         reset_counter();
         sw.start();
-        for (mapped_type i = 0; i < max_iters; i++) {
-            hashmap[i] = i + 1;
+        for (std::size_t i = 0; i < iters; i++) {
+            hashmap[indices[i]] = static_cast<mapped_type>(i);
         }
         sw.stop();
 
@@ -422,24 +390,23 @@ static void map_serial_operator_predicted(std::size_t iters) {
     }
 }
 
-template <class MapType>
-static void map_serial_operator_replace(std::size_t iters) {
+template <class MapType, class Vector>
+static void map_serial_operator_replace(std::size_t iters, const Vector & indices) {
     typedef typename MapType::mapped_type mapped_type;
 
     MapType hashmap;
     jtest::StopWatch sw;
 
-    mapped_type max_iters = static_cast<mapped_type>(iters);
-    for (mapped_type i = 0; i < max_iters; i++) {
-        hashmap[i] = i + 1;
+    for (std::size_t i = 0; i < iters; i++) {
+        hashmap[indices[i]] = static_cast<mapped_type>(i + 1);
     }
 
     std::size_t start = CurrentMemoryUsage();
     {
         reset_counter();
         sw.start();
-        for (mapped_type i = 0; i < max_iters; i++) {
-            hashmap[i] = i + 2;
+        for (std::size_t i = 0; i < iters; i++) {
+            hashmap[indices[i]] = static_cast<mapped_type>(i);
         }
         sw.stop();
 
@@ -458,24 +425,23 @@ static void map_serial_operator_replace(std::size_t iters) {
     }
 }
 
-template <class MapType>
-static void map_serial_erase(std::size_t iters) {
+template <class MapType, class Vector>
+static void map_serial_erase(std::size_t iters, const Vector & indices) {
     typedef typename MapType::mapped_type mapped_type;
 
     MapType hashmap;
     jtest::StopWatch sw;
 
-    mapped_type max_iters = static_cast<mapped_type>(iters);
-    for (mapped_type i = 0; i < max_iters; i++) {
-        hashmap.emplace(i, i + 1);
+    for (std::size_t i = 0; i < iters; i++) {
+        hashmap.emplace(indices[i], static_cast<mapped_type>(i));
     }
 
     std::size_t start = CurrentMemoryUsage();
     {
         reset_counter();
         sw.start();
-        for (mapped_type i = 0; i < max_iters; i++) {
-            hashmap.erase(i);
+        for (std::size_t i = 0; i < iters; i++) {
+            hashmap.erase(indices[i]);
         }
         sw.stop();
 
@@ -494,23 +460,26 @@ static void map_serial_erase(std::size_t iters) {
     }
 }
 
-template <class MapType>
-static void map_serial_erase_failed(std::size_t iters) {
+template <class MapType, class Vector>
+static void map_serial_erase_failed(std::size_t iters, const Vector & indices) {
+    typedef typename MapType::key_type    key_type;
     typedef typename MapType::mapped_type mapped_type;
 
     MapType hashmap;
     jtest::StopWatch sw;
 
-    mapped_type max_iters = static_cast<mapped_type>(iters);
-    for (mapped_type i = 0; i < max_iters; i++) {
-        hashmap.emplace(i, i + 1);
+    for (std::size_t i = 0; i < iters; i++) {
+        hashmap.emplace(indices[i], static_cast<mapped_type>(i));
     }
 
     std::size_t start = CurrentMemoryUsage();
     {
         reset_counter();
+        key_type max_iters = static_cast<key_type>(iters);
+        key_type first = static_cast<key_type>(iters * 2);
+        key_type last = first + max_iters;
         sw.start();
-        for (mapped_type i = max_iters; i < max_iters * 2; i++) {
+        for (key_type i = first; i < last; i++) {
             hashmap.erase(i);
         }
         sw.stop();
@@ -530,8 +499,8 @@ static void map_serial_erase_failed(std::size_t iters) {
     }
 }
 
-template <class MapType>
-static void map_serial_toggle(std::size_t iters) {
+template <class MapType, class Vector>
+static void map_serial_toggle(std::size_t iters, const Vector & indices) {
     typedef typename MapType::mapped_type mapped_type;
 
     std::size_t start = CurrentMemoryUsage();
@@ -540,13 +509,11 @@ static void map_serial_toggle(std::size_t iters) {
     {
         jtest::StopWatch sw;
 
-        mapped_type max_iters = static_cast<mapped_type>(iters);
-
         reset_counter();
         sw.start();
-        for (mapped_type i = 0; i < max_iters; i++) {
-            hashmap.emplace(i, i + 1);
-            hashmap.erase(i);
+        for (std::size_t i = 0; i < iters; i++) {
+            hashmap.emplace(indices[i], static_cast<mapped_type>(i));
+            hashmap.erase(indices[i]);
         }
         sw.stop();
 
@@ -565,8 +532,8 @@ static void map_serial_toggle(std::size_t iters) {
     }
 }
 
-template <class MapType>
-static void map_serial_iterate(std::size_t iters) {
+template <class MapType, class Vector>
+static void map_serial_iterate(std::size_t iters, const Vector & indices) {
     typedef typename MapType::mapped_type       mapped_type;
     typedef typename MapType::const_iterator    const_iterator;
 
@@ -574,9 +541,8 @@ static void map_serial_iterate(std::size_t iters) {
     jtest::StopWatch sw;
     mapped_type r;
 
-    mapped_type max_iters = static_cast<mapped_type>(iters);
-    for (mapped_type i = 0; i < max_iters; i++) {
-        hashmap.emplace(i, i + 1);
+    for (std::size_t i = 0; i < iters; i++) {
+        hashmap.emplace(indices[i], static_cast<mapped_type>(i));
     }
 
     std::size_t start = CurrentMemoryUsage();
@@ -638,7 +604,7 @@ static void map_random_find(char const * title, std::size_t iters,
 
     double lf = hashmap.load_factor();
     char info[128]; info[0] = '\0';
-    ::snprintf(info, sizeof(info), "counter_r = %" PRIuSIZE, r);
+    ::snprintf(info, sizeof(info), "r = %" PRIuSIZE, r);
     report_result(title, ut, lf, iters, 0, 0, info);
 }
 
@@ -698,7 +664,7 @@ static void map_random_find_failed(std::size_t iters, const Vector & indices) {
 
     double lf = hashmap.load_factor();
     char info[128]; info[0] = '\0';
-    ::snprintf(info, sizeof(info), "counter_r = %" PRIuSIZE, r);
+    ::snprintf(info, sizeof(info), "r = %" PRIuSIZE, r);
     report_result("random_find_failed", ut, lf, iters, 0, 0, info);
 }
 
@@ -732,7 +698,7 @@ static void map_random_find_empty(std::size_t iters, const Vector & indices) {
 
     double lf = hashmap.load_factor();
     char info[128]; info[0] = '\0';
-    ::snprintf(info, sizeof(info), "counter_r = %" PRIuSIZE, r);
+    ::snprintf(info, sizeof(info), "r = %" PRIuSIZE, r);
     report_result("random_find_empty", ut, lf, iters, 0, 0, info);
 }
 
@@ -782,7 +748,7 @@ static void map_random_insert_predicted(std::size_t iters, const Vector & indice
 
         mapped_type max_iters = static_cast<mapped_type>(iters);
 
-        hashmap.reserve(max_iters);
+        hashmap.rehash(iters);
 
         reset_counter();
         sw.start();
@@ -888,7 +854,7 @@ static void map_random_emplace_predicted(std::size_t iters, const Vector & indic
 
         mapped_type max_iters = static_cast<mapped_type>(iters);
 
-        hashmap.reserve(iters);
+        hashmap.rehash(iters);
 
         reset_counter();
         sw.start();
@@ -994,7 +960,7 @@ static void map_random_operator_predicted(std::size_t iters, const Vector & indi
 
         mapped_type max_iters = static_cast<mapped_type>(iters);
 
-        hashmap.reserve(max_iters);
+        hashmap.rehash(iters);
 
         reset_counter();
         sw.start();

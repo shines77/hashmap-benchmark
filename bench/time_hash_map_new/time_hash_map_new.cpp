@@ -69,6 +69,7 @@
 #include <stdbool.h>
 #include <inttypes.h>
 #include <string.h>
+#include <math.h>
 
 #include <iostream>
 #include <fstream>
@@ -76,6 +77,7 @@
 #include <sstream>
 #include <cstdint>
 #include <cstddef>
+#include <cmath>
 #include <string>
 #include <cstring>
 #include <atomic>
@@ -273,6 +275,11 @@
 #ifndef UINT64_Low
 #define UINT64_Low(u64)         ((uint32_t)((uint64_t)u64 & 0x00000000FFFFFFFFull))
 #endif
+
+//
+// The scale of the total randomize indexes size.
+//
+static constexpr const std::size_t kRandomIndexesScale = 3;
 
 static constexpr bool FLAGS_test_4_bytes = true;
 static constexpr bool FLAGS_test_8_bytes = true;
@@ -622,6 +629,80 @@ void shuffle_vector(Vector & vector, int seed = 0) {
     }
 }
 
+// Apply a pseudorandom permutation to the given vector.
+template <typename Vector>
+void shuffle_vector(Vector & vector, std::size_t limit, int seed = 0) {
+    // shuffle
+    if (seed == 0) {
+        seed = 20200831;
+    }
+    jstd::MtRandomGen mtRandomGen(seed);
+    assert(limit <= vector.size());
+    std::size_t n = vector.size();
+    for (std::size_t i = 0; i < limit; i++) {
+        std::size_t rnd_idx = std::size_t(jstd::MtRandomGen::nextUInt()) % n;
+        std::swap(vector[n - 1], vector[rnd_idx]);
+    }
+}
+
+//
+// Serial indexes: Imitating the primary key (id) of the database,
+// 5% of the total records were deleted.
+//
+template <typename T>
+void generate_serial_indexes(std::vector<T> & serialIndexes, std::size_t data_size, int seed = 0)
+{
+    // Let: x / (1.0 + x) = 5%, x = 1.0 / 21 = 0.0476190476;
+    std::size_t serial_size = (std::size_t)(ceil((double)data_size * 22.0 / 21.0));
+    std::size_t serial_delete = serial_size - data_size;
+
+    std::vector<T> tmpIndexes;
+    tmpIndexes.reserve(serial_size);
+    for (std::size_t i = 0; i < serial_size; i++) {
+        tmpIndexes.push_back(static_cast<T>(i));
+    }
+    if (seed == 0) {
+        seed = 20250206;
+    }
+    shuffle_vector(tmpIndexes, serial_delete, 20250206);
+
+    // Copy from tmpIndexes[]
+    serialIndexes.reserve(data_size);
+    for (std::size_t i = 0; i < data_size; i++) {
+        serialIndexes.push_back(tmpIndexes[i]);
+    }
+
+    // Reorder the remain 95% records.
+    std::sort(serialIndexes.begin(), serialIndexes.end());
+}
+
+//
+// Randomize indexes: Randomize range is [0, iters * 3),
+// but only use the first [iters] indexes.
+//
+template <typename T>
+void generate_random_indexes(std::vector<T> & rndIndexes, std::size_t data_size, int seed = 0)
+{
+    // kRandomIndexesScale = 3
+    std::size_t max_range = data_size * kRandomIndexesScale;
+
+    std::vector<T> tmpIndexes;
+    tmpIndexes.reserve(max_range);
+    for (std::size_t i = 0; i < max_range; i++) {
+        tmpIndexes.push_back(static_cast<T>(i));
+    }
+
+    if (seed == 0) {
+        seed = 20200831;
+    }
+    shuffle_vector(tmpIndexes, data_size, seed);
+
+    rndIndexes.reserve(data_size);
+    for (std::size_t i = 0; i < data_size; i++) {
+        rndIndexes.push_back(tmpIndexes[data_size * 2 + i]);
+    }
+}
+
 /* The implementation of test routine */
 #include "time_hash_map_func.hpp"
 
@@ -632,83 +713,98 @@ template <class MapType, class StressMapType>
 void measure_hashmap(const char * name, std::size_t obj_size,
                      std::size_t iters, bool is_stress_hash_function)
 {
-    typedef typename MapType::value_type    value_type;
+    typedef typename MapType::key_type      key_type;
     typedef typename MapType::mapped_type   mapped_type;
+    typedef typename MapType::value_type    value_type;
 
     printf("%s<K, V> (%" PRIuPTR " byte objects, %" PRIuPTR " byte ValueType, %" PRIuPTR " iterations):\n",
            name, obj_size, sizeof(value_type), iters);
 
     if (1) printf("\n");
 
-    //------------------------------------------------------------
-    std::vector<mapped_type> rndIndices;
-    rndIndices.reserve(iters);
-    for (mapped_type i = 0; i < iters; i++) {
-        rndIndices.push_back(i);
-    }
+    //
+    // Serial indexes: Imitating the primary key (id) of the database,
+    // 5% of the total records were deleted.
+    //
+    std::vector<key_type> serialIndexes;
+    // Seed = 20250206
+    generate_serial_indexes<key_type>(serialIndexes, iters, 20250206);
+
+    //
+    // Shuffle the serial indexes for random find().
+    //
+    std::vector<key_type> rndFindIndexes(serialIndexes);
+    // Seed = 20200831
+    shuffle_vector(rndFindIndexes);
+
+    //
+    // Randomize indexes: Randomize range is [0, iters * 3),
+    // but only use the first [iters] indexes.
+    //
+    std::vector<key_type> rndIndexes;
     // Seed = 20220714
-    shuffle_vector(rndIndices, 20220714);
+    generate_random_indexes<key_type>(rndIndexes, iters, 20220714);
 
     //------------------------------------------------------------
 
-    if (1) map_serial_find_success<MapType>(iters);
-    if (1) map_serial_find_random<MapType>(iters);
-    if (1) map_serial_find_failed<MapType>(iters);
-    if (1) map_serial_find_empty<MapType>(iters);
+    if (1) map_serial_find_success<MapType>(iters, serialIndexes);
+    if (1) map_serial_find_random<MapType>(iters, serialIndexes, rndFindIndexes);
+    if (1) map_serial_find_failed<MapType>(iters, serialIndexes);
+    if (1) map_serial_find_empty<MapType>(iters, serialIndexes);
     if (1) printf("\n");
 
-    if (1) map_random_find_serial<MapType>(iters, rndIndices);
-    if (1) map_random_find_random<MapType>(iters, rndIndices);
-    if (1) map_random_find_failed<MapType>(iters, rndIndices);
-    if (1) map_random_find_empty<MapType>(iters, rndIndices);
-    if (1) printf("\n");
-
-    //------------------------------------------------------------
-
-    if (1) map_serial_insert<MapType>(iters);
-    if (1) map_serial_insert_predicted<MapType>(iters);
-    if (1) map_serial_insert_replace<MapType>(iters);
-    if (1) printf("\n");
-
-    if (1) map_serial_emplace<MapType>(iters);
-    if (1) map_serial_emplace_predicted<MapType>(iters);
-    if (1) map_serial_emplace_replace<MapType>(iters);
-    if (1) printf("\n");
-
-    if (1) map_serial_operator<MapType>(iters);
-    if (1) map_serial_operator_predicted<MapType>(iters);
-    if (1) map_serial_operator_replace<MapType>(iters);
+    if (1) map_random_find_serial<MapType>(iters, rndIndexes);
+    if (1) map_random_find_random<MapType>(iters, rndIndexes);
+    if (1) map_random_find_failed<MapType>(iters, rndIndexes);
+    if (1) map_random_find_empty<MapType>(iters, rndIndexes);
     if (1) printf("\n");
 
     //------------------------------------------------------------
 
-    if (1) map_random_insert<MapType>(iters, rndIndices);
-    if (1) map_random_insert_predicted<MapType>(iters, rndIndices);
-    if (1) map_random_insert_replace<MapType>(iters, rndIndices);
+    if (1) map_serial_insert<MapType>(iters, serialIndexes);
+    if (1) map_serial_insert_predicted<MapType>(iters, serialIndexes);
+    if (1) map_serial_insert_replace<MapType>(iters, serialIndexes);
     if (1) printf("\n");
 
-    if (1) map_random_emplace<MapType>(iters, rndIndices);
-    if (1) map_random_emplace_predicted<MapType>(iters, rndIndices);
-    if (1) map_random_emplace_replace<MapType>(iters, rndIndices);
+    if (1) map_serial_emplace<MapType>(iters, serialIndexes);
+    if (1) map_serial_emplace_predicted<MapType>(iters, serialIndexes);
+    if (1) map_serial_emplace_replace<MapType>(iters, serialIndexes);
     if (1) printf("\n");
 
-    if (1) map_random_operator<MapType>(iters, rndIndices);
-    if (1) map_random_operator_predicted<MapType>(iters, rndIndices);
-    if (1) map_random_operator_replace<MapType>(iters, rndIndices);
+    if (1) map_serial_operator<MapType>(iters, serialIndexes);
+    if (1) map_serial_operator_predicted<MapType>(iters, serialIndexes);
+    if (1) map_serial_operator_replace<MapType>(iters, serialIndexes);
     if (1) printf("\n");
 
     //------------------------------------------------------------
 
-    if (1) map_serial_erase<MapType>(iters);
-    if (1) map_serial_erase_failed<MapType>(iters);
-    if (1) map_serial_toggle<MapType>(iters);
-    if (1) map_serial_iterate<MapType>(iters);
+    if (1) map_random_insert<MapType>(iters, rndIndexes);
+    if (1) map_random_insert_predicted<MapType>(iters, rndIndexes);
+    if (1) map_random_insert_replace<MapType>(iters, rndIndexes);
     if (1) printf("\n");
 
-    if (1) map_random_erase<MapType>(iters, rndIndices);
-    if (1) map_random_erase_failed<MapType>(iters, rndIndices);
-    if (1) map_random_toggle<MapType>(iters, rndIndices);
-    if (1) map_random_iterate<MapType>(iters, rndIndices);
+    if (1) map_random_emplace<MapType>(iters, rndIndexes);
+    if (1) map_random_emplace_predicted<MapType>(iters, rndIndexes);
+    if (1) map_random_emplace_replace<MapType>(iters, rndIndexes);
+    if (1) printf("\n");
+
+    if (1) map_random_operator<MapType>(iters, rndIndexes);
+    if (1) map_random_operator_predicted<MapType>(iters, rndIndexes);
+    if (1) map_random_operator_replace<MapType>(iters, rndIndexes);
+    if (1) printf("\n");
+
+    //------------------------------------------------------------
+
+    if (1) map_serial_erase<MapType>(iters, serialIndexes);
+    if (1) map_serial_erase_failed<MapType>(iters, serialIndexes);
+    if (1) map_serial_toggle<MapType>(iters, serialIndexes);
+    if (1) map_serial_iterate<MapType>(iters, serialIndexes);
+    if (1) printf("\n");
+
+    if (1) map_random_erase<MapType>(iters, rndIndexes);
+    if (1) map_random_erase_failed<MapType>(iters, rndIndexes);
+    if (1) map_random_toggle<MapType>(iters, rndIndexes);
+    if (1) map_random_iterate<MapType>(iters, rndIndexes);
     if (1) printf("\n");
 
     //------------------------------------------------------------
@@ -858,7 +954,7 @@ void measure_string_hashmap(const char * name, std::size_t obj_size, std::size_t
 
     //------------------------------------------------------------
 
-    if (1) map_serial_erase<MapType, PairVector>(iters, kvs);
+    if (1) map_serial_erase_str<MapType, PairVector>(iters, kvs);
     if (1) map_random_erase<MapType, PairVector, KeyVector>(iters, kvs, rnd_keys);
     if (1) map_erase_failed<MapType, PairVector, KeyVector>(iters, kvs, miss_keys);
     if (1) printf("\n");

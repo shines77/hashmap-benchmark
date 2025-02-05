@@ -37,7 +37,7 @@ static void map_serial_find_success(std::size_t iters, const PairVector & kvs, c
 
     double lf = hashmap.load_factor();
     char info[128]; info[0] = '\0';
-    ::snprintf(info, sizeof(info), "counter_r = %" PRIuSIZE, r);
+    ::snprintf(info, sizeof(info), "r = %" PRIuSIZE, r);
     report_result("serial_find_success", ut, lf, iters, 0, 0, info);
 }
 
@@ -65,7 +65,7 @@ static void map_random_find_success(std::size_t iters, const PairVector & kvs, c
 
     double lf = hashmap.load_factor();
     char info[128]; info[0] = '\0';
-    ::snprintf(info, sizeof(info), "counter_r = %" PRIuSIZE, r);
+    ::snprintf(info, sizeof(info), "r = %" PRIuSIZE, r);
     report_result("random_find_success", ut, lf, iters, 0, 0, info);
 }
 
@@ -93,7 +93,7 @@ static void map_find_failed(std::size_t iters, const PairVector & kvs, const Key
 
     double lf = hashmap.load_factor();
     char info[128]; info[0] = '\0';
-    ::snprintf(info, sizeof(info), "counter_r = %" PRIuSIZE, r);
+    ::snprintf(info, sizeof(info), "r = %" PRIuSIZE, r);
     report_result("find_failed", ut, lf, iters, 0, 0, info);
 }
 
@@ -123,7 +123,7 @@ static void map_find_empty(std::size_t iters, const PairVector & kvs, const KeyV
 
     double lf = hashmap.load_factor();
     char info[128]; info[0] = '\0';
-    ::snprintf(info, sizeof(info), "counter_r = %" PRIuSIZE, r);
+    ::snprintf(info, sizeof(info), "r = %" PRIuSIZE, r);
     report_result("find_empty", ut, lf, iters, 0, 0, info);
 }
 
@@ -508,7 +508,7 @@ static void map_operator_replace(std::size_t iters, const PairVector & kvs) {
 }
 
 template <class MapType, class PairVector>
-static void map_serial_erase(std::size_t iters, const PairVector & kvs) {
+static void map_serial_erase_str(std::size_t iters, const PairVector & kvs) {
     MapType hashmap;
     jtest::StopWatch sw;
 
