@@ -604,7 +604,7 @@ static void map_serial_iterate(std::size_t iters) {
         double lf = hashmap.load_factor();
         char info[128]; info[0] = '\0';
         ::snprintf(info, sizeof(info), "r = %" PRIuSIZE ", hashmap.size() = %" PRIuSIZE "\n",
-                   std::size_t(r), hashmap.size());
+                   std::size_t(r), (std::size_t)hashmap.size());
         report_result("serial_emplace - iterate", ut, lf, iters, start, finish, info);
     }
 }
@@ -1202,7 +1202,7 @@ static void map_random_iterate(std::size_t iters, const Vector & indices) {
         double lf = hashmap.load_factor();
         char info[128]; info[0] = '\0';
         ::snprintf(info, sizeof(info), "r = %" PRIuSIZE ", hashmap.size() = %" PRIuSIZE "\n",
-                   std::size_t(r), hashmap.size());
+                   std::size_t(r), (std::size_t)hashmap.size());
         report_result("random_emplace - iterate", ut, lf, iters, start, finish, info);
     }
 }

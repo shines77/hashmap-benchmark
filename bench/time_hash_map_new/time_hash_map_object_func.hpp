@@ -675,7 +675,7 @@ static void map_iterate(std::size_t iters, const PairVector & kvs) {
         double lf = hashmap.load_factor();
         char info[128]; info[0] = '\0';
         ::snprintf(info, sizeof(info), "r = %" PRIuSIZE ", hashmap.size() = %" PRIuSIZE "\n",
-                   r, hashmap.size());
+                   r, (std::size_t)hashmap.size());
         report_result("iterate", ut, lf, iters, start, finish, info);
     }
 }
