@@ -16,8 +16,7 @@
 template <class MapType, class Vector>
 static void map_serial_find(char const * title, std::size_t iters,
                             const Vector & indices, const Vector & findIndices) {
-    typedef typename MapType::key_type      key_type;
-    typedef typename MapType::mapped_type   mapped_type;
+    typedef typename MapType::mapped_type mapped_type;
 
     MapType hashmap;
     jtest::StopWatch sw;

@@ -714,7 +714,6 @@ void measure_hashmap(const char * name, std::size_t obj_size,
                      std::size_t iters, bool is_stress_hash_function)
 {
     typedef typename MapType::key_type      key_type;
-    typedef typename MapType::mapped_type   mapped_type;
     typedef typename MapType::value_type    value_type;
 
     printf("%s<K, V> (%" PRIuPTR " byte objects, %" PRIuPTR " byte ValueType, %" PRIuPTR " iterations):\n",
