@@ -4,6 +4,15 @@
 
 #pragma once
 
+#include <stdio.h>
+#include <stdint.h>
+#include <stddef.h>
+#include <stdbool.h>
+#include <inttypes.h>
+
+#include <cstdint>
+#include <cstddef>
+
 template <class MapType, class PairVector, class KeyVector>
 static void map_serial_find_success(std::size_t iters, const PairVector & kvs, const KeyVector & keys) {
     MapType hashmap;

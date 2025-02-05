@@ -4,6 +4,15 @@
 
 #pragma once
 
+#include <stdio.h>
+#include <stdint.h>
+#include <stddef.h>
+#include <stdbool.h>
+#include <inttypes.h>
+
+#include <cstdint>
+#include <cstddef>
+
 template <class MapType, class Vector>
 static void map_serial_find(char const * title, std::size_t iters,
                             const Vector & indices) {

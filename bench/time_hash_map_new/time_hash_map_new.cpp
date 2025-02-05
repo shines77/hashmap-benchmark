@@ -74,6 +74,8 @@
 #include <fstream>
 #include <iomanip>
 #include <sstream>
+#include <cstdint>
+#include <cstddef>
 #include <string>
 #include <cstring>
 #include <atomic>
