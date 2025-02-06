@@ -655,8 +655,8 @@ void generate_serial_indexes(std::vector<T> & serialIndexes, std::size_t data_si
                              double delete_percent, int seed = 0)
 {
     // Let: x / (1 + x) = p, x = p / (1 - p), p = 10%
-    double true_percent = 1.0 + delete_percent / (1.0 - delete_percent);
-    std::size_t total_serial_size = (std::size_t)(ceil((double)data_size * true_percent));
+    double full_scale = 1.0 + delete_percent / (1.0 - delete_percent);
+    std::size_t total_serial_size = (std::size_t)(ceil((double)data_size * full_scale));
     std::size_t delete_items = total_serial_size - data_size;
 
     std::vector<T> tmpIndexes;
@@ -667,6 +667,7 @@ void generate_serial_indexes(std::vector<T> & serialIndexes, std::size_t data_si
     if (seed == 0) {
         seed = 20250206;
     }
+    // Randomize delete 10% items.
     shuffle_vector(tmpIndexes, delete_items, 20250206);
 
     // Copy from tmpIndexes[]
@@ -675,13 +676,13 @@ void generate_serial_indexes(std::vector<T> & serialIndexes, std::size_t data_si
         serialIndexes.push_back(tmpIndexes[i]);
     }
 
-    // Reorder the remain 95% records.
+    // Reorder the remain 90% records.
     std::sort(serialIndexes.begin(), serialIndexes.end());
 }
 
 //
-// Randomize indexes: Randomize range is [0, iters * 3),
-// but only use the first [iters] indexes.
+// Randomize indexes: Randomize range is [0, data_size * 3),
+// but only use the first [data_size] indexes.
 //
 template <typename T>
 void generate_random_indexes(std::vector<T> & rndIndexes, std::size_t data_size, int seed = 0)
@@ -698,8 +699,10 @@ void generate_random_indexes(std::vector<T> & rndIndexes, std::size_t data_size,
     if (seed == 0) {
         seed = 20200831;
     }
+    // Randomize select [data_size] items from [0, data_size * 3).
     shuffle_vector(tmpIndexes, data_size, seed);
 
+    // Only copy last [data_size] items.
     rndIndexes.reserve(data_size);
     for (std::size_t i = 0; i < data_size; i++) {
         rndIndexes.push_back(tmpIndexes[data_size * 2 + i]);

@@ -323,6 +323,7 @@ std::default_random_engine random_number_generator(20250118U);
 template <typename BluePrint>
 void shuffled_unique_key(std::vector<typename BluePrint::key_type> & keys, std::size_t data_size)
 {
+    random_number_generator.seed(20250118U);
     keys.clear();
     keys.resize(data_size * KEY_SCALE);
     BluePrint::fill_unique_keys(keys);
@@ -334,7 +335,7 @@ void shuffled_unique_key(std::vector<typename BluePrint::key_type> & keys, std::
 //
 double calc_average_time(double elapsed_times[RUN_COUNT])
 {
-#if RUN_COUNT >= 3
+#if RUN_COUNT > 3
     std::size_t minIndex = 0, maxIndex = 0;
     double minTime = elapsed_times[0];
     double maxTime = elapsed_times[0];
@@ -381,7 +382,7 @@ double calc_average_time(double elapsed_times[RUN_COUNT])
         return (totol_time / total_count);
     else
         return 0.0;
-#endif // RUN_COUNT >= 3
+#endif // RUN_COUNT > 3
 }
 
 //
@@ -425,9 +426,13 @@ void flush_cache_and_sleep()
     // effects of one benchmark from potentially influencing latter benchmarks.
     //
     flush_cache();
+
     std::cout << "flush_cache(), sleep(" << MILLISECOND_COOLDOWN_BETWEEN_BENCHMARKS << "ms)";
     std::this_thread::sleep_for(std::chrono::milliseconds(MILLISECOND_COOLDOWN_BETWEEN_BENCHMARKS));
     std::cout << "... ";
+
+    // Reset random generator
+    random_number_generator.seed(20250118U);
 }
 
 template <template <typename> typename HashMap, typename BluePrint, std::size_t kDataSize>
