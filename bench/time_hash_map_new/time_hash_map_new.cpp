@@ -642,29 +642,32 @@ void shuffle_vector(Vector & vector, std::size_t limit, int seed = 0) {
     for (std::size_t i = 0; i < limit; i++) {
         std::size_t rnd_idx = std::size_t(jstd::MtRandomGen::nextUInt()) % n;
         std::swap(vector[n - 1], vector[rnd_idx]);
+        --n;
     }
 }
 
 //
 // Serial indexes: Imitating the primary key (id) of the database,
-// 5% of the total records were deleted.
+// 10% of the total records were deleted.
 //
 template <typename T>
-void generate_serial_indexes(std::vector<T> & serialIndexes, std::size_t data_size, int seed = 0)
+void generate_serial_indexes(std::vector<T> & serialIndexes, std::size_t data_size,
+                             double delete_percent, int seed = 0)
 {
-    // Let: x / (1.0 + x) = 5%, x = 1.0 / 21 = 0.0476190476;
-    std::size_t serial_size = (std::size_t)(ceil((double)data_size * 22.0 / 21.0));
-    std::size_t serial_delete = serial_size - data_size;
+    // Let: x / (1 + x) = p, x = p / (1 - p), p = 10%
+    double true_percent = 1.0 + delete_percent / (1.0 - delete_percent);
+    std::size_t total_serial_size = (std::size_t)(ceil((double)data_size * true_percent));
+    std::size_t delete_items = total_serial_size - data_size;
 
     std::vector<T> tmpIndexes;
-    tmpIndexes.reserve(serial_size);
-    for (std::size_t i = 0; i < serial_size; i++) {
+    tmpIndexes.reserve(total_serial_size);
+    for (std::size_t i = 0; i < total_serial_size; i++) {
         tmpIndexes.push_back(static_cast<T>(i));
     }
     if (seed == 0) {
         seed = 20250206;
     }
-    shuffle_vector(tmpIndexes, serial_delete, 20250206);
+    shuffle_vector(tmpIndexes, delete_items, 20250206);
 
     // Copy from tmpIndexes[]
     serialIndexes.reserve(data_size);
@@ -723,11 +726,11 @@ void measure_hashmap(const char * name, std::size_t obj_size,
 
     //
     // Serial indexes: Imitating the primary key (id) of the database,
-    // 5% of the total records were deleted.
+    // 10% of the total records were deleted.
     //
     std::vector<key_type> serialIndexes;
     // Seed = 20250206
-    generate_serial_indexes<key_type>(serialIndexes, iters, 20250206);
+    generate_serial_indexes<key_type>(serialIndexes, iters, 0.10, 20250206);
 
     //
     // Shuffle the serial indexes for random find().
@@ -1489,7 +1492,7 @@ void benchmark_all_hashmaps(std::size_t iters)
     // a HashObject as it would be to use just a straight int/char
     // buffer.  To keep memory use similar, we normalize the number of
     // iterations based on size.
-#ifndef _DEBUG
+#ifndef _DEBUG_
     if (FLAGS_test_4_bytes && !FLAGS_test_string_only) {
         test_all_hashmaps<std::uint32_t, std::uint32_t>(4, iters / 1);
     }
