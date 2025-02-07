@@ -113,9 +113,9 @@
 #if !defined(_MSC_VER)
 //#define HASHMAP_4       tsl_robin_map
 #endif
-#define HASHMAP_5       jstd_robin_hash_map
+//#define HASHMAP_5       jstd_robin_hash_map
 #if !defined(_MSC_VER) || (_MSC_VER >= 2000)
-#define HASHMAP_6       ankerl_unordered_dense
+//#define HASHMAP_6       ankerl_unordered_dense
 #endif
 #if (jstd_cplusplus >= 2017L)
 #define HASHMAP_7       absl_flat_hash_map
