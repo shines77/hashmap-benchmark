@@ -76,7 +76,7 @@
 
 // The specific benchmarks to run (comment them out to disable them).
 #define BENCHMARK_FIND_EXISTING
-#define BENCHMARK_FIND_NON_EXISTING
+//#define BENCHMARK_FIND_NON_EXISTING
 //#define BENCHMARK_INSERT_EXISTING
 //#define BENCHMARK_INSERT_NON_EXISTING
 //#define BENCHMARK_REPLACE_EXISTING
