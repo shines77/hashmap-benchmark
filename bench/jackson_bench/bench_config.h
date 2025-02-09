@@ -77,18 +77,18 @@
 // The specific benchmarks to run (comment them out to disable them).
 #define BENCHMARK_FIND_EXISTING
 #define BENCHMARK_FIND_NON_EXISTING
-#define BENCHMARK_INSERT_EXISTING
-#define BENCHMARK_INSERT_NON_EXISTING
+//#define BENCHMARK_INSERT_EXISTING
+//#define BENCHMARK_INSERT_NON_EXISTING
 //#define BENCHMARK_REPLACE_EXISTING
-#define BENCHMARK_ERASE_EXISTING
-#define BENCHMARK_ERASE_NON_EXISTING
-#define BENCHMARK_ITERATION
+//#define BENCHMARK_ERASE_EXISTING
+//#define BENCHMARK_ERASE_NON_EXISTING
+//#define BENCHMARK_ITERATION
 
 // Blueprint slots.
 #define BLUEPRINT_1         uint32_uint32_murmur
-#define BLUEPRINT_2         uint64_uint64_murmur
-#define BLUEPRINT_3         uint64_struct448_murmur
-#define BLUEPRINT_4         cstring_uint64_fnv1a
+//#define BLUEPRINT_2         uint64_uint64_murmur
+//#define BLUEPRINT_3         uint64_struct448_murmur
+//#define BLUEPRINT_4         cstring_uint64_fnv1a
 // #define BLUEPRINT_5
 // #define BLUEPRINT_6
 // #define BLUEPRINT_7
@@ -118,13 +118,13 @@
 //#define HASHMAP_6       ankerl_unordered_dense
 #endif
 #if (jstd_cplusplus >= 2017L)
-#define HASHMAP_7       absl_flat_hash_map
+//#define HASHMAP_7       absl_flat_hash_map
 #endif
-#define HASHMAP_8       emilib2o
-#define HASHMAP_9       jstd_group16_flat_map
+//#define HASHMAP_8       emilib2o
+//#define HASHMAP_9       jstd_group16_flat_map
 #define HASHMAP_10      jstd_group15_flat_map
 #if (jstd_cplusplus >= 2020L)
-#define HASHMAP_11      boost_unordered_flat_map
+//#define HASHMAP_11      boost_unordered_flat_map
 #endif
 // #define HASHMAP_12
 // #define HASHMAP_13
