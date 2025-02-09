@@ -124,7 +124,7 @@
 //#define HASHMAP_9       jstd_group16_flat_map
 #define HASHMAP_10      jstd_group15_flat_map
 #if (jstd_cplusplus >= 2020L)
-//#define HASHMAP_11      boost_unordered_flat_map
+#define HASHMAP_11      boost_unordered_flat_map
 #endif
 // #define HASHMAP_12
 // #define HASHMAP_13
