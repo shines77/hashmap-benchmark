@@ -429,10 +429,18 @@ void flush_cache_and_sleep()
 
     std::cout << "flush_cache(), sleep(" << MILLISECOND_COOLDOWN_BETWEEN_BENCHMARKS << "ms)";
     std::this_thread::sleep_for(std::chrono::milliseconds(MILLISECOND_COOLDOWN_BETWEEN_BENCHMARKS));
-    std::cout << "... ";
+    std::cout << "... " << std::endl;
+}
 
+void benchmark_routine_pre()
+{
     // Reset random generator
     random_number_generator.seed(20250118U);
+}
+
+void benchmark_routine_post()
+{
+    // Do something when the benchmark routine done, if you need.
 }
 
 template <template <typename> typename HashMap, typename BluePrint, std::size_t kDataSize>
@@ -440,7 +448,7 @@ void benchmark_find_existing(std::size_t run,
                              std::vector<typename BluePrint::key_type> & keys,
                              double & elapsed_time)
 {
-    flush_cache_and_sleep();
+    benchmark_routine_pre();
 
     using table_type = typename HashMap<BluePrint>::table_type;
     table_type table;
@@ -469,7 +477,13 @@ void benchmark_find_existing(std::size_t run,
             // Accessing the first byte of the value prevents the above call from being optimized out and ensures that
             // tables that can preform look-ups without accessing the values (because the keys are stored separately)
             // actually incur the additional cache miss that they would incur during normal use.
-            do_not_optimize += *(unsigned char *)&HashMap<BluePrint>::get_value_from_iter(table, iter);
+
+            //
+            // (Modified by shines77, 2025-02-09)
+            // To avoid unnecessary cache pollution caused by accessing the values,
+            // we will change to accessing the first byte of the Key value.
+            //
+            do_not_optimize += *(unsigned char *)&HashMap<BluePrint>::get_key_from_iter(table, iter);
         }
         sw.stop();
 
@@ -484,6 +498,8 @@ void benchmark_find_existing(std::size_t run,
     }
 
     printf("Total elapsed time = %0.3f ms\n", elapsed_time);
+
+    benchmark_routine_post();
 }
 
 template <template <typename> typename HashMap, typename BluePrint, std::size_t kDataSize>
@@ -491,7 +507,7 @@ void benchmark_find_non_existing(std::size_t run,
                                  std::vector<typename BluePrint::key_type> & keys,
                                  double & elapsed_time)
 {
-    flush_cache_and_sleep();
+    benchmark_routine_pre();
 
     using table_type = typename HashMap<BluePrint>::table_type;
     table_type table;
@@ -532,6 +548,8 @@ void benchmark_find_non_existing(std::size_t run,
     }
 
     printf("Total elapsed time = %0.3f ms\n", elapsed_time);
+
+    benchmark_routine_post();
 }
 
 template <template <typename> typename HashMap, typename BluePrint, std::size_t kDataSize>
@@ -539,7 +557,7 @@ void benchmark_insert_non_existing(std::size_t run,
                                    std::vector<typename BluePrint::key_type> & keys,
                                    double & elapsed_time)
 {
-    flush_cache_and_sleep();
+    benchmark_routine_pre();
 
     using table_type = typename HashMap<BluePrint>::table_type;
     table_type table;
@@ -556,6 +574,8 @@ void benchmark_insert_non_existing(std::size_t run,
     printf("elapsed time = %0.3f ms\n", elapsed_time);
 
     results<HashMap, BluePrint, id_insert_non_existing>(run, 0) = elapsed_time;
+
+    benchmark_routine_post();
 }
 
 template <template <typename> typename HashMap, typename BluePrint, std::size_t kDataSize>
@@ -563,7 +583,7 @@ void benchmark_insert_existing(std::size_t run,
                                std::vector<typename BluePrint::key_type> & keys,
                                double & elapsed_time)
 {
-    flush_cache_and_sleep();
+    benchmark_routine_pre();
 
     using table_type = typename HashMap<BluePrint>::table_type;
     table_type table;
@@ -602,6 +622,8 @@ void benchmark_insert_existing(std::size_t run,
     }
 
     printf("Total elapsed time = %0.3f ms\n", elapsed_time);
+
+    benchmark_routine_post();
 }
 
 template <template <typename> typename HashMap, typename BluePrint, std::size_t kDataSize>
@@ -618,7 +640,7 @@ void benchmark_erase_existing(std::size_t run,
                               std::vector<typename BluePrint::key_type> & keys,
                               double & elapsed_time)
 {
-    flush_cache_and_sleep();
+    benchmark_routine_pre();
 
     using table_type = typename HashMap<BluePrint>::table_type;
     table_type table;
@@ -665,6 +687,8 @@ void benchmark_erase_existing(std::size_t run,
     }
 
     printf("Total elapsed time = %0.3f ms\n", elapsed_time);
+
+    benchmark_routine_post();
 }
 
 template <template <typename> typename HashMap, typename BluePrint, std::size_t kDataSize>
@@ -672,7 +696,7 @@ void benchmark_erase_non_existing(std::size_t run,
                                   std::vector<typename BluePrint::key_type> & keys,
                                   double & elapsed_time)
 {
-    flush_cache_and_sleep();
+    benchmark_routine_pre();
 
     using table_type = typename HashMap<BluePrint>::table_type;
     table_type table;
@@ -711,6 +735,8 @@ void benchmark_erase_non_existing(std::size_t run,
     }
 
     printf("Total elapsed time = %0.3f ms\n", elapsed_time);
+
+    benchmark_routine_post();
 }
 
 template <template <typename> typename HashMap, typename BluePrint, std::size_t kDataSize>
@@ -718,7 +744,7 @@ void benchmark_iteration(std::size_t run,
                          std::vector<typename BluePrint::key_type> & keys,
                          double & elapsed_time)
 {
-    flush_cache_and_sleep();
+    benchmark_routine_pre();
 
     using table_type = typename HashMap<BluePrint>::table_type;
     table_type table;
@@ -770,6 +796,8 @@ void benchmark_iteration(std::size_t run,
     }
 
     printf("Total elapsed time = %0.3f ms\n", elapsed_time);
+
+    benchmark_routine_post();
 }
 
 template <template <typename> typename HashMap, typename BluePrint,
@@ -836,6 +864,8 @@ void run_benchmark_loop(std::vector<typename BluePrint::key_type> & keys)
               << "Benchmark Id: " << get_benchmark_id(BenchmarkId)
               << std::endl;
     std::cout << std::endl;
+
+    flush_cache_and_sleep();
 
     double elapsed_time = 0.0;
     double elapsed_times[RUN_COUNT] = { 0.0 };
