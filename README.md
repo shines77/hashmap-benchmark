@@ -48,13 +48,15 @@
 
 ### 关于 jackson_bench
 
-2024年12月21日，[ktprime](https://github.com/ktprime) 在 [issues](https://github.com/shines77/hashmap-benchmark/issues/1) 中给我推荐了 2024 年最新的一个哈希表性能测试，原文：[An Extensive Benchmark of C and C++ Hash Tables](https://jacksonallan.github.io/c_cpp_hash_tables_benchmark/)，后来我给翻译了一下，在这：[2024年 Jackson Allan 关于C和C++哈希表的广泛基准测试(翻译)](https://gitee.com/shines77/my_docs/blob/master/tech/hash/hash-table/%E5%85%B3%E4%BA%8EC%E5%92%8CC++%E5%93%88%E5%B8%8C%E8%A1%A8%E7%9A%84%E5%B9%BF%E6%B3%9B%E5%9F%BA%E5%87%86%E6%B5%8B%E8%AF%95(%E7%BF%BB%E8%AF%91).md)，这也重新泛起了我对哈希表的兴趣。
+2024年12月21日，[ktprime](https://github.com/ktprime) 在 [issues](https://github.com/shines77/hashmap-benchmark/issues/1) 中给我推荐了 2024 年最新的一个哈希表性能测试，原文：[An Extensive Benchmark of C and C++ Hash Tables](https://jacksonallan.github.io/c_cpp_hash_tables_benchmark/)，后来我给翻译了一下，译文在这：[2024年 Jackson Allan 关于C和C++哈希表的广泛基准测试(翻译)](https://gitee.com/shines77/my_docs/blob/master/tech/hash/hash-table/%E5%85%B3%E4%BA%8EC%E5%92%8CC++%E5%93%88%E5%B8%8C%E8%A1%A8%E7%9A%84%E5%B9%BF%E6%B3%9B%E5%9F%BA%E5%87%86%E6%B5%8B%E8%AF%95(%E7%BF%BB%E8%AF%91).md)，这也重新泛起了我对哈希表的兴趣。
 
 看了一下测试结果，`boost::unordered_flat_map` 的性能总体上来说还是比较好的，当我在 boost 官方的介绍里看懂了其原理后，有了一个想法。我的思路是把 group 的大小从 15 字节改为 16，同时把 owerflow bit 从 8 bits 改为 16 bits。这就是 jstd::group16_flat_map，从实践来看，虽然 overflow bit 变大了，能减少查找时搜索的次数，但是 hash 值也从 8 bits 减少为了 7 bits，因为剩下的一个 bit 用来做 overflow 了，hash 冲突的可能增大了，导致 key 的比较次数比 boost 的可能要更多，并且由于 overflow bit 变复杂了，同时 SIMD 指令出来也比 boost 复杂一点，导致总体性能比 boost 的略差一点。后来，我实验性的写了跟 boost 原理一模一样的 jstd::group15_flat_map，性能虽然接近了 boost ，但由于编译器的优化问题，除了插入性能比 boost 稍好一点以外，其他都比 boost 的略差一些，但差得不多。
 
-我采用了上面这篇文章中所提到的测试代码，源码在这里：[https://github.com/JacksonAllan/c_cpp_hash_tables_benchmark](https://github.com/JacksonAllan/c_cpp_hash_tables_benchmark)。仔细的研究了一下，发现还是有不少不足，我基于他的代码改写了一下，这就是本仓库中的 `/bench/jackson_bench`，改动如下。
+我采用了上面这篇文章中所提到的测试代码，源码在这里：[https://github.com/JacksonAllan/c_cpp_hash_tables_benchmark](https://github.com/JacksonAllan/c_cpp_hash_tables_benchmark) 。仔细的研究了一下，发现还是有不少不足，我基于他的代码改写了一下，这就是本仓库中的 `/bench/jackson_bench`，改动如下：
 
-- 不再统一 max_load_factor，使用各个 hashmap 默认的 mlf，理由是：虽然统一 mlf 更公平，但是每种哈希表有自己的特点，在不同的 mlf 下，性能会有差异。何况在实际的使用中，你不可能把自己要用的哈希表设置在一个性能不太好的 mlf 吧。
+- 去掉了 C 哈希表的测试，虽然你还是可以加上去的，专注于 C++ 的哈希表。
+
+- 不再使用统一的 max_load_factor，使用各个 hashmap 默认的 mlf，理由是：虽然统一 mlf 更公平，但是每种哈希表有自己的特点，在不同的 mlf 下，性能会有差异。何况在实际的使用中，你不可能把自己要用的哈希表设置在一个性能不太好的 mlf 吧。
 
 - 每个 blueprint（蓝图）的测试总数据量不再是固定的 KEY_COUNT 个（原代码中这个值是 200,000，数据量太小），而是按总的内存使用量 BENCHMARK_TOTAL_BYTES (64 * 1024 * 1024)，64M Bytes 除以（每个 blueprint 的 element 大小 + 一个测试的 key 值的大小，即 (sizeof(value_type) + sizeof(key_type)) ）来决定总的测试数据量，也就是总的内存占用保持在大约 64M Bytes 左右；
 
@@ -71,19 +73,19 @@
     }
     ```
 
-    这其实测的不是 insert()，这测的是 try_emplace() 的性能，我给统一改为了使用 emplace(key, value_type()) 接口，将来还会增加别的接口测试，具体可以参考 `/bench/time_hash_map_new` 的测试。
+    其实这测的不是 insert()，而是测 try_emplace() 的性能，我给统一更改为了 emplace(key, value_type()) 接口，将来还会增加别的接口测试，具体可以参考 `/bench/time_hash_map_new` 的测试。
 
 - iteration 的测试，只访问 key 值，不访问 value 值，cache 污染更少。
 
-- 每次开始测试一个 benchmark routine 时，重置随机数产生器的随机数种子 (seed)，这样每个 benchmark routine 的随机数序列都是一样的，更公平，虽然这个设定对结果的影响很小，但理论上更公平一点。
+- 每次开始测试一个 benchmark routine 时，重置随机数产生器的随机数种子 (seed)，这样每个 benchmark routine 所产生的随机数序列都是一样的，虽然这个设定对结果的影响很小，但理论上更公平一点。
 
 - 一开始我采用了每个 benchmark routine 开测前都刷新缓存，并 sleep(1000ms)，但这样整个测试过程太慢了。后来改为，只在循环每个 benchmark routine RUN_COUNT 次前，刷新缓存和 sleep()，这样整个测试耗时会减少很多，虽然好像前者的测试结果更稳定一点。
 
-- 平均用时计算方法更改为，去掉一个最大和最小值，然后求平均值，原代码的方法是去掉两个最大的值，以及去掉两个最小的值，然后求平均，并且 RUN_COUNT 次数是 14 次，我减少到了 5 次。
+- 平均用时计算方法更改为，去掉一个最大和最小值，然后求平均值。原代码的方法是去掉两个最大的值，以及去掉两个最小的值，然后求平均，并且 RUN_COUNT 次数是 14 次，我减少到了 5 次。
 
 - 原代码中的各个 benchmark routine 有些是混杂在一起的，虽然这样可以节省测试时间，但也许对测试结果有影响，我都给拆开来了，各个测试 routime 是独立的。
 
-- 测试的过程中，中途会显示已测试部分的结果，更早的能看到测试结果，无需漫长的等待。
+- 测试的过程中，中途会显示已完成测试的部分结果，更早的能看到测试结果，无需漫长的等待。
 
 ### 第三方库更新记录
 
@@ -115,11 +117,15 @@ rm -rf ./3rd_part
 
 - 新增了 `/bench/jackson_bench` 测试，具体可参考上文的介绍。
 
+- `/bench/time_hash_map_new` 也已做了部分修改，计划改成跟 `jackson_bench` 这样的结构，扩展性更好一点。
+
 2025-01-27 更新：
 
 - `./3rd_party` 路径更改为 `./3rd_part`，包括 `CMakeLists.txt`、`.gitmodules` 和 MSVC 工程文件中的路径。
 
 - `./3rd_party/unordered_dens` 路径更改为 `./3rd_part/unordered_dense`。
+
+- `jstd_hashmap`：v 1.0.1 版本。
 
 2025-01-13 更新：
 
