@@ -12,7 +12,7 @@
 
 测试了如下几种 `C++` 哈希表：
 
-* C++ 标准库 STL 自带的 `std::unordered_map`，这是一个基础性能的标准，虽然性能不好，但可以作为参考。
+* C++ 标准库 STL 自带的 `std::unordered_map`，这是一个基本的测试标准，虽然性能不佳，但可以作为参考。
 
 * [我自己](https://github.com/shines77) 的 `jstd::robin_hash_map`，`jstd::group15_flat_map`：
 
@@ -50,7 +50,7 @@
 
 2024年12月21日，[ktprime](https://github.com/ktprime) 在 [issues](https://github.com/shines77/hashmap-benchmark/issues/1) 中给我推荐了 2024 年最新的一个哈希表性能测试，原文：[An Extensive Benchmark of C and C++ Hash Tables](https://jacksonallan.github.io/c_cpp_hash_tables_benchmark/)，后来我给翻译了一下，译文在这：[2024年 Jackson Allan 关于C和C++哈希表的广泛基准测试(翻译)](https://gitee.com/shines77/my_docs/blob/master/tech/hash/hash-table/%E5%85%B3%E4%BA%8EC%E5%92%8CC++%E5%93%88%E5%B8%8C%E8%A1%A8%E7%9A%84%E5%B9%BF%E6%B3%9B%E5%9F%BA%E5%87%86%E6%B5%8B%E8%AF%95(%E7%BF%BB%E8%AF%91).md)，这也重新泛起了我对哈希表的兴趣。
 
-看了一下测试结果，`boost::unordered_flat_map` 的性能总体上来说还是比较好的，当我在 boost 官方的介绍里看懂了其原理后，有了一个想法。我的思路是把 group 的大小从 15 字节改为 16，同时把 owerflow bit 从 8 bits 改为 16 bits。这就是 jstd::group16_flat_map，从实践来看，虽然 overflow bit 变大了，能减少查找时搜索的次数，但是 hash 值也从 8 bits 减少为了 7 bits，因为剩下的一个 bit 用来做 overflow 了，hash 冲突的可能增大了，导致 key 的比较次数比 boost 的可能要更多，并且由于 overflow bit 变复杂了，同时 SIMD 指令出来也比 boost 复杂一点，导致总体性能比 boost 的略差一点。后来，我实验性的写了跟 boost 原理一模一样的 jstd::group15_flat_map，性能虽然接近了 boost ，但由于编译器的优化问题，除了插入性能比 boost 稍好一点以外，其他都比 boost 的略差一些，但差得不多。
+看了一下测试结果，`boost::unordered_flat_map` 的性能总体上来说还是比较好的，当我在 boost 官方的介绍里看懂了其原理后，有了一个想法。我的思路是把 group 的大小从 15 字节改为 16，同时把 owerflow bit 从 8 bits 改为 16 bits。这就是 jstd::group16_flat_map，从实践来看，虽然 overflow bit 变大了，能减少查找时搜索的次数，但是 hash 值也从 8 bits 减少为了 7 bits，因为剩下的一个 bit 用来做 overflow 了，hash 冲突的可能增大了，导致 key 的比较次数比 boost 的可能要更多，并且由于 overflow bit 变复杂了，同时 SIMD 代码也比 boost 复杂一点，导致总体性能比 boost 的略差一点。后来，实验性的写了，跟 boost 原理一模一样的 jstd::group15_flat_map。性能虽然非常接近 boost ，但由于编译器的优化问题，除了插入性能比 boost 稍好一点外，其他都比 boost 的略差一些，但差得不多。
 
 我采用了上面这篇文章中所提到的测试代码，原文的源码在这里：[https://github.com/JacksonAllan/c_cpp_hash_tables_benchmark](https://github.com/JacksonAllan/c_cpp_hash_tables_benchmark) 。仔细的研究了一下，发现还是有不少不足，我基于他的代码改写了一下，这就是本仓库中的 `/bench/jackson_bench`，改动如下：
 
@@ -166,7 +166,7 @@ rm -rf ./3rd_part
 * 添加了 `bytell_hash_map.hpp` 中缺失的头文件 "#include \<limits\>";
 * 为 `ska::flat_hash_map<K,V>` 和 `ska::bytell_hash_map<K,V>` 添加了静态成员函数 `name()`;
 
-## 编译和使用方法
+## 编译和使用
 
 ### 1. 克隆 Git 仓库
 
@@ -232,7 +232,7 @@ cmake -G "Unix Makefiles" -DCMAKE_C_COMPILER=/usr/bin/clang -DCMAKE_CXX_COMPILER
 make
 ```
 
-在 `./clang/CMakeLists.txt` 中已经做了路径的转换，请使用上面的命令，而不是 `cmake ..` 。
+在 `./clang/CMakeLists.txt` 中已经做了路径的转换，请使用上面的命令，而不是使用 `cmake ..` 。
 
 ### 5. 更新到最新版并编译
 
@@ -244,6 +244,8 @@ git pull
 git submodule update --init --recursive
 make
 ```
+
+你也可以使用第 7 小节提到的 `./cmake-update.sh` 脚本，但是需要先把该脚本拷贝到你的 build 目录下面。
 
 ### 6. 运行 benchmark
 
@@ -292,15 +294,15 @@ make
 1. `cmake-clean.sh`
 
 ```bash
-# 清理 cmake 的缓存和编译结果（便于重新配置和编译 benchmark）,
-# 效果类似 make clean, 但更彻底
+# 清理 cmake 的缓存和编译结果（便于重新配置和编译 benchmark）
+# 效果类似于 make clean, 但更彻底
 ./cmake-clean.sh
 ```
 
 2. `cmake-update.sh`
 
 ```bash
-# 一键更新和编译，但建议先拷贝到 build 目录
+# 一键更新和编译，但需要先拷贝到 build 目录下
 ./cmake-update.sh
 
 # 内容如下：
