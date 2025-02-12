@@ -20,7 +20,7 @@
 
 * `新加入` [boost::unordered](https://github.com/boostorg/unordered) library 的 `boost::unordered::unordered_flat_map`：
 
-    [boost::unordered::unordered_flat_map](https://github.com/MikePopoloski/boost_unordered)
+    [https://github.com/MikePopoloski/boost_unordered](https://github.com/MikePopoloski/boost_unordered)
 
 * [skarupke](https://github.com/skarupke) 的 `aka::flat_hash_map`：
 
@@ -54,16 +54,21 @@
 
 - 原 `./3rd_party/unordered_dens` 路径更正为 `./3rd_part/unordered_dense`；
 
-- 修正 `CMakeLists.txt` 文件中的 `./3rd_party` 路径；
+- 修正 `CMakeLists.txt` 文件中的 `./3rd_part` 路径；
 
-- 修正 `.gitmodules` 文件中的 `./3rd_party` 路径。
+- 修正 `.gitmodules` 文件中的 `./3rd_part` 路径。
 
 如果你这次更新之后才 clone 本仓库，则不必做下面的步骤。
 
 ```bash
+# 第一次 git pull 是为了拉取最新的 .gitmodules
 git pull
+# 更新/同步 .gitmodules 文件
 git submodule sync
+# 第二次 git pull 是为了更新 ./3rd_part 目录的 submodules
+git pull
 git submodule update --init --recursive
+# 删除旧的 ./3rd_party 目录
 rm -rf ./3rd_party
 ```
 
@@ -76,25 +81,25 @@ rm -rf ./3rd_party
     请使用下面的命令单独更新 [boost::unordered] 库：
 
     ```bash
-    git submodule update --init --recursive ./3rd_part/boost_unordered
-    git submodule update --remote --recursive ./3rd_part/boost_unordered
+    git submodule update --init --recursive ./3rd_party/boost_unordered
+    git submodule update --remote --recursive ./3rd_party/boost_unordered
     ```
 
 - 我自己的 `jstd::robin_hash_map`：更新至最新版，并添加了新的哈希表 `jstd::cluster_flat_map` 。
 
 - Google [abseil-cpp] 的 `absl::flat_hash_map`：更新至最新版，最新 tag：20240722.rc2
 
-    由于我更改了 [abseil-cpp] 仓库的 URL，如果你在这之前就拉取过 /3rd_part/abseil-cpp，请使用下列的命令更新 submodule ：
+    由于我更改了 [abseil-cpp] 仓库的 URL，如果你在这之前就拉取过 /3rd_party/abseil-cpp，请使用下列的命令更新 submodule ：
 
     ```bash
-    # 先删除旧的 /3rd_part/abseil-cpp 目录
-    cd ./3rd_part
+    # 先删除旧的 /3rd_party/abseil-cpp 目录
+    cd ./3rd_party
     rm -rf ./abseil-cpp
 
     # 使用 sync 命令同步为新的 URL，并重新初始化 abseil-cpp
-    git config -f .gitmodules submodule.3rd_part/abseil-cpp.branch master
+    git config -f .gitmodules submodule.3rd_party/abseil-cpp.branch master
     git submodule sync
-    git submodule update --init --recursive 3rd_part/abseil-cpp
+    git submodule update --init --recursive 3rd_party/abseil-cpp
     ```
 
 - [ktprime] 的 `emhash`：更新至最新版
@@ -154,8 +159,8 @@ git submodule update --init --recursive
 git submodule update --init --recursive
 
 # 单独更新某个 submodule
-git submodule update --init --recursive ./3rd_part/jstd_hashmap
-git submodule update --init --recursive ./3rd_part/boost_unordered
+git submodule update --init --recursive ./3rd_party/jstd_hashmap
+git submodule update --init --recursive ./3rd_party/boost_unordered
 ```
 
 #### 3.2 更新子模块远端仓库的最新版
@@ -167,8 +172,8 @@ git submodule update --init --recursive ./3rd_part/boost_unordered
 git submodule update --remote --recursive
 
 # 单独更新某个 submodule 到该子模块的远端最新版
-git submodule update --remote --recursive ./3rd_part/jstd_hashmap
-git submodule update --remote --recursive ./3rd_part/boost_unordered
+git submodule update --remote --recursive ./3rd_party/jstd_hashmap
+git submodule update --remote --recursive ./3rd_party/boost_unordered
 ```
 
 ### 4. 配置与编译
@@ -177,7 +182,7 @@ git submodule update --remote --recursive ./3rd_part/boost_unordered
 
 ```bash
 # 切换到 abseil-cpp 根目录
-cd ./3rd_part/abseil-cpp
+cd ./3rd_party/abseil-cpp
 
 # 创建 build 目录
 mkdir build
@@ -196,7 +201,7 @@ make install
 如果你已经成功编译了 `abseil-cpp`，再配置和编译 `hashmap-benchmark`：
 
 ```bash
-# 从 ./3rd_part/abseil-cpp/build 切换回 hashmap-benchmark 根目录
+# 从 ./3rd_party/abseil-cpp/build 切换回 hashmap-benchmark 根目录
 cd ../../../
 
 # 创建 build 目录
@@ -226,7 +231,7 @@ cd build
 git pull
 git submodule update --init --recursive
 # or
-git submodule update --init --recursive ../3rd_part/jstd_hashmap
+git submodule update --init --recursive ../3rd_party/jstd_hashmap
 
 make
 ```
