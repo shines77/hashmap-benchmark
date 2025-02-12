@@ -483,7 +483,10 @@ void benchmark_find_existing(std::size_t run,
             // To avoid unnecessary cache pollution caused by accessing the values,
             // we will change to accessing the first byte of the Key value.
             //
-            do_not_optimize += *(unsigned char *)&HashMap<BluePrint>::get_key_from_iter(table, iter);
+            // (Modified by shines77, 2025-02-12)
+            // Restore to the old code, because in absl::flat_cash_map test, find() was optimized out.
+            //
+            do_not_optimize += *(unsigned char *)&HashMap<BluePrint>::get_value_from_iter(table, iter);
         }
         sw.stop();
 
