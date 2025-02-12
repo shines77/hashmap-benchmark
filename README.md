@@ -62,8 +62,6 @@ git submodule update --init --recursive
 
 # 如果某个 submodule 不能正常更新, 先删除该 submodule 的目录，再更新该 submodule，例如：
 rm -rf ./3rd_party/abseil-cpp
-
-# 如果需要单独更新某个 submodule
 git submodule update --init --recursive 3rd_party/abseil-cpp
 
 # 如果有必要，手动删除旧的 ./3rd_part 或 ./3rd_party 目录
@@ -84,37 +82,23 @@ rm -rf ./3rd_part
 
 2025-01-13 更新：
 
-如果你这次更新之后才 clone 本仓库，则不必做下面的步骤。
-
 - 新增了 [boost::unordered](https://github.com/boostorg/unordered) library [v1.85.0](https://github.com/boostorg/unordered) 的 [boost::unordered::unordered_flat_map](https://github.com/MikePopoloski/boost_unordered) (非官方库) 。
 
-    请单独更新 [boost::unordered] 库。
+    请单独更新 [boost::unordered] 库，仅该次更新时需要。
 
 - 我自己的 `jstd::robin_hash_map`：更新至最新版，并添加了新的哈希表 `jstd::cluster_flat_map` 。
 
 - Google [abseil-cpp] 的 `absl::flat_hash_map`：更新至最新版，最新 tag：20240722.rc2
 
-    由于我更改了 [abseil-cpp] 仓库的 URL，如果你在这之前就拉取过 /3rd_party/abseil-cpp，请使用下列的命令更新 submodule ：
+    由于我更改了 [abseil-cpp] 仓库的 URL，请尝试使用前面的方法单独更新，仅该次更新时需要。
 
-    ```bash
-    # 先删除旧的 /3rd_party/abseil-cpp 目录
-    cd ./3rd_party
-    rm -rf ./abseil-cpp
+- [ktprime] 的 `emhash`：更新至最新版。
 
-    # 使用 sync 命令同步为新的 URL，并重新初始化 abseil-cpp
-    git config -f .gitmodules submodule.3rd_party/abseil-cpp.branch master
-    git pull
-    git submodule sync
-    git submodule update --init --recursive 3rd_party/abseil-cpp
-    ```
+- [Tessil] 的 `tsl::robin_map`：更新至最新，最新 tag：1.3.0。
 
-- [ktprime] 的 `emhash`：更新至最新版
+- [martinus] 的 `ankerl::unordered_dense::map`：更新至最新版，最新 tag：4.5.0。
 
-- [Tessil] 的 `tsl::robin_map`：更新至最新，最新 tag：1.3.0
-
-- [martinus] 的 `ankerl::unordered_dense::map`：更新至最新版，最新 tag：4.5.0
-
-- [martinus] 的 `robin_hood::unordered_flat_map`：更新至最新版，最新 tag：3.11.5
+- [martinus] 的 `robin_hood::unordered_flat_map`：更新至最新版，最新 tag：3.11.5。
 
 - [skarupke] 的 `aka::flat_hash_map`：无更新。
 
@@ -258,11 +242,17 @@ make
 
 下列脚本请拷贝到你的 build 目录下再执行，例如：`./build`。
 
+1. `cmake-clean.sh`
+
 ```bash
 # 清理 cmake 的缓存和编译结果（便于重新配置和编译 benchmark）,
 # 效果类似 make clean, 但更彻底
 ./cmake-clean.sh
+```
 
+2. `cmake-update.sh`
+
+```bash
 # 一键更新和编译，但建议先拷贝到 build 目录
 ./cmake-update.sh
 
@@ -313,7 +303,7 @@ cmake -DABSL_BUILD_TESTING=OFF -DABSL_USE_GOOGLETEST_HEAD=OFF -DABSL_PROPAGATE_C
 make
 ```
 
-### 8.3 更新本仓库到最新版
+#### 8.3 更新本仓库到最新版
 
 如果你已经编译了 `abseil-cpp` and `hashmap-benchmark`, 并且向更新到本仓库的最新版本。
 
@@ -328,4 +318,11 @@ git submodule update --init --recursive
 git submodule update --init --recursive ../3rd_party/jstd_hashmap
 
 make
+```
+
+#### 8.4 其他备份
+
+```bash
+# 指定 ./3rd_party/abseil-cpp 的分支为 master
+git config -f .gitmodules submodule.3rd_party/abseil-cpp.branch master
 ```
