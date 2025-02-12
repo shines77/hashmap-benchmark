@@ -18,11 +18,11 @@
 
     [https://gitee.com/shines77/jstd_hashmap](https://gitee.com/shines77/jstd_hashmap)
 
-* 来自 Boost 的 [boost::unordered](https://github.com/boostorg/unordered) library 的 `boost::unordered::unordered_flat_map`：
+* 来自 Boost library [boost::unordered](https://github.com/boostorg/unordered) 的 `boost::unordered::unordered_flat_map`：
 
     [https://github.com/MikePopoloski/boost_unordered](https://github.com/MikePopoloski/boost_unordered)
 
-* 来自 Google 的 [abseil-cpp](https://github.com/abseil) 的 `absl::flat_hash_map` ：
+* 来自 Google [abseil-cpp](https://github.com/abseil) 的 `absl::flat_hash_map` ：
 
     [https://github.com/abseil/abseil-cpp](https://github.com/abseil/abseil-cpp)
 
@@ -154,22 +154,9 @@ git submodule init
 git submodule update --init --recursive
 ```
 
-### 3. 更新子模块
+### 3. 配置与编译
 
-```bash
-# 更新全部 submodule, 并保证已经初始化
-git submodule update --init --recursive
-
-# 单独更新某个 submodule
-git submodule update --init --recursive ./3rd_party/jstd_hashmap
-git submodule update --init --recursive ./3rd_party/boost_unordered
-```
-
-不推荐使用下列使用 `git submodule update --remote --recursive` 命令更新。
-
-### 4. 配置与编译
-
-由于 `abseil-cpp` 已经改为源码编译，不再需要单独编译和安装 `abseil-cpp`，相关的编译命令作为备份放在本文档最后。
+由于 `abseil-cpp` 已经改为源码编译，不再需要单独编译和安装 `abseil-cpp`，相关的编译命令作为备份放在文档最后。
 
 ```bash
 mkdir ./build
@@ -179,9 +166,9 @@ cmake ..
 make
 ```
 
-如果想同时安装不同的 gcc 版本，并随意切换，请参考该文档：[Ubuntu 20.04 安装GCC各版本并随意切换](https://gitee.com/shines77/my_docs/blob/master/linux/ubuntu/Ubuntu-18.04-%E5%AE%89%E8%A3%85GCC%E5%90%84%E7%89%88%E6%9C%AC%E5%B9%B6%E9%9A%8F%E6%84%8F%E5%88%87%E6%8D%A2.md)
+如果想同时安装不同的 gcc 版本，并随意切换，请参考该文档：[Ubuntu 20.04 安装 gcc 各版本并随意切换](https://gitee.com/shines77/my_docs/blob/master/linux/ubuntu/Ubuntu-18.04-%E5%AE%89%E8%A3%85GCC%E5%90%84%E7%89%88%E6%9C%AC%E5%B9%B6%E9%9A%8F%E6%84%8F%E5%88%87%E6%8D%A2.md)
 
-有些时候想删除 CMake 的缓存文件，可以把 `./cmake-clean.sh` 文件拷贝到你的 build 目录，再运行，效果类似 `make clean`，但更完整。
+有些时候想删除 CMake 的缓存文件，可以把 `./cmake-clean.sh` 文件拷贝到你的 build 目录，再运行，效果类似于 `make clean`，但更完整。
 
 ```bash
 cp ./cmake-clean.sh ./build
@@ -189,11 +176,11 @@ cd build
 ./cmake-clean.sh
 ```
 
-### 5. 使用 clang 编译
+### 4. 使用 clang 编译
 
-本仓库为 `clang` 定制了专用的 `CMakeLists.txt`。
+本仓库在 `./clang` 目录下为 `clang` 定制了专用的 `CMakeLists.txt`。
 
-请先安装 `clang` 和 `clang` 的 C++ 库 `libc++`，需要安装支持 `C++ 20` 的 `clang` 版本，例如：
+请先安装 `clang` 以及对应的 C++ 库 `libc++`，需要支持 `C++ 20` 的 `clang` 版本，例如：
 
 ```bash
 # 安装 clang 18.0 及对应的 libc++
@@ -202,7 +189,7 @@ sudo apt-get install clang-18 llvm-18 libc++-18-dev libc++abi-18-dev
 
 请阅读下列推荐的文档，做好 `clang-18` 到 `/usr/bin/clang`，`/usr/bin/clang++` 的软连接。
 
-如果想同时安装不同的 clang 版本，并随意切换，请参考该文档：[Ubuntu 20.04 安装clang各版本并随意切换](https://gitee.com/shines77/my_docs/blob/master/linux/ubuntu/Ubuntu-16.04-%E5%AE%89%E8%A3%85clang%E7%89%88%E6%9C%AC%E5%B9%B6%E9%9A%8F%E6%84%8F%E5%88%87%E6%8D%A2.md)
+如果想同时安装不同的 clang 版本，并随意切换，请参考该文档：[Ubuntu 20.04 安装 clang 各版本并随意切换](https://gitee.com/shines77/my_docs/blob/master/linux/ubuntu/Ubuntu-16.04-%E5%AE%89%E8%A3%85clang%E7%89%88%E6%9C%AC%E5%B9%B6%E9%9A%8F%E6%84%8F%E5%88%87%E6%8D%A2.md)
 
 **配置与编译**
 
@@ -214,7 +201,9 @@ cmake -G "Unix Makefiles" -DCMAKE_C_COMPILER=/usr/bin/clang -DCMAKE_CXX_COMPILER
 make
 ```
 
-### 6. 更新到最新版并编译
+在 `./clang/CMakeLists.txt` 中已经做了路径的转换，请使用上面的命令，而不是 `cmake ..` 。
+
+### 5. 更新到最新版并编译
 
 请在你的 build 目录下执行下列命令，例如：`./build` 目录。
 
@@ -225,7 +214,7 @@ git submodule update --init --recursive
 make
 ```
 
-### 7. 运行 benchmark
+### 6. 运行 benchmark
 
 请在你的 build 目录下，例如 `./build` ，执行下列命令：
 
@@ -265,12 +254,12 @@ make
 ./bin/benchmark ./data/Maven.keys.txt
 ```
 
-### 8. 其他脚本
+### 7. 其他脚本
 
 下列脚本请拷贝到你的 build 目录下再执行，例如：`./build`。
 
 ```bash
-# 清理 cmake 的缓存和编译结果（便于重新配置和编译 benchmark），
+# 清理 cmake 的缓存和编译结果（便于重新配置和编译 benchmark）,
 # 效果类似 make clean, 但更彻底
 ./cmake-clean.sh
 
@@ -283,9 +272,9 @@ git submodule update --init --recursive
 make
 ```
 
-### 9. 附录：备份文档（已失效）
+### 8. 附录：备份文档（已失效）
 
-#### 9.1 配置与编译
+#### 8.1 配置与编译
 
 先配置和编译 `Google` 的 `abseil-cpp` 库：
 
@@ -305,7 +294,7 @@ make
 make install
 ```
 
-#### 9.2 编译 benchmark
+#### 8.2 编译 benchmark
 
 如果你已经成功编译了 `abseil-cpp`，再配置和编译 `hashmap-benchmark`：
 
@@ -324,7 +313,7 @@ cmake -DABSL_BUILD_TESTING=OFF -DABSL_USE_GOOGLETEST_HEAD=OFF -DABSL_PROPAGATE_C
 make
 ```
 
-### 9.3 更新本仓库到最新版
+### 8.3 更新本仓库到最新版
 
 如果你已经编译了 `abseil-cpp` and `hashmap-benchmark`, 并且向更新到本仓库的最新版本。
 
