@@ -48,7 +48,7 @@
 
 ### 关于 jackson_bench
 
-2024年12月21日，[ktprime](https://github.com/ktprime) 在 [issues](https://github.com/shines77/hashmap-benchmark/issues/1) 中给我推荐了 2024 年最新的一个哈希表性能测试，原文：[An Extensive Benchmark of C and C++ Hash Tables](https://jacksonallan.github.io/c_cpp_hash_tables_benchmark/)，后来我给翻译了一下，译文在这：[2024年 Jackson Allan 关于C和C++哈希表的广泛基准测试(翻译)](https://gitee.com/shines77/my_docs/blob/master/tech/hash/hash-table/%E5%85%B3%E4%BA%8EC%E5%92%8CC++%E5%93%88%E5%B8%8C%E8%A1%A8%E7%9A%84%E5%B9%BF%E6%B3%9B%E5%9F%BA%E5%87%86%E6%B5%8B%E8%AF%95(%E7%BF%BB%E8%AF%91).md)，这也重新泛起了我对哈希表的兴趣。
+2024年12月21日，[ktprime](https://github.com/ktprime) 在 [issues](https://github.com/shines77/hashmap-benchmark/issues/1) 中给我推荐了 2024 年最新的一个哈希表性能测试，原文：[An Extensive Benchmark of C and C++ Hash Tables](https://jacksonallan.github.io/c_cpp_hash_tables_benchmark/)，后来我给翻译了一下，译文在这：[2024年 Jackson Allan 关于C和C++哈希表的广泛基准测试(翻译)](https://gitee.com/shines77/my_docs/blob/master/tech/hash/hashmap/%E5%85%B3%E4%BA%8EC%E5%92%8CC++%E5%93%88%E5%B8%8C%E8%A1%A8%E7%9A%84%E5%B9%BF%E6%B3%9B%E5%9F%BA%E5%87%86%E6%B5%8B%E8%AF%95(%E7%BF%BB%E8%AF%91).md)，这也重新泛起了我对哈希表的兴趣。
 
 看了一下测试结果，`boost::unordered_flat_map` 的性能总体上来说还是比较好的，当我在 boost 官方的介绍里看懂了其原理后，有了一个想法。我的思路是把 group 的大小从 15 字节改为 16，同时把 owerflow bit 从 8 bits 改为 16 bits。这就是 jstd::group16_flat_map，从实践来看，虽然 overflow bit 变大了，能减少查找时搜索的次数，但是 hash 值也从 8 bits 减少为了 7 bits，因为剩下的一个 bit 用来做 overflow 了，hash 冲突的可能增大了，导致 key 的比较次数比 boost 的可能要更多，并且由于 overflow bit 变复杂了，同时 SIMD 代码也比 boost 复杂一点，导致总体性能比 boost 的略差一点。后来，实验性的写了，跟 boost 原理一模一样的 jstd::group15_flat_map。性能虽然非常接近 boost ，但由于编译器的优化问题，除了插入性能比 boost 稍好一点外，其他都比 boost 的略差一些，但差得不多。
 
@@ -313,7 +313,7 @@ make
 
 ### 8. 附录：备份文档（已失效）
 
-#### 8.1 配置与编译
+#### 8.1 配置与编译（已弃用）
 
 先配置和编译 `Google` 的 `abseil-cpp` 库：
 
@@ -333,7 +333,7 @@ make
 make install
 ```
 
-#### 8.2 编译 benchmark
+#### 8.2 编译 benchmark（已弃用）
 
 如果你已经成功编译了 `abseil-cpp`，再配置和编译 `hashmap-benchmark`：
 
@@ -352,7 +352,7 @@ cmake -DABSL_BUILD_TESTING=OFF -DABSL_USE_GOOGLETEST_HEAD=OFF -DABSL_PROPAGATE_C
 make
 ```
 
-#### 8.3 更新本仓库到最新版
+#### 8.3 更新本仓库到最新版（已弃用）
 
 如果你已经编译了 `abseil-cpp` and `hashmap-benchmark`, 并且向更新到本仓库的最新版本。
 
@@ -369,7 +369,7 @@ git submodule update --init --recursive ../3rd_party/jstd_hashmap
 make
 ```
 
-#### 8.4 其他备份
+#### 8.4 其他备份（已弃用）
 
 ```bash
 # 指定 ./3rd_party/abseil-cpp 的分支为 master
