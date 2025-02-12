@@ -10,11 +10,11 @@
 
 ### C++ Hashmap
 
-对以下 `C++` 开源库做了基准测试：
+测试了如下几种 `C++` 哈希表：
 
-* C++ 标准库 STL 自带的 `std::unordered_map`，这是一个用于比较的基准标准。
+* C++ 标准库 STL 自带的 `std::unordered_map`，这是一个基础性能的标准，虽然性能不好，但可以作为参考。
 
-* [我自己](https://github.com/shines77) 写的 `jstd::robin_hash_map`，`jstd::group15_flat_map`：
+* [我自己](https://github.com/shines77) 的 `jstd::robin_hash_map`，`jstd::group15_flat_map`：
 
     [https://gitee.com/shines77/jstd_hashmap](https://gitee.com/shines77/jstd_hashmap)
 
@@ -52,7 +52,7 @@
 
 看了一下测试结果，`boost::unordered_flat_map` 的性能总体上来说还是比较好的，当我在 boost 官方的介绍里看懂了其原理后，有了一个想法。我的思路是把 group 的大小从 15 字节改为 16，同时把 owerflow bit 从 8 bits 改为 16 bits。这就是 jstd::group16_flat_map，从实践来看，虽然 overflow bit 变大了，能减少查找时搜索的次数，但是 hash 值也从 8 bits 减少为了 7 bits，因为剩下的一个 bit 用来做 overflow 了，hash 冲突的可能增大了，导致 key 的比较次数比 boost 的可能要更多，并且由于 overflow bit 变复杂了，同时 SIMD 指令出来也比 boost 复杂一点，导致总体性能比 boost 的略差一点。后来，我实验性的写了跟 boost 原理一模一样的 jstd::group15_flat_map，性能虽然接近了 boost ，但由于编译器的优化问题，除了插入性能比 boost 稍好一点以外，其他都比 boost 的略差一些，但差得不多。
 
-我采用了上面这篇文章中所提到的测试代码，源码在这里：[https://github.com/JacksonAllan/c_cpp_hash_tables_benchmark](https://github.com/JacksonAllan/c_cpp_hash_tables_benchmark) 。仔细的研究了一下，发现还是有不少不足，我基于他的代码改写了一下，这就是本仓库中的 `/bench/jackson_bench`，改动如下：
+我采用了上面这篇文章中所提到的测试代码，原文的源码在这里：[https://github.com/JacksonAllan/c_cpp_hash_tables_benchmark](https://github.com/JacksonAllan/c_cpp_hash_tables_benchmark) 。仔细的研究了一下，发现还是有不少不足，我基于他的代码改写了一下，这就是本仓库中的 `/bench/jackson_bench`，改动如下：
 
 - 去掉了 C 哈希表的测试，虽然你还是可以加上去的，专注于 C++ 的哈希表。
 
