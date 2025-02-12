@@ -141,8 +141,9 @@ UpgradeLog.htm
 
 # Ignore CMake cache or temp files/folders
 /CMakeFiles
-*CMakeCache.txt
 /Makefile
+*CMakeCache.txt
+cmake_install.cmake
 
 # Ignore boost, tbb
 /deps/boost/
