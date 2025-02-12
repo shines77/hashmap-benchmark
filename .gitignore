@@ -195,3 +195,17 @@ _ReSharper*/
 /Device-Coverage/
 /Device-Profile/
 /Device-Release/
+
+# Ignore VLD local switch define
+3rd_party/jstd_hashmap/src/jstd/basic/vld_def.h
+
+# Ignore hardware detect config file
+3rd_party/jstd_hashmap/src/jstd/config/config_hw_detect.h
+
+# Ignore version file
+3rd_party/jstd_hashmap/src/jstd/config/version.h
+3rd_party/jstd_hashmap/src/jstd/version.h
+
+# build folders
+clang/*
+[Bb]uild/*
