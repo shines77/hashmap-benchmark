@@ -14,25 +14,25 @@ The following `C++` open source libraries were benchmade:
 
 * The C++ standard library comes with ` std:: unordered_map`, This is a benchmark standard used for comparison.
 
-* (Myself) [shines77](https://github.com/shines77)'s `jstd::robin_hash_map`:
+* (Myself) [shines77](https://github.com/shines77)'s `jstd::robin_hash_map`, `jstd::group15_flat_map`:
 
     [https://gitee.com/shines77/jstd_hashmap](https://gitee.com/shines77/jstd_hashmap)
 
-* `New` [boost::unordered](https://github.com/boostorg/unordered) library's `boost::unordered::unordered_flat_map`:
+* From Boost [boost::unordered](https://github.com/boostorg/unordered) library's `boost::unordered::unordered_flat_map`:
 
     [https://github.com/MikePopoloski/boost_unordered](https://github.com/MikePopoloski/boost_unordered)
-
-* [skarupke](https://github.com/skarupke)'s `aka::flat_hash_map`:
-
-    [https://github.com/skarupke/flat_hash_map](https://github.com/skarupke/flat_hash_map)
 
 * From Google [abseil-cpp](https://github.com/abseil)'s `absl::flat_hash_map`:
 
     [https://github.com/abseil/abseil-cpp](https://github.com/abseil/abseil-cpp)
 
-* (Chinese) [ktprime](https://github.com/ktprime)'s `emhash5`, `emhash7`, `emhash8`:
+* (Chinese) [ktprime](https://github.com/ktprime)'s `emhash5`, `emhash7`, `emhash8`, `emilib2o`:
 
     [https://github.com/ktprime/emhash](https://github.com/ktprime/emhash)
+
+* [skarupke](https://github.com/skarupke)'s `aka::flat_hash_map`:
+
+    [https://github.com/skarupke/flat_hash_map](https://github.com/skarupke/flat_hash_map)
 
 * [Tessil](https://github.com/Tessil)'s `tsl::robin_map`:
 

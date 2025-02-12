@@ -4,7 +4,7 @@
 
 ## 简介
 
-几个国内外最优秀的 C++ Hashmap 库的基准测试，包括 `Google abseil-cpp` 的哈希表 `absl::flat_hash_map`，还包括 `aka::flat_hash_map`、`tsl::robin_map`、`ktprime::emhash7`、`ankerl::unordered_dense::map`、`boost::unordered_flat_map` 等著名的哈希表，`jstd::robin_hash_map` 均取得了不错的成绩。
+国内外最优秀的几个 C++ Hashmap 库的基准测试，包括 `Boost` 的 `boost::unordered_flat_map`，`abseil-cpp` 库的 `absl::flat_hash_map`，以及 `aka::flat_hash_map`、`tsl::robin_map`、`ktprime::emhash7`、`ankerl::unordered_dense::map` 等知名的哈希表，`jstd::robin_hash_map` 在 Linux 下的 stl 默认的整型哈希函数下有不错的表现，`jstd::group15_flat_map` 跟 `boost::unordered_flat_map` 性能非常接近，且 insert 性能更优。
 
 由于 `boost::unordered_flat_map` 需要 `C++ 20` 才能编译，所以本仓库的 CMake `CMakeFiles.txt` 编译要求升级为 `C++ 20`，自带的 `Visual Studio 2015` 工程只需要 `C++ 11` 即可。
 
@@ -14,25 +14,25 @@
 
 * C++ 标准库 STL 自带的 `std::unordered_map`，这是一个用于比较的基准标准。
 
-* [我自己](https://github.com/shines77) 写的 `jstd::robin_hash_map`：
+* [我自己](https://github.com/shines77) 写的 `jstd::robin_hash_map`，`jstd::group15_flat_map`：
 
     [https://gitee.com/shines77/jstd_hashmap](https://gitee.com/shines77/jstd_hashmap)
 
-* `新加入` [boost::unordered](https://github.com/boostorg/unordered) library 的 `boost::unordered::unordered_flat_map`：
+* 来自 Boost 的 [boost::unordered](https://github.com/boostorg/unordered) library 的 `boost::unordered::unordered_flat_map`：
 
     [https://github.com/MikePopoloski/boost_unordered](https://github.com/MikePopoloski/boost_unordered)
+
+* 来自 Google 的 [abseil-cpp](https://github.com/abseil) 的 `absl::flat_hash_map` ：
+
+    [https://github.com/abseil/abseil-cpp](https://github.com/abseil/abseil-cpp)
+
+* 国人 [ktprime](https://github.com/ktprime) 的 `emhash5`，`emhash7`，`emhash8`，`emilib2o`：
+
+    [https://github.com/ktprime/emhash](https://github.com/ktprime/emhash)
 
 * [skarupke](https://github.com/skarupke) 的 `aka::flat_hash_map`：
 
     [https://github.com/skarupke/flat_hash_map](https://github.com/skarupke/flat_hash_map)
-
-* 来自 Google [abseil-cpp](https://github.com/abseil) 的 `absl::flat_hash_map` ：
-
-    [https://github.com/abseil/abseil-cpp](https://github.com/abseil/abseil-cpp)
-
-* 国人 [ktprime](https://github.com/ktprime) 的 `emhash5`，`emhash7`，`emhash8`：
-
-    [https://github.com/ktprime/emhash](https://github.com/ktprime/emhash)
 
 * [Tessil](https://github.com/Tessil) 的 `tsl::robin_map`：
 
@@ -48,29 +48,39 @@
 
 ### 第三方库更新记录
 
-2025-01-27 更新：
-
-- 原 `./3rd_party` 路径更正为 `./3rd_part`；
-
-- 原 `./3rd_party/unordered_dens` 路径更正为 `./3rd_part/unordered_dense`；
-
-- 修正 `CMakeLists.txt` 文件中的 `./3rd_part` 路径；
-
-- 修正 `.gitmodules` 文件中的 `./3rd_part` 路径。
-
-如果你这次更新之后才 clone 本仓库，则不必做下面的步骤。
+每次更新如果改变了 `submodules` 的路径或配置，可以尝试使用下列的命令：
 
 ```bash
 # 第一次 git pull 是为了拉取最新的 .gitmodules
 git pull
-# 更新/同步 .gitmodules 文件
+# 更新/同步 .gitmodules 文件中的内容
 git submodule sync
-# 第二次 git pull 是为了更新 ./3rd_part 目录的 submodules
+# 第二次 git pull 是为了确保所有内容都更新了, 不一定是必须的
 git pull
+# 更新 ./3rd_party 目录的 submodules
 git submodule update --init --recursive
-# 删除旧的 ./3rd_party 目录
-rm -rf ./3rd_party
+
+# 如果某个 submodule 不能正常更新, 先删除该 submodule 的目录，再更新该 submodule，例如：
+rm -rf ./3rd_party/abseil-cpp
+
+# 如果需要单独更新某个 submodule
+git submodule update --init --recursive 3rd_party/abseil-cpp
+
+# 如果有必要，手动删除旧的 ./3rd_part 或 ./3rd_party 目录
+rm -rf ./3rd_part
 ```
+
+2025-02-12 更新：
+
+- `./3rd_part` 路径恢复为 `./3rd_party`，包括 `CMakeLists.txt`、`.gitmodules` 和 MSVC 工程文件中的路径；
+
+- jstd::group15_flat_map，jstd::group16_flat_map 已经基本稳定；
+
+2025-01-27 更新：
+
+- `./3rd_party` 路径更改为 `./3rd_part`，包括 `CMakeLists.txt`、`.gitmodules` 和 MSVC 工程文件中的路径；
+
+- `./3rd_party/unordered_dens` 路径更改为 `./3rd_part/unordered_dense`；
 
 2025-01-13 更新：
 
@@ -78,12 +88,7 @@ rm -rf ./3rd_party
 
 - 新增了 [boost::unordered](https://github.com/boostorg/unordered) library [v1.85.0](https://github.com/boostorg/unordered) 的 [boost::unordered::unordered_flat_map](https://github.com/MikePopoloski/boost_unordered) (非官方库) 。
 
-    请使用下面的命令单独更新 [boost::unordered] 库：
-
-    ```bash
-    git submodule update --init --recursive ./3rd_party/boost_unordered
-    git submodule update --remote --recursive ./3rd_party/boost_unordered
-    ```
+    请单独更新 [boost::unordered] 库。
 
 - 我自己的 `jstd::robin_hash_map`：更新至最新版，并添加了新的哈希表 `jstd::cluster_flat_map` 。
 
@@ -98,6 +103,7 @@ rm -rf ./3rd_party
 
     # 使用 sync 命令同步为新的 URL，并重新初始化 abseil-cpp
     git config -f .gitmodules submodule.3rd_party/abseil-cpp.branch master
+    git pull
     git submodule sync
     git submodule update --init --recursive 3rd_party/abseil-cpp
     ```
@@ -141,7 +147,7 @@ git clone https://github.com/shines77/hashmap-benchmark.git
 
 ### 2. 初始化子模块
 
-由于引用了以上 `6` 个开源库，`clone` 完以后必须先初始化 `submodule`：
+由于引用了数个第三方库，`clone` 完以后必须先初始化 `submodule`：
 
 ```bash
 git submodule init
@@ -149,10 +155,6 @@ git submodule update --init --recursive
 ```
 
 ### 3. 更新子模块
-
-更新子模块分为更新到本仓库定义的最新版，以及更新到子模块远端仓库的最新版两种，两者是有一定的区别的。本仓库定义的最新版的版本可能会比该子模块的最新版的低，当本仓库的 submodule 都是我在 gitee 上做的镜像，所以基本不会出现这种情况，即两者版本基本是一致的。
-
-#### 3.1 更新子模块到本仓库定义的最新版
 
 ```bash
 # 更新全部 submodule, 并保证已经初始化
@@ -163,20 +165,127 @@ git submodule update --init --recursive ./3rd_party/jstd_hashmap
 git submodule update --init --recursive ./3rd_party/boost_unordered
 ```
 
-#### 3.2 更新子模块远端仓库的最新版
-
-这种方式是不推荐的，但是如果上面的命令解决不了问题，可以尝试这个命令，因为本仓库的 submodule 基本是我在 gitee 上做的镜像，都不是官方的仓库，除了我自己写的 `jstd_hashmap` 之外。
-
-```bash
-# 从远端更新, 即这个版本可以比当前仓库里的使用版本更高，不推荐
-git submodule update --remote --recursive
-
-# 单独更新某个 submodule 到该子模块的远端最新版
-git submodule update --remote --recursive ./3rd_party/jstd_hashmap
-git submodule update --remote --recursive ./3rd_party/boost_unordered
-```
+不推荐使用下列使用 `git submodule update --remote --recursive` 命令更新。
 
 ### 4. 配置与编译
+
+由于 `abseil-cpp` 已经改为源码编译，不再需要单独编译和安装 `abseil-cpp`，相关的编译命令作为备份放在本文档最后。
+
+```bash
+mkdir ./build
+cd build
+
+cmake ..
+make
+```
+
+如果想同时安装不同的 gcc 版本，并随意切换，请参考该文档：[Ubuntu 20.04 安装GCC各版本并随意切换](https://gitee.com/shines77/my_docs/blob/master/linux/ubuntu/Ubuntu-18.04-%E5%AE%89%E8%A3%85GCC%E5%90%84%E7%89%88%E6%9C%AC%E5%B9%B6%E9%9A%8F%E6%84%8F%E5%88%87%E6%8D%A2.md)
+
+有些时候想删除 CMake 的缓存文件，可以把 `./cmake-clean.sh` 文件拷贝到你的 build 目录，再运行，效果类似 `make clean`，但更完整。
+
+```bash
+cp ./cmake-clean.sh ./build
+cd build
+./cmake-clean.sh
+```
+
+### 5. 使用 clang 编译
+
+本仓库为 `clang` 定制了专用的 `CMakeLists.txt`。
+
+请先安装 `clang` 和 `clang` 的 C++ 库 `libc++`，需要安装支持 `C++ 20` 的 `clang` 版本，例如：
+
+```bash
+# 安装 clang 18.0 及对应的 libc++
+sudo apt-get install clang-18 llvm-18 libc++-18-dev libc++abi-18-dev
+```
+
+请阅读下列推荐的文档，做好 `clang-18` 到 `/usr/bin/clang`，`/usr/bin/clang++` 的软连接。
+
+如果想同时安装不同的 clang 版本，并随意切换，请参考该文档：[Ubuntu 20.04 安装clang各版本并随意切换](https://gitee.com/shines77/my_docs/blob/master/linux/ubuntu/Ubuntu-16.04-%E5%AE%89%E8%A3%85clang%E7%89%88%E6%9C%AC%E5%B9%B6%E9%9A%8F%E6%84%8F%E5%88%87%E6%8D%A2.md)
+
+**配置与编译**
+
+切换到根目录下的 `clang` 目录下即可，无需再创建 build 目录。
+
+```bash
+cd clang
+cmake -G "Unix Makefiles" -DCMAKE_C_COMPILER=/usr/bin/clang -DCMAKE_CXX_COMPILER=/usr/bin/clang++
+make
+```
+
+### 6. 更新到最新版并编译
+
+请在你的 build 目录下执行下列命令，例如：`./build` 目录。
+
+```bash
+cd build
+git pull
+git submodule update --init --recursive
+make
+```
+
+### 7. 运行 benchmark
+
+请在你的 build 目录下，例如 `./build` ，执行下列命令：
+
+```bash
+# 根据 Jackson Allan 的基准测试改进而来, 推荐
+./bin/jackson_bench
+
+# 根据 Google sprasehash 开源库改进的基准测试, 推荐
+
+# 默认迭代次数为 10000000（无参数时）
+./bin/time_hash_map_new
+
+# 迭代次数 8000000
+./bin/time_hash_map_new 8000000
+
+# 只测试 (K = std::string, V = std::string)，节约时间
+./bin/time_hash_map_new string
+
+# 低、中、高、超高 - 基数测试，主要测试 insert() 和 find()
+./bin/cardinal_bench
+
+
+# 以下测试已不更新，不推荐
+
+# 跟 Google sprasehash 开源库类似的测试，请尝试新版本 time_hash_map_new
+
+# 默认迭代次数为 10000000（无参数时）
+./bin/time_hash_map
+
+# 迭代次数 8000000
+./bin/time_hash_map 8000000
+
+# 小数据集测试
+./bin/benchmark
+
+# 中数据集测试
+./bin/benchmark ./data/Maven.keys.txt
+```
+
+### 8. 其他脚本
+
+下列脚本请拷贝到你的 build 目录下再执行，例如：`./build`。
+
+```bash
+# 清理 cmake 的缓存和编译结果（便于重新配置和编译 benchmark），
+# 效果类似 make clean, 但更彻底
+./cmake-clean.sh
+
+# 一键更新和编译，但建议先拷贝到 build 目录
+./cmake-update.sh
+
+# 内容如下：
+git pull
+git submodule update --init --recursive
+make
+```
+
+### 9. 附录：备份文档（已失效）
+
+#### 9.1 配置与编译
 
 先配置和编译 `Google` 的 `abseil-cpp` 库：
 
@@ -196,7 +305,7 @@ make
 make install
 ```
 
-### 5. 编译 benchmark
+#### 9.2 编译 benchmark
 
 如果你已经成功编译了 `abseil-cpp`，再配置和编译 `hashmap-benchmark`：
 
@@ -215,11 +324,7 @@ cmake -DABSL_BUILD_TESTING=OFF -DABSL_USE_GOOGLETEST_HEAD=OFF -DABSL_PROPAGATE_C
 make
 ```
 
-如果 CMake 有缓存文件，请拷贝根目录下的 `./cmake-clean.sh` 脚本到你的 build 目录，例如：`./build`。再运行它，清理 CMake 的缓存文件。
-
-`./cmake-clean.sh` 只会清理 `benchmark` 已生成的文件，不会影响已经编译好的 `abseil-cpp` 库。
-
-### 6. 更新本仓库到最新版
+### 9.3 更新本仓库到最新版
 
 如果你已经编译了 `abseil-cpp` and `hashmap-benchmark`, 并且向更新到本仓库的最新版本。
 
@@ -234,45 +339,4 @@ git submodule update --init --recursive
 git submodule update --init --recursive ../3rd_party/jstd_hashmap
 
 make
-```
-
-### 7. 运行 benchmark
-
-请在你的 build 目录下，例如 `./build` ，执行下列命令：
-
-```bash
-# 跟 Google sprasehash 开源库类似的测试（新版，推荐）
-./bin/time_hash_map_new
-
-# 只测试 <std::string, std::string>，节约时间（新版，推荐）
-./bin/time_hash_map_new string
-
-# 跟 Google sprasehash 开源库类似的测试（旧版, 不推荐）
-./bin/time_hash_map
-
-# 只测试大对象 (Key为32, 256字节)，节约时间（旧版, 不推荐）
-./bin/time_hash_map big
-
-# 低、中、高、超高 - 基数测试（推荐）
-./bin/cardinal_bench
-
-# 小数据集测试
-./bin/benchmark
-
-# 中数据集测试
-./bin/benchmark ./data/Maven.keys.txt
-```
-
-### 8. 其他脚本
-
-以下脚本在根目录下：
-
-```bash
-# 清理 cmake 的缓存和编译结果（便于重新配置和编译 benchmark），
-# 不会删除 abseil-cpp 的安装目录 ./install
-./cmake-clean.sh
-
-# 重新执行本仓库的 cmake 配置，生成 makefile，
-# 建议先执行 cmake-clean.sh，默认会创建 build 目录
-./cmake-config.sh
 ```
