@@ -206,6 +206,7 @@ _ReSharper*/
 3rd_party/jstd_hashmap/src/jstd/config/version.h
 3rd_party/jstd_hashmap/src/jstd/version.h
 
-# build folders
+# build and install folders
 clang/*
 [Bb]uild/*
+install/*
